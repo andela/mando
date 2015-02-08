@@ -14,7 +14,7 @@
   "scripts": {
     "start": "grunt",
     "test": "grunt test",
-    "postinstall": "./node_modules/.bin/bower install --config.interactive=false; ./node_modules/protractor/bin/webdriver-manager update"
+    "postinstall": "bower install --config.interactive=false"
   },
   "dependencies": {
     "express": "~4.10.1",
