@@ -2,9 +2,6 @@
 
 module.exports = {
 	db: 'mongodb://localhost/andonation-dev',
-	app: {
-		title: 'Andonation - Development Environment'
-	},
 	facebook: {
 		clientID: process.env.FACEBOOK_ID || 'APP_ID',
 		clientSecret: process.env.FACEBOOK_SECRET || 'APP_SECRET',
