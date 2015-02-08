@@ -84,11 +84,11 @@ exports.oauthCallback = function(strategy) {
 	return function(req, res, next) {
 		passport.authenticate(strategy, function(err, user, redirectURL) {
 			if (err || !user) {
-				return res.redirect('/#!/signin');
+				return res.redirect('/');
 			}
 			req.login(user, function(err) {
 				if (err) {
-					return res.redirect('/#!/signin');
+					return res.redirect('/');
 				}
 
 				return res.redirect(redirectURL || '/');
@@ -101,6 +101,14 @@ exports.oauthCallback = function(strategy) {
  * Helper function to save or update a OAuth user profile
  */
 exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
+
+	if(!providerUserProfile.email.match(/andela.co/)) {
+		
+			// res.redirect('/');
+		var newUser = req.user;
+  	return done(new Error('User is not from Andela.co'), newUser);
+	}
+
 	if (!req.user) {
 		// Define a search query fields
 		var searchMainProviderIdentifierField = 'providerData.' + providerUserProfile.providerIdentifierField;
