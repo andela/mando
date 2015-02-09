@@ -40,6 +40,7 @@ module.exports = function(db) {
 	app.locals.jsFiles = config.getJavaScriptAssets();
 	app.locals.cssFiles = config.getCSSAssets();
 
+	//converts all protocols to https
  	var forceSsl = function (req, res, next) {
     if (req.headers['x-forwarded-proto'] !== 'https') {
         return res.redirect(['https://', req.get('Host'), req.url].join(''));
@@ -47,7 +48,7 @@ module.exports = function(db) {
     return next();
  	};
 
-
+ 	//checks if the env is production then converts url to https
   if (process.env.NODE_ENV === 'production') {
       app.use(forceSsl);
   }
