@@ -27,6 +27,7 @@ describe('Andonation Homepage', function() {
 
     var myAndonation = browser.driver.findElement(by.id('myAndonation'));
     expect(myAndonation.getText()).toBeDefined();
+    
     var myCampaign = browser.driver.findElement(by.id('myCampaign'));
     expect(myCampaign.getText()).toBeDefined();
     expect(signInButton.isDisplayed()).toBe(false);
