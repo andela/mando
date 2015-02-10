@@ -82,6 +82,27 @@ var UserSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
+
+	lastModifiedTimeStamp: {
+		type: Date,
+		default: Date.now
+	},
+
+	createdBy: {
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	},
+
+	lastModifiedBy: {
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	},
+
+	balance: {
+		type: String,
+		default: 0
+	},
+
 	/* For reset password */
 	resetPasswordToken: {
 		type: String

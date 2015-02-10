@@ -102,7 +102,7 @@ exports.oauthCallback = function(strategy) {
  */
 exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 
-	if(!providerUserProfile.email.match(/andela.co/)) {
+	if(!providerUserProfile.email.match(/andela.co$/)) {
 		
 			// res.redirect('/');
 		var newUser = req.user;
