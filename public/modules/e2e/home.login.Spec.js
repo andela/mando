@@ -1,9 +1,9 @@
 'use strict';
 /* global describe */
-
+var helper = require('./helpers');
 describe('Andonation Homepage', function() {
   beforeEach(function() {
-    browser.get('http://localhost:3000/');
+    helper.loadApp('/');
   });
   var signInButton = element(by.id('signIn'));
 
@@ -19,28 +19,21 @@ describe('Andonation Homepage', function() {
     expect(element(by.id('myAndonation')).isDisplayed()).toBe(false);
   });
 
-  it('should display My andonation Upon Successful login', function(){
-    signInButton.click();
-    browser.driver.findElement(by.id('googleSignIn')).click();
-    var emailInput = browser.driver.findElement(by.id('Email'));
-    emailInput.sendKeys('adebayo.maborukoje@andela.co');
-    var passwordInput = browser.driver.findElement(by.id('Passwd'));
-    passwordInput.sendKeys('maborukoje2012');  //you should not commit this to VCS
-    signInButton = browser.driver.findElement(by.id('signIn'));
-    signInButton.click();
+  it('should display \'My Andonation\' Upon Successful login', function(){
+    //logout any user if logged in
+    helper.logoutifLoggedIn();
+    //log in
+    helper.login();
 
-    // we're about to authorize some permissions, but the button isn't enabled for a second
-    browser.driver.sleep(1500);
-
-    var submitApproveAccess = browser.driver.findElement(by.id('submit_approve_access'));
-    submitApproveAccess.click();
-
-    // this Allows Angular to Load
-    browser.driver.sleep(10000);
     var myAndonation = browser.driver.findElement(by.id('myAndonation'));
     expect(myAndonation.getText()).toBeDefined();
     var myCampaign = browser.driver.findElement(by.id('myCampaign'));
     expect(myCampaign.getText()).toBeDefined();
+    expect(signInButton.isDisplayed()).toBe(false);
+    helper.logoutifLoggedIn();
+  });
+  it('should show the signin button after logging out', function() {
+    expect(signInButton.isDisplayed()).toBe(true);
   });
 });
 

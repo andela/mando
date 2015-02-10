@@ -1,8 +1,10 @@
 'use strict';
 /* global it describe browser expect */
+var helper = require('./helpers');
+
 describe('Andonation HomePage', function() {
   it('should have a title', function() {
-    browser.get('http://localhost:3000');
+    helper.loadApp();
     expect(browser.getTitle()).toEqual('Andonation');
   });
 });

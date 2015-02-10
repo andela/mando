@@ -1,4 +1,9 @@
+// conf.js
 exports.config = {
-  selenuimAddress: 'http://localhost:4444/wd/hub',
-  specs: ['public/modules/e2e/*Spec.js']
-}
+ // seleniumAddress: 'http://localhost:4444/wd/hub',
+//  specs: ['home.login.spec.js'],
+
+  baseUrl: 'http://localhost:3000',   
+   
+  specs: ['public/modules/e2e/*Spec.js']   
+ };
