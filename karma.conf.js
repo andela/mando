@@ -19,6 +19,10 @@ module.exports = function(config) {
 		//reporters: ['progress'],
 		reporters: ['progress'],
 
+
+		// this is to exclude all Spec files meant for integratiion test
+		exclude: ['./public/modules/e2e/*.js'],
+
 		// Web server port
 		port: 9876,
 
