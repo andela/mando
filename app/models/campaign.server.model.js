@@ -25,6 +25,11 @@ var campaignSchema = new Schema({
     required: 'Enter the required amount needed'
   },
 
+  youtubeUrl: {
+    type: String,
+    required: 'Enter your youtube campaign video url'
+  },
+
   fundraisingDeadline: {
     type: Date
   },
