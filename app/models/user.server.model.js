@@ -67,7 +67,7 @@ var UserSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'User'
 	},
-	
+
 	balance: {
 		type: Number,
 		default: 0
