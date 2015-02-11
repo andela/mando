@@ -12,7 +12,7 @@ exports.createCampaign= function(req, res){
 
   var campaign = new Campaign(req.body);
  campaign.user = req.user;
- campaign.fundraisingDeadline = moment().add(30, 'days');
+ campaign.fundraisingDeadline = moment().add(20, 'days');
   campaign.save(function(err){
     if(err){
        return res.status(400).send({
