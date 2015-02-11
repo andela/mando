@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+    moment = require('moment'),
   Schema = mongoose.Schema;
 
 /***** Campaign Schema ****/
@@ -61,9 +62,9 @@ var campaignSchema = new Schema({
   }
 });
 
-campaignSchema.post('init', function (campaign) {
-  campaign.fundraisingDeadline = Date.now();
-  campaign.fundraisingDeadline.setMonth(Date.now().getMonth()+1);
+campaignSchema.pre('save', function (next) {
+  this.fundraisingDeadline = moment().add(30, 'days');
+  next();
 });
 
 mongoose.model('Campaign', campaignSchema);
