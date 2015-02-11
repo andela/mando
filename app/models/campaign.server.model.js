@@ -26,8 +26,7 @@ var campaignSchema = new Schema({
   },
 
   fundraisingDeadline: {
-    type: Date,
-    default: Date.setMonth(2)
+    type: Date
   },
 
   status: {
@@ -56,3 +55,10 @@ var campaignSchema = new Schema({
     ref: 'User'
   }
 });
+
+campaignSchema.post('init', function (campaign) {
+  campaign.fundraisingDeadline = Date.now();
+  campaign.fundraisingDeadline.setMonth(Date.now().getMonth()+1);
+});
+
+mongoose.model('Campaign', campaignSchema);

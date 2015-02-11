@@ -8,7 +8,10 @@ var passport = require('passport');
 module.exports = function(app) {
   // User Routes
   var users = require('../../app/controllers/users.server.controller');
-  
+
+  //signout route
+  app.route('/auth/signout').get(users.signout);
+
   // Setting the google oauth routes
   app.route('/auth/google').get(passport.authenticate('google', {
     scope: [

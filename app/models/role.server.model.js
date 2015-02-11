@@ -29,3 +29,4 @@ var roleSchema = new Schema({
     ref: 'User'
   }
 });
+mongoose.model('Role', roleSchema);
