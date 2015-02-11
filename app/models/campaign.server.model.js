@@ -56,3 +56,5 @@ var campaignSchema = new Schema({
     ref: 'User'
   }
 });
+
+mongoose.model('Campaign', campaignSchema);
