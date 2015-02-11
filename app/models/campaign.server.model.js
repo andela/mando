@@ -4,7 +4,6 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    moment = require('moment'),
   Schema = mongoose.Schema;
 
 /***** Campaign Schema ****/
@@ -62,9 +61,12 @@ var campaignSchema = new Schema({
   }
 });
 
-campaignSchema.pre('save', function (next) {
-  this.fundraisingDeadline = moment().add(30, 'days');
-  next();
-});
+campaignSchema.path('title').validate(function (v){
+ return v.length > 5;
+},'Title Cannot Be Less Than 5 Characters' );
+
+campaignSchema.path('description').validate(function (v){
+ return v.length > 20;
+},'Description Cannot Be Less Than 20 Characters' );
 
 mongoose.model('Campaign', campaignSchema);
