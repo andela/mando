@@ -31,7 +31,7 @@ var campaignSchema = new Schema({
     required: 'Enter your youtube campaign video url'
   },
 
-  fundraisingDeadline: {
+  dueDate: {
     type: Date
   },
 
@@ -41,7 +41,7 @@ var campaignSchema = new Schema({
     default: 'active'
   },
 
-   created: {
+  created: {
     type: Date,
     default: Date.now
   },
@@ -70,7 +70,7 @@ campaignSchema.path('description').validate(function(v) {
  return v.length > 20;
 },'Description Cannot Be Less Than 20 Characters');
 
-campaignSchema.path('fundraisingDeadline').validate(function(date) {
+campaignSchema.path('dueDate').validate(function(date) {
   console.log(1, moment(date).unix());
   console.log(2, moment().add(30, 'days').unix() + 5);
   return moment(date).unix() < moment().add(30, 'days').unix() + 5;

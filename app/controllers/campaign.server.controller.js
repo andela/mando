@@ -11,15 +11,24 @@ var mongoose = require('mongoose'),
 exports.createCampaign= function(req, res){
 
   var campaign = new Campaign(req.body);
- campaign.user = req.user;
- campaign.fundraisingDeadline = moment().add(20, 'days');
-  campaign.save(function(err){
+  campaign.createdBy = req.user._id;
+  campaign.lastModifiedBy = req.user._id;
+  console.log(4, req.user);
+  if (!campaign.dueDate) {
+    campaign.dueDate = moment().add(30, 'days');
+  }
+  campaign
+    .save(function(err, campaign){
+      console.log(5, campaign);
     if(err){
        return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.json(campaign);
+      //querying the database again because we want to populate the createdBy and lastModifiedBy field
+      Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
+          res.json(newCampaign);
+      });
     }
   });
 
