@@ -1,0 +1,17 @@
+<section data-ng-controller="addCampaignCtrl">
+  <div class="row">
+    <form name="campaign">
+      <label>Title</label>
+      <input type="text" class="" ng-model="campaign.title">
+      <label>Deadline</label>
+      <input type="text" class="" ng-model="campaign.dueDate">
+      <label>Amount</label>
+      <input type="text" class="" ng-model="campaign.amount">
+      <label>Description</label>
+      <input type="text" class="" ng-model="campaign.description">
+      <label>Youtube Video</label>
+      <input type="text" class="" ng-model="campaign.youtubeUrl">
+      <button ng-click="addCampaign()">Add Campaign</button>
+    </form>
+  </div>
+</section>

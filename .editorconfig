@@ -14,7 +14,7 @@ insert_final_newline = true
 # Standard at: https://github.com/felixge/node-style-guide 
 [**.js, **.json]
 trim_trailing_whitespace = true
-indent_style = tab
+indent_style = space
 quote_type = single
 curly_bracket_next_line = false
 spaces_around_operators = true
