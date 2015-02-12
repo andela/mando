@@ -4,7 +4,8 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
+    moment = require('moment'),
+    Schema = mongoose.Schema;
 
 /***** Campaign Schema ****/
 var campaignSchema = new Schema({
@@ -25,7 +26,12 @@ var campaignSchema = new Schema({
     required: 'Enter the required amount needed'
   },
 
-  fundraisingDeadline: {
+  youtubeUrl: {
+    type: String,
+    required: 'Enter your youtube campaign video url'
+  },
+
+  dueDate: {
     type: Date
   },
 
@@ -35,7 +41,7 @@ var campaignSchema = new Schema({
     default: 'active'
   },
 
-   created: {
+  created: {
     type: Date,
     default: Date.now
   },
@@ -56,9 +62,18 @@ var campaignSchema = new Schema({
   }
 });
 
-campaignSchema.post('init', function (campaign) {
-  campaign.fundraisingDeadline = Date.now();
-  campaign.fundraisingDeadline.setMonth(Date.now().getMonth()+1);
-});
+campaignSchema.path('title').validate(function(v) {
+ return v.length > 5;
+},'Title Cannot Be Less Than 5 Characters');
+
+campaignSchema.path('description').validate(function(v) {
+ return v.length > 20;
+},'Description Cannot Be Less Than 20 Characters');
+
+campaignSchema.path('dueDate').validate(function(date) {
+  console.log(1, moment(date).unix());
+  console.log(2, moment().add(30, 'days').unix() + 5);
+  return moment(date).unix() < moment().add(30, 'days').unix() + 5;
+}, 'Deadline cannot be greater than 30 days');
 
 mongoose.model('Campaign', campaignSchema);
