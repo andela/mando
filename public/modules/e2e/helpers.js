@@ -19,8 +19,6 @@ var helpers = {
 
     elements.signInButton.click();
 
-    //remove this once signin page is removed in the app
-    browser.driver.findElement(by.id('googleSignIn')).click();
     var emailInput = browser.driver.findElement(by.id('Email'));
     emailInput.sendKeys(email);
     var passwordInput = browser.driver.findElement(by.id('Passwd'));
