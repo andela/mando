@@ -8,7 +8,6 @@ dependencies:
 test:
   pre:
     - grunt
-      background: true
     - sleep 5
   override:
     - grunt test
