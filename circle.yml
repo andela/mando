@@ -8,7 +8,6 @@ dependencies:
 test:
   pre:
     - grunt
-    - sleep 5
   override:
     - grunt test
     - npm run protractor
