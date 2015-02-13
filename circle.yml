@@ -1,8 +1,7 @@
 dependencies:
   pre:
     - bower install
-  post:
-    - npm install
+    - webdriver-manager update
 test:
   override:
     - grunt test
