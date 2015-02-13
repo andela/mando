@@ -8,7 +8,7 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   };
 
   var viewCampaign = function(campaignData) {
-    return $http.get('/campaign/_id', campaignData);
+    return $http.get('/campaign/'+campaignData.campaignId);
   };
 
   return {

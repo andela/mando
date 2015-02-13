@@ -7,7 +7,7 @@ angular.module('campaign').config(['$stateProvider', function($stateProvider) {
       templateUrl: 'modules/campaigns/views/addCampaign.client.view.html'
     }).
     state('viewCampaign', {
-      url: '/campaign/:campaignid',
+      url: '/campaign/:campaignId',
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     });
 }]);

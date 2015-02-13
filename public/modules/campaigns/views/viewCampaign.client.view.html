@@ -1,17 +1,19 @@
 <section data-ng-controller="viewCampaignCtrl">
 <div class="row">
   <div class="row">
-    <h2>title</h2>
+    <h2>title <span>{{campaign.title}}</span></h2>
     <p>createdBy</p>
     <p>dueDate</p>
   </div>
   <div class="row">
-    <div class="col-md-8"><p>Description</p></div>
+    <div class="col-md-8"><p>Description</p>
+        <p data-ng-bind='campaign.description'></p>
+    </div>
     <div class="col-md-4">
       <div class="row">
         <button></button>
         <div>
-          <p>Needs: {{}}</p>
+          <p>Needs: <span>{{campaign.amount}}</span></p>
           <p>Raised: {{}}</p>
         </div>
       </div>

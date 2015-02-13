@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('campaign').controller('viewCampaignCtrl', ['$scope', 'backendService', '$location', 'Authentication',
-function($scope, backendService, $location, Authentication) {
+angular.module('campaign').controller('viewCampaignCtrl', ['$scope', 'backendService','$stateParams', '$location', 'Authentication',
+function($scope, backendService, $stateParams, $location,  Authentication) {
   $scope.authentication = Authentication;
     $scope.campaign = {};
 
@@ -9,14 +9,15 @@ function($scope, backendService, $location, Authentication) {
       $location.path('/');
     }
     $scope.viewCampaign = function() {
-      backendService.viewCampaign($scope.campaign)
+      backendService.viewCampaign($stateParams)
       .success(function(data, status, header, config) {
           console.log(data);
-          $location.path('/campaign/'+ data._id);
+      $scope.campaign = data;
         })
         .error(function(error, status, header, config) {
           console.log(error);
         });
     };
+    $scope.viewCampaign();
   }
 ]);
