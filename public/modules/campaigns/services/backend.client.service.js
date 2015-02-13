@@ -7,12 +7,12 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.post('/campaign/add', campaignData);
   };
 
-  var viewCampaign = function(campaignData) {
-    return $http.get('/campaign/_id', campaignData);
+  var getCampaign = function(campaignData) {
+    return $http.get('/campaign/'+campaignData._id);
   };
 
   return {
     addCampaign: addCampaign,
-    viewCampaign: viewCampaign
+    getCampaign: getCampaign
   };
 }]);
