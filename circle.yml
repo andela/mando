@@ -1,11 +1,18 @@
+machine:
+  node:
+    version:
+      0.10.33
 dependencies:
   pre:
     - bower install
-    - webdriver-manager update
 test:
+  pre:
+    - grunt
+      background: true
+    - sleep 5
   override:
     - grunt test
-    - protractor protractor.conf.js
+    - npm run protractor
 deployment:
   production:
     branch: dev
