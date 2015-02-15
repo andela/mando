@@ -10,7 +10,13 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     if (!$scope.authentication.user) {
       $location.path('/');
     }
+    function _convertToEmbedUrl(url){
+      return url.replace('watch','embed');
+
+    }
     $scope.addCampaign = function() {
+      $scope.campaign.youtubeUrl = _convertToEmbedUrl($scope.campaign.youtubeUrl);
+      console.log($scope.campaign.youtubeUrl);
       backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
           console.log(data);
