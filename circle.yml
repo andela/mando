@@ -1,3 +1,17 @@
 machine:
   node:
-    version: 0.10.36
+    version:
+      0.10.33
+dependencies:
+  pre:
+    - bower install
+test:
+  pre:
+    - npm run update-webdriver
+  override:
+    - grunt test
+deployment:
+  production:
+    branch: dev
+    heroku:
+      appname: andonation-mando
