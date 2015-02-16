@@ -1,38 +1,54 @@
 <section data-ng-controller="addCampaignCtrl">
   <div class=" col-md-9 col-md-offset-1">
     <h2 class='col-md-offset-2'>Add a Campaign...</h2>
-    <form name="campaign" class="form-horizontal top-form">
-      <div class="form-group">
+    <form name="addCampaign" class="form-horizontal top-form" novalidate>
+      <div class="form-group" ng-class="{'has-error': addCampaign.title.$invalid &amp;&amp; addCampaign.title.$dirty}">
         <label for="title" class="col-sm-2 control-label">Title</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" ng-model="campaign.title" id="title" placeholder="Enter a Title for your campaign">
+          <input type="text" class="form-control" name="title" data-ng-model="campaign.title" id="title" placeholder="Enter a Title for your campaign" required ng-minlength="5" />
+          <span class="help-block has-error">
+            <span ng-show="addCampaign.title.$error.required &amp;&amp; addCampaign.title.$dirty">Campaign title is required</span>
+            <span ng-show="addCampaign.title.$error.minlength &amp;&amp; addCampaign.title.$dirty">Campaign title must be more than 5 characters</span>
+          </span>
         </div>
       </div>
       <div class="form-group">
-        <label for="dueDate" class="col-sm-2 control-label">Deadline</label>
-        <div class="col-sm-4">
-          <input type="date" class="form-control" placeholder="Pick a duration for the funding of this campaign" ng-model="campaign.dueDate" id="dueDate">
+        <div ng-class="{'has-error': addCampaign.dueDate.$invalid &amp;&amp; addCampaign.dueDate.$dirty}">
+          <label for="dueDate" class="col-sm-2 control-label">Deadline</label>
+          <div class="col-sm-4">
+            <input type="date" class="form-control" name="dueDate" placeholder="Pick a duration for the funding of this campaign" ng-model="campaign.dueDate" id="dueDate" required>
+          </div>
         </div>
-        <label for="amount" class="col-sm-2 control-label">Amount</label>
-        <div class="col-sm-4">
-          <input type="number" class="form-control" ng-model="campaign.amount" id="amount" placeholder="Enter the amount needed for this campaign(in dollars)">
+        <div ng-class="{'has-error': addCampaign.amount.$invalid &amp;&amp; addCampaign.amount.$dirty}">
+          <label for="amount" class="col-sm-2 control-label">Amount</label>
+          <div class="col-sm-4">
+            <input type="number" class="form-control" ng-model="campaign.amount" name="amount" id="amount" placeholder="Enter the amount needed for this campaign(in dollars)" required>
+            <span class="help-block has-error addCampaign.amount.$dirty">
+              <span ng-show="addCampaign.amount.$error.number">Please enter a valid number</span>
+          </span>
+          </div>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group" ng-class="{'has-error': addCampaign.description.$invalid &amp;&amp; addCampaign.description.$dirty}">
         <label for="description" class="col-sm-2 control-label">Description</label>
         <div class="col-sm-10">
-          <textarea class="form-control description" ng-model="campaign.description" id="description" placeholder="Type in the description for this campaign"></textarea>
+          <textarea class="form-control description" ng-model="campaign.description" id="description" name="description" placeholder="Type in the description for this campaign" required ng-minlength="20"></textarea>
+          <span class="help-block has-error">
+            <span ng-show="addCampaign.description.$error.required &amp;&amp; addCampaign.description.$dirty">Campaign Description is required</span>
+            <span ng-show="addCampaign.description.$error.minlength &amp;&amp; addCampaign.description.$dirty">Campaign Description must be more than 20 characters</span>
+          </span>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group" ng-class="{'has-error': addCampaign.url.$invalid &amp;&amp; addCampaign.url.$dirty}">
         <label for="youtubeUrl" class="col-sm-2 control-label">Youtube Video</label>
         <div class="col-sm-10">
-          <input type="url" class="form-control" ng-model="campaign.youtubeUrl" id="youtubeUrl" placeholder="Enter the Youtube Url link for your campaign">
+          <input type="url" class="form-control" ng-model="campaign.youtubeUrl" name="url" id="youtubeUrl" placeholder="Enter the Youtube Url link for your campaign" required>
+          <span class="help-block has-error" ng-show="addCampaign.url.$error.required &amp;&amp; addCampaign.url.$dirty">The Youtube url of the campaign is required</span>
         </div>
       </div>
       <div class="form-group pull-right">
         <div class="col-sm-10">
-          <button type="submit" class="btn btn-default" ng-click="addCampaign()">Add Campaign</button>
+          <button type="submit" class="btn btn-default" ng-click="addCampaign()" ng-disabled="addCampaign.$invalid">Add Campaign</button>
         </div>
       </div>
     </form>

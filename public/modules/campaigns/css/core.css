@@ -1,7 +1,8 @@
+/*gives the form description a height of 300px*/
 .description {
   height: 300px !important;
 }
-
+/*adds top margin to form*/
 .top-form {
   margin-top: 30px;
 }
