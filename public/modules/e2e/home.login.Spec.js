@@ -20,6 +20,7 @@ describe('Andonation Homepage', function() {
   });
 
   it('should display \'My Andonation\' Upon Successful login', function(){
+    browser.driver.manage().deleteAllCookies();
     //logout any user if logged in
     helper.logoutifLoggedIn();
     //log in
