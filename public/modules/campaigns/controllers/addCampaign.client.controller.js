@@ -24,6 +24,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
         })
         .error(function(error, status, header, config) {
           console.log(error);
+          $scope.error = error;
         });
     };
     //to open the calendar
