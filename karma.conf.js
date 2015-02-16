@@ -17,7 +17,11 @@ module.exports = function(config) {
     // Test results reporter to use
     // Possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     //reporters: ['progress'],
-    reporters: ['progress'],
+    reporters: ['progress','junit'],
+    junitReporter: {
+      outputFile: 'xmloutput/unit-test-results.xml',
+      suite: ''
+    },
     // exclude all files in e2e for karma testing
     exclude: ['./public/modules/e2e/*.js'],
     // Web server port
