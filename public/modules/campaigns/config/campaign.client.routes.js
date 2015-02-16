@@ -13,4 +13,4 @@ angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', fun
 
     // Add YouTube to resource whitelist so that we can embed YouTube videos
     $sceDelegateProvider.resourceUrlWhitelist(['http://www.youtube.com/**']);
-}]);
+}]);                                                               
