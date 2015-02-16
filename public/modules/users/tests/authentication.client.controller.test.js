@@ -114,5 +114,16 @@
 			// Test scope value
 			expect(scope.error).toBe('Username already exists');
 		});
+
+		 //Test andela domain name
+    it('$scope.signin() should fail to log in users without andela.co domain name', function() {
+     $httpBackend.when('POST', '/auth/signin').respond(400, {
+       'message': 'Not an andela fellow'
+     });
+     scope.signin();
+     $httpBackend.flush();
+     expect(scope.error).toBe('Not an andela fellow');
+    });
+
 	});
 }());
