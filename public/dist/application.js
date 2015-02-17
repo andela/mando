@@ -203,6 +203,8 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     //provides the authentication object
     $scope.authentication = Authentication;
     $scope.campaign = {};
+    $scope.minDate = moment().format();
+    $scope.maxDate = moment().format();
     // console.log(1, backendService);
    // if unauthenticated, go to home
     if (!$scope.authentication.user) {
@@ -217,6 +219,12 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
         .error(function(error, status, header, config) {
           console.log(error);
         });
+    };
+    $scope.open = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.opened = true;
     };
   }
 ]);
