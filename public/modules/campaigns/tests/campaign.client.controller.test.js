@@ -38,7 +38,7 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
 
   it('$scope.addCampaign should create a campaign with the right credentials', function() {
     $httpBackend.expectPOST('/campaign/add').respond({
-      _id: "54e2236b7146262c2c67423e"
+      _id: '54e2236b7146262c2c67423e'
     });
 
     scope.campaign = {
