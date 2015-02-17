@@ -1,6 +1,7 @@
 'use strict';
 /*global moment */
 
+
 angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication',
   function($scope, backendService, $location, Authentication) {
     //provides the authentication object

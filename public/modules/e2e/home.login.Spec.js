@@ -37,5 +37,6 @@ describe('Andonation Homepage', function() {
   it('should show the signin button after logging out', function() {
     expect(signInButton.isDisplayed()).toBe(true);
   });
+
 });
 
