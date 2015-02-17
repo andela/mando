@@ -11,6 +11,8 @@ angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', fun
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     });
 
-    // Add YouTube to resource whitelist so that we can embed YouTube videos
-    // $sceDelegateProvider.resourceUrlWhitelist(['http://www.youtube.com/**']);
+    //Add YouTube to resource whitelist so that we can embed YouTube videos
+    $sceDelegateProvider.resourceUrlWhitelist(['**']);
 }]);
+
+//ANGULAR 1.2 HAS A NEW SECURITY POLICY TO BLOCK OR PREVENT HACKERS

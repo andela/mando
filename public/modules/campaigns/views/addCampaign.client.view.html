@@ -43,11 +43,12 @@
           </span>
         </div>
       </div>
-      <div class="form-group" ng-class="{'has-error': addcampaign.url.$invalid &amp;&amp; addcampaign.url.$dirty}">
+      <div class="form-group" ng-class="{'has-error': (addcampaign.url.$invalid &amp;&amp; addcampaign.url.$dirty) || youtubeError}">
         <label for="youtubeUrl" class="col-sm-2 control-label">Youtube Video</label>
         <div class="col-sm-10">
           <input type="url" class="form-control" ng-model="campaign.youtubeUrl" name="url" id="youtubeUrl" placeholder="Enter the Youtube Url link for your campaign" required>
           <span class="help-block has-error" ng-show="addcampaign.url.$error.required &amp;&amp; addcampaign.url.$dirty">The Youtube url of the campaign is required</span>
+          <span class="help-block has-error" ng-show="youtubeError">YouTube error: {{youtubeError}}</span>
         </div>
       </div>
       <div class="form-group pull-right">
