@@ -1,3 +1,4 @@
+
 'use strict';
 
 var helper = require('./helpers');
@@ -37,15 +38,50 @@ describe('Add and view Campaign', function() {
  // //  expect(element(by.id('title')).isDisplayed()).toBe(true);
  //  });
 
-    iit('should not accept Title with Less Than 5 Characters', function(){
+    it('should not accept Title with Less Than 5 Characters or', function(){
        helper.logoutifLoggedIn();
-      helper.login();
-
-     myCampaign.click();
-     browser.driver.findElement(by.id('title')).sendKeys('TEST');
-     browser.driver.sleep(2000);
-     expect(element(by.id('lessThan5')).isDisplayed()).toBe(true);
-     expect(element(by.id('addCampaignBtn'))).toBeFalsy();
+       helper.login();
+       var title =element(by.id('title'));
+       myCampaign.click();
+       title.sendKeys('TEST');
+       browser.driver.sleep(2000);
+       expect(element(by.id('lessThan5')).isDisplayed()).toBe(true);
+       browser.driver.sleep(2000);
+       title.clear();
+       //sending an a string of empty characters
+       title.sendKeys('         ');
+       browser.driver.sleep(2000);
+       expect(element(by.id('campaignIsRequired')).isDisplayed()).toBe(true); 
+       //   expect(element(by.id('addCampaignBtn'))).toBeFalsy();
     });
 
+    it('should not accept description with Less Than 20 Characters', function(){
+       helper.logoutifLoggedIn();
+       helper.login();
+       myCampaign.click();
+      var description =element(by.id('description'));
+       description.sendKeys('These Characters');
+       browser.driver.sleep(2000);
+       expect(element(by.id('lessThan20')).isDisplayed()).toBe(true);
+       browser.driver.sleep(2000);
+       description.clear();
+       browser.driver.sleep(2000);
+       //sending an a string of empty characters
+       description.sendKeys('                                   ');
+       browser.driver.sleep(1000);
+       expect(element(by.id('descriptionErr')).isDisplayed()).toBe(true);
+      });
+
+    // iit('should accept only numbers', function(){
+    //   helper.logoutifLoggedIn();
+    //   helper.login();
+    //   myCampaign.click();
+    //   var amount =element(by.model('campaign.amount'));
+    //   amount.sendKeys('121212');
+    //    // amount.getAttribute().then(function(text){
+    //    //  console.log(text);
+    //    // });
+    //    console.log(element(by.binding('campaign.amount')));
+    //   expect(element(by.binding('campaign.amount')).getText()).toMatch('121212');
+    // });
 });
