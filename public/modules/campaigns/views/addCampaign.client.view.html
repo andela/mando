@@ -2,16 +2,16 @@
   <div class="row">
     <form name="campaign">
       <label>Title</label>
-      <input type="text" class="" ng-model="campaign.title">
+      <input type="text" class="" id="title" ng-model="campaign.title">
       <label>Deadline</label>
-      <input type="date" placeholder="mm/dd/yyyy" ng-model="campaign.dueDate">
+      <input type="date" placeholder="mm/dd/yyyy" id="dueDate"ng-model="campaign.dueDate">
       <label>Amount</label>
-      <input type="text" class="" ng-model="campaign.amount">
+      <input type="text" class="" id="amount" ng-model="campaign.amount">
       <label>Description</label>
-      <input type="text" class="" ng-model="campaign.description">
+      <input type="text" class="" id="description" ng-model="campaign.description">
       <label>Youtube Video</label>
-      <input type="text" class="" ng-model="campaign.youtubeUrl">
-      <button ng-click="addCampaign()">Add Campaign</button>
+      <input type="text" class="" id="youtubeUrl" ng-model="campaign.youtubeUrl">
+      <button id="addCampaignButton" ng-click="addCampaign()">Add Campaign</button>
     </form>
   </div>
 </section>
