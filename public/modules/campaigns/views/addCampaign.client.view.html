@@ -1,0 +1,60 @@
+<section data-ng-controller="addCampaignCtrl">
+  <div class=" col-md-9 col-md-offset-1">
+    <h2 class='col-md-offset-2'>Add a Campaign...</h2>
+    <form name="addcampaign" class="form-horizontal top-form" novalidate>
+      <div class="form-group" ng-class="{'has-error': addcampaign.title.$invalid &amp;&amp; addcampaign.title.$dirty}">
+        <label for="title" class="col-sm-2 control-label">Title</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name="title" data-ng-model="campaign.title" id="title" placeholder="Enter a Title for your campaign" required ng-minlength="5" />
+          <span class="help-block has-error">
+            <span id="campaignIsRequired" ng-show="addcampaign.title.$error.required &amp;&amp; addcampaign.title.$dirty">Campaign title is required</span>
+            <span id="lessThan5" ng-show="addcampaign.title.$error.minlength &amp;&amp; addcampaign.title.$dirty">Campaign title must be more than 5 characters</span>
+          </span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div ng-class="{'has-error': addcampaign.dueDate.$invalid &amp;&amp; addcampaign.dueDate.$dirty}" class="">
+          <label for="dueDate" class="col-sm-2 control-label">Deadline</label>
+          <div class="col-sm-4 dueDate">
+            <input type="text" name="dueDate" id="dueDate" class="form-control" datepicker-popup="MMMM/dd/yyyy" ng-model="campaign.dueDate" is-open="opened" min-date="minDate" max-date="maxDate" ng-required="true" close-text="Close" placeholder="Click the date to pick a date" ng-disabled="true"/>
+          </div>
+          <span class="col-sm-1 calendar">
+            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+        <div ng-class="{'has-error': addcampaign.amount.$invalid &amp;&amp; addcampaign.amount.$dirty}" class="">
+          <label for="amount" class="col-sm-2 control-label">Amount($)</label>
+          <div class="col-sm-3">
+            <input type="number" class="form-control" ng-model="campaign.amount" name="amount" id="amount" placeholder="Enter the amount needed for this campaign(in dollars)" required>
+            <span class="help-block has-error addcampaign.amount.$dirty">
+              <span id="isInvalidErr" ng-show="addcampaign.amount.$error.number">Please enter a valid number</span>
+              <span id="isEmptyErr" ng-show="addcampaign.amount.$error.required &amp;&amp; !addcampaign.amount.$error.number &amp;&amp; addcampaign.amount.$dirty">This field can not be empty, please enter an amount</span>
+          </span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{'has-error': addcampaign.description.$invalid &amp;&amp; addcampaign.description.$dirty}">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+          <textarea class="form-control description" ng-model="campaign.description" id="description" name="description" placeholder="Type in the description for this campaign" required ng-minlength="20"></textarea>
+          <span class="help-block has-error">
+            <span id="descriptionErr" ng-show="addcampaign.description.$error.required &amp;&amp; addcampaign.description.$dirty">Campaign Description is required</span>
+            <span id="lessThan20" ng-show="addcampaign.description.$error.minlength &amp;&amp; addcampaign.description.$dirty">Campaign Description must be more than 20 characters</span>
+          </span>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{'has-error': addcampaign.url.$invalid &amp;&amp; addcampaign.url.$dirty}">
+        <label for="youtubeUrl" class="col-sm-2 control-label">Youtube Video</label>
+        <div class="col-sm-10">
+          <input type="url" class="form-control" ng-model="campaign.youtubeUrl" name="url" id="youtubeUrl" placeholder="Enter the Youtube Url link for your campaign" required>
+          <span class="help-block has-error" ng-show="addcampaign.url.$error.required &amp;&amp; addcampaign.url.$dirty">The Youtube url of the campaign is required</span>
+        </div>
+      </div>
+      <div class="form-group pull-right">
+        <div class="col-sm-10">
+          <button class="btn btn-default" name="addCampaignBtn" id="addCampaignBtn" ng-click="addCampaign()" ng-disabled="addcampaign.$invalid">Add Campaign</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>

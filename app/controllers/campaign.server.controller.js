@@ -42,7 +42,10 @@ exports.getCampaign = function(req, res){
                   message: errorHandler.getErrorMessage(err)
                 });
               } else {
-                res.json(campaign);
+                // res.json(campaign);
+                Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
+                    res.json(newCampaign);
+                  });
               }
           });
 };

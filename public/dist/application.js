@@ -44,11 +44,235 @@ angular.element(document).ready(function() {
 'use strict';
 
 // Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('campaign');
+'use strict';
+
+// Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('core');
+'use strict';
+
+var helper = require('./helpers');
+
+describe('Andonation Authentication', function() {
+  beforeEach(function() {
+    helper.loadApp('/');
+  });
+  var signInButton = element(by.id('signIn'));
+  // var googleSignIn = element(by.id('googleSignIn'));
+  
+
+
+
+  it('should accept only emails with andela.co domain name', function() {
+    
+    helper.logoutifLoggedIn();
+    //log in
+    helper.login('mirabelkoso@gmail.com', 'divinemimi');
+
+
+    var myAndonation = browser.driver.findElement(by.id('myAndonation'));
+    expect(myAndonation.isDisplayed()).toBe(false);
+    var myCampaign = browser.driver.findElement(by.id('myCampaign'));
+    expect(myCampaign.isDisplayed()).toBe(false);
+    expect(signInButton.isDisplayed()).toBe(true);
+    helper.logoutifLoggedIn();
+  });
+});
+'use strict';
+/* global it describe browser expect */
+var helper = require('./helpers');
+
+describe('Andonation HomePage', function() {
+  it('should have a title', function() {
+    helper.loadApp();
+    expect(browser.getTitle()).toEqual('Andonation');
+  });
+});
+'use strict';
+
+//this file is to factor out test codes to avoid repetition,
+//any code that would be repeat or used more than once should be written here
+var elements = {
+  signInButton: element(by.id('signIn')),
+  signoutButton: element(by.id('signout'))
+};
+var helpers = {
+  //loads the app at the given url
+  loadApp: function(initialUrl) {
+    initialUrl = initialUrl || '/';
+    browser.get(initialUrl);
+  },
+  //login to the app
+  login: function(email, password) {
+    email = email || 'adebayo.maborukoje@andela.co';
+    password = password || 'maborukoje2012'; //find a way to hide user credentials
+
+    elements.signInButton.click();
+
+    var emailInput = browser.driver.findElement(by.id('Email'));
+    emailInput.sendKeys(email);
+    var passwordInput = browser.driver.findElement(by.id('Passwd'));
+    passwordInput.sendKeys(password);  //you should not commit this to VCS
+    var googleSignIn = browser.driver.findElement(by.id('signIn'));
+    googleSignIn.click();
+
+    // we're about to authorize some permissions, but the button isn't enabled for a second
+    browser.driver.sleep(2500);
+
+    var submitApproveAccess = browser.driver.findElement(by.id('submit_approve_access'));
+    submitApproveAccess.click();
+
+    // this Allows Angular to Load
+    browser.driver.sleep(5000);
+  },
+  logoutifLoggedIn: function() {
+    elements.signoutButton.isDisplayed().then(function(isPresent) {
+      if(isPresent) {
+        elements.signoutButton.click();
+      }
+    });
+  }
+};
+
+module.exports = helpers;
+'use strict';
+/* global describe */
+var helper = require('./helpers');
+describe('Andonation Homepage', function() {
+  beforeEach(function() {
+    helper.loadApp('/');
+  });
+  var signInButton = element(by.id('signIn'));
+
+  it('should have a title', function() {
+   expect(browser.getTitle()).toEqual('Andonation');
+  });
+
+  it('should show the signin button to unathenticated users', function() {
+    expect(signInButton.isDisplayed()).toBe(true);
+  });
+  it('should not show myAndonation button to unauthenticated users', function() {
+    expect(element(by.id('myCampaign')).isDisplayed()).toBe(false);
+    expect(element(by.id('myAndonation')).isDisplayed()).toBe(false);
+  });
+
+  it('should display \'My Andonation\' Upon Successful login', function(){
+    //logout any user if logged in
+    helper.logoutifLoggedIn();
+    //log in
+    helper.login();
+
+    var myAndonation = browser.driver.findElement(by.id('myAndonation'));
+    expect(myAndonation.getText()).toBeDefined();
+    
+    var myCampaign = browser.driver.findElement(by.id('myCampaign'));
+    expect(myCampaign.getText()).toBeDefined();
+    expect(signInButton.isDisplayed()).toBe(false);
+    helper.logoutifLoggedIn();
+  });
+  it('should show the signin button after logging out', function() {
+    expect(signInButton.isDisplayed()).toBe(true);
+  });
+});
+
+
 'use strict';
 
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');
+'use strict';
+
+angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', function($stateProvider, $sceDelegateProvider) {
+  $stateProvider.
+    state('addCampaign', {
+      url: '/campaign/add',
+      templateUrl: 'modules/campaigns/views/addCampaign.client.view.html'
+    }).
+    state('viewCampaign', {
+      url: '/campaign/:campaignid',
+      templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
+    });
+
+    // Add YouTube to resource whitelist so that we can embed YouTube videos
+    $sceDelegateProvider.resourceUrlWhitelist(['http://www.youtube.com/**']);
+}]);
+'use strict';
+
+angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication',
+  function($scope, backendService, $location, Authentication) {
+    //provides the authentication object
+    $scope.authentication = Authentication;
+    $scope.campaign = {};
+    $scope.minDate = moment().format();
+    $scope.maxDate = moment().format();
+    // console.log(1, backendService);
+   // if unauthenticated, go to home
+    if (!$scope.authentication.user) {
+      $location.path('/');
+    }
+    $scope.addCampaign = function() {
+      backendService.addCampaign($scope.campaign)
+        .success(function(data, status, header, config) {
+          console.log(data);
+          $location.path('/campaign/'+ data._id);
+        })
+        .error(function(error, status, header, config) {
+          console.log(error);
+        });
+    };
+    $scope.open = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.opened = true;
+    };
+  }
+]);
+'use strict';
+
+angular.module('campaign').controller('viewCampaignCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
+function($scope, backendService, $location, Authentication, $stateParams) {
+  $scope.authentication = Authentication;
+    $scope.campaign = {
+      _id: $stateParams.campaignid
+    };
+    if (!$scope.authentication.user) {
+      $location.path('/');
+    }
+      backendService.getCampaign($scope.campaign)
+      .success(function(data, status, header, config) {
+
+          var youtube = data.youtubeUrl.split('watch?v=');
+          if(youtube.length > 1){
+            data.youtubeId = 'http://www.youtube.com/embed/'+youtube[1];
+          }
+          $scope.campaign = data;
+          console.log(data);
+          //$location.path('/campaign/'+ data._id);
+        })
+        .error(function(error, status, header, config) {
+          console.log(error);
+        });
+    }
+]);
+'use strict';
+
+angular.module('campaign').factory('backendService', ['$http', function($http) {
+
+  //creates a campaign
+  var addCampaign = function(campaignData) {
+    return $http.post('/campaign/add', campaignData);
+  };
+
+  var getCampaign = function(campaignData) {
+    return $http.get('/campaign/'+campaignData._id);
+  };
+
+  return {
+    addCampaign: addCampaign,
+    getCampaign: getCampaign
+  };
+}]);
 'use strict';
 
 // Setting up route
@@ -67,21 +291,10 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 ]);
 'use strict';
 
-angular.module('core').controller('HeaderController', ['$scope', 'Authentication', 'Menus',
-	function($scope, Authentication, Menus) {
-		$scope.authentication = Authentication;
-		$scope.isCollapsed = false;
-		$scope.menu = Menus.getMenu('topbar');
-
-		$scope.toggleCollapsibleMenu = function() {
-			$scope.isCollapsed = !$scope.isCollapsed;
-		};
-
-		// Collapsing the menu after navigation
-		$scope.$on('$stateChangeSuccess', function() {
-			$scope.isCollapsed = false;
-		});
-	}
+angular.module('core').controller('HeaderController', ['$scope', 'Authentication',
+  function($scope, Authentication) {
+    $scope.authentication = Authentication;
+  }
 ]);
 'use strict';
 
@@ -90,172 +303,6 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 	function($scope, Authentication) {
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
-	}
-]);
-'use strict';
-
-//Menu service used for managing  menus
-angular.module('core').service('Menus', [
-
-	function() {
-		// Define a set of default roles
-		this.defaultRoles = ['*'];
-
-		// Define the menus object
-		this.menus = {};
-
-		// A private function for rendering decision 
-		var shouldRender = function(user) {
-			if (user) {
-				if (!!~this.roles.indexOf('*')) {
-					return true;
-				} else {
-					for (var userRoleIndex in user.roles) {
-						for (var roleIndex in this.roles) {
-							if (this.roles[roleIndex] === user.roles[userRoleIndex]) {
-								return true;
-							}
-						}
-					}
-				}
-			} else {
-				return this.isPublic;
-			}
-
-			return false;
-		};
-
-		// Validate menu existance
-		this.validateMenuExistance = function(menuId) {
-			if (menuId && menuId.length) {
-				if (this.menus[menuId]) {
-					return true;
-				} else {
-					throw new Error('Menu does not exists');
-				}
-			} else {
-				throw new Error('MenuId was not provided');
-			}
-
-			return false;
-		};
-
-		// Get the menu object by menu id
-		this.getMenu = function(menuId) {
-			// Validate that the menu exists
-			this.validateMenuExistance(menuId);
-
-			// Return the menu object
-			return this.menus[menuId];
-		};
-
-		// Add new menu object by menu id
-		this.addMenu = function(menuId, isPublic, roles) {
-			// Create the new menu
-			this.menus[menuId] = {
-				isPublic: isPublic || false,
-				roles: roles || this.defaultRoles,
-				items: [],
-				shouldRender: shouldRender
-			};
-
-			// Return the menu object
-			return this.menus[menuId];
-		};
-
-		// Remove existing menu object by menu id
-		this.removeMenu = function(menuId) {
-			// Validate that the menu exists
-			this.validateMenuExistance(menuId);
-
-			// Return the menu object
-			delete this.menus[menuId];
-		};
-
-		// Add menu item object
-		this.addMenuItem = function(menuId, menuItemTitle, menuItemURL, menuItemType, menuItemUIRoute, isPublic, roles, position) {
-			// Validate that the menu exists
-			this.validateMenuExistance(menuId);
-
-			// Push new menu item
-			this.menus[menuId].items.push({
-				title: menuItemTitle,
-				link: menuItemURL,
-				menuItemType: menuItemType || 'item',
-				menuItemClass: menuItemType,
-				uiRoute: menuItemUIRoute || ('/' + menuItemURL),
-				isPublic: ((isPublic === null || typeof isPublic === 'undefined') ? this.menus[menuId].isPublic : isPublic),
-				roles: ((roles === null || typeof roles === 'undefined') ? this.menus[menuId].roles : roles),
-				position: position || 0,
-				items: [],
-				shouldRender: shouldRender
-			});
-
-			// Return the menu object
-			return this.menus[menuId];
-		};
-
-		// Add submenu item object
-		this.addSubMenuItem = function(menuId, rootMenuItemURL, menuItemTitle, menuItemURL, menuItemUIRoute, isPublic, roles, position) {
-			// Validate that the menu exists
-			this.validateMenuExistance(menuId);
-
-			// Search for menu item
-			for (var itemIndex in this.menus[menuId].items) {
-				if (this.menus[menuId].items[itemIndex].link === rootMenuItemURL) {
-					// Push new submenu item
-					this.menus[menuId].items[itemIndex].items.push({
-						title: menuItemTitle,
-						link: menuItemURL,
-						uiRoute: menuItemUIRoute || ('/' + menuItemURL),
-						isPublic: ((isPublic === null || typeof isPublic === 'undefined') ? this.menus[menuId].items[itemIndex].isPublic : isPublic),
-						roles: ((roles === null || typeof roles === 'undefined') ? this.menus[menuId].items[itemIndex].roles : roles),
-						position: position || 0,
-						shouldRender: shouldRender
-					});
-				}
-			}
-
-			// Return the menu object
-			return this.menus[menuId];
-		};
-
-		// Remove existing menu object by menu id
-		this.removeMenuItem = function(menuId, menuItemURL) {
-			// Validate that the menu exists
-			this.validateMenuExistance(menuId);
-
-			// Search for menu item to remove
-			for (var itemIndex in this.menus[menuId].items) {
-				if (this.menus[menuId].items[itemIndex].link === menuItemURL) {
-					this.menus[menuId].items.splice(itemIndex, 1);
-				}
-			}
-
-			// Return the menu object
-			return this.menus[menuId];
-		};
-
-		// Remove existing menu object by menu id
-		this.removeSubMenuItem = function(menuId, submenuItemURL) {
-			// Validate that the menu exists
-			this.validateMenuExistance(menuId);
-
-			// Search for menu item to remove
-			for (var itemIndex in this.menus[menuId].items) {
-				for (var subitemIndex in this.menus[menuId].items[itemIndex].items) {
-					if (this.menus[menuId].items[itemIndex].items[subitemIndex].link === submenuItemURL) {
-						this.menus[menuId].items[itemIndex].items.splice(subitemIndex, 1);
-					}
-				}
-			}
-
-			// Return the menu object
-			return this.menus[menuId];
-		};
-
-		//Adding the topbar menu
-		this.addMenu('topbar');
 	}
 ]);
 'use strict';
@@ -274,7 +321,7 @@ angular.module('users').config(['$httpProvider',
 								Authentication.user = null;
 
 								// Redirect to signin page
-								$location.path('signin');
+								$location.path('/');
 								break;
 							case 403:
 								// Add unauthorized behaviour 
@@ -290,200 +337,6 @@ angular.module('users').config(['$httpProvider',
 ]);
 'use strict';
 
-// Setting up route
-angular.module('users').config(['$stateProvider',
-	function($stateProvider) {
-		// Users state routing
-		$stateProvider.
-		state('profile', {
-			url: '/settings/profile',
-			templateUrl: 'modules/users/views/settings/edit-profile.client.view.html'
-		}).
-		state('password', {
-			url: '/settings/password',
-			templateUrl: 'modules/users/views/settings/change-password.client.view.html'
-		}).
-		state('accounts', {
-			url: '/settings/accounts',
-			templateUrl: 'modules/users/views/settings/social-accounts.client.view.html'
-		}).
-		state('signup', {
-			url: '/signup',
-			templateUrl: 'modules/users/views/authentication/signup.client.view.html'
-		}).
-		state('signin', {
-			url: '/signin',
-			templateUrl: 'modules/users/views/authentication/signin.client.view.html'
-		}).
-		state('forgot', {
-			url: '/password/forgot',
-			templateUrl: 'modules/users/views/password/forgot-password.client.view.html'
-		}).
-		state('reset-invalid', {
-			url: '/password/reset/invalid',
-			templateUrl: 'modules/users/views/password/reset-password-invalid.client.view.html'
-		}).
-		state('reset-success', {
-			url: '/password/reset/success',
-			templateUrl: 'modules/users/views/password/reset-password-success.client.view.html'
-		}).
-		state('reset', {
-			url: '/password/reset/:token',
-			templateUrl: 'modules/users/views/password/reset-password.client.view.html'
-		});
-	}
-]);
-'use strict';
-
-angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
-	function($scope, $http, $location, Authentication) {
-		$scope.authentication = Authentication;
-
-		// If user is signed in then redirect back home
-		if ($scope.authentication.user) $location.path('/');
-
-		$scope.signup = function() {
-			$http.post('/auth/signup', $scope.credentials).success(function(response) {
-				// If successful we assign the response to the global user model
-				$scope.authentication.user = response;
-
-				// And redirect to the index page
-				$location.path('/');
-			}).error(function(response) {
-				$scope.error = response.message;
-			});
-		};
-
-		$scope.signin = function() {
-			$http.post('/auth/signin', $scope.credentials).success(function(response) {
-				// If successful we assign the response to the global user model
-				$scope.authentication.user = response;
-
-				// And redirect to the index page
-				$location.path('/');
-			}).error(function(response) {
-				$scope.error = response.message;
-			});
-		};
-	}
-]);
-'use strict';
-
-angular.module('users').controller('PasswordController', ['$scope', '$stateParams', '$http', '$location', 'Authentication',
-	function($scope, $stateParams, $http, $location, Authentication) {
-		$scope.authentication = Authentication;
-
-		//If user is signed in then redirect back home
-		if ($scope.authentication.user) $location.path('/');
-
-		// Submit forgotten password account id
-		$scope.askForPasswordReset = function() {
-			$scope.success = $scope.error = null;
-
-			$http.post('/auth/forgot', $scope.credentials).success(function(response) {
-				// Show user success message and clear form
-				$scope.credentials = null;
-				$scope.success = response.message;
-
-			}).error(function(response) {
-				// Show user error message and clear form
-				$scope.credentials = null;
-				$scope.error = response.message;
-			});
-		};
-
-		// Change user password
-		$scope.resetUserPassword = function() {
-			$scope.success = $scope.error = null;
-
-			$http.post('/auth/reset/' + $stateParams.token, $scope.passwordDetails).success(function(response) {
-				// If successful show success message and clear form
-				$scope.passwordDetails = null;
-
-				// Attach user profile
-				Authentication.user = response;
-
-				// And redirect to the index page
-				$location.path('/password/reset/success');
-			}).error(function(response) {
-				$scope.error = response.message;
-			});
-		};
-	}
-]);
-'use strict';
-
-angular.module('users').controller('SettingsController', ['$scope', '$http', '$location', 'Users', 'Authentication',
-	function($scope, $http, $location, Users, Authentication) {
-		$scope.user = Authentication.user;
-
-		// If user is not signed in then redirect back home
-		if (!$scope.user) $location.path('/');
-
-		// Check if there are additional accounts 
-		$scope.hasConnectedAdditionalSocialAccounts = function(provider) {
-			for (var i in $scope.user.additionalProvidersData) {
-				return true;
-			}
-
-			return false;
-		};
-
-		// Check if provider is already in use with current user
-		$scope.isConnectedSocialAccount = function(provider) {
-			return $scope.user.provider === provider || ($scope.user.additionalProvidersData && $scope.user.additionalProvidersData[provider]);
-		};
-
-		// Remove a user social account
-		$scope.removeUserSocialAccount = function(provider) {
-			$scope.success = $scope.error = null;
-
-			$http.delete('/users/accounts', {
-				params: {
-					provider: provider
-				}
-			}).success(function(response) {
-				// If successful show success message and clear form
-				$scope.success = true;
-				$scope.user = Authentication.user = response;
-			}).error(function(response) {
-				$scope.error = response.message;
-			});
-		};
-
-		// Update a user profile
-		$scope.updateUserProfile = function(isValid) {
-			if (isValid) {
-				$scope.success = $scope.error = null;
-				var user = new Users($scope.user);
-
-				user.$update(function(response) {
-					$scope.success = true;
-					Authentication.user = response;
-				}, function(response) {
-					$scope.error = response.data.message;
-				});
-			} else {
-				$scope.submitted = true;
-			}
-		};
-
-		// Change user password
-		$scope.changeUserPassword = function() {
-			$scope.success = $scope.error = null;
-
-			$http.post('/users/password', $scope.passwordDetails).success(function(response) {
-				// If successful show success message and clear form
-				$scope.success = true;
-				$scope.passwordDetails = null;
-			}).error(function(response) {
-				$scope.error = response.message;
-			});
-		};
-	}
-]);
-'use strict';
-
 // Authentication service for user variables
 angular.module('users').factory('Authentication', [
 	function() {
@@ -494,17 +347,5 @@ angular.module('users').factory('Authentication', [
 		};
 
 		return _this._data;
-	}
-]);
-'use strict';
-
-// Users service used for communicating with the users REST endpoint
-angular.module('users').factory('Users', ['$resource',
-	function($resource) {
-		return $resource('users', {}, {
-			update: {
-				method: 'PUT'
-			}
-		});
 	}
 ]);
