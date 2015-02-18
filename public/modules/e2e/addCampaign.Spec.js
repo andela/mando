@@ -44,7 +44,7 @@ describe('Add and view Campaign', function() {
        var title =element(by.model('campaign.title'));
        myCampaign.click();
        title.sendKeys('TEST');
-       browser.driver.sleep(2000);
+       browser.sleep(2000);
        expect(element(by.id('lessThan5')).isDisplayed()).toBe(true);
        browser.driver.sleep(2000);
        title.clear();
@@ -72,16 +72,11 @@ describe('Add and view Campaign', function() {
        expect(element(by.id('descriptionErr')).isDisplayed()).toBe(true);
       });
 
-    // it('should accept only numbers', function(){
-    //   helper.logoutifLoggedIn();
-    //   helper.login();
-    //   myCampaign.click();
-    //   var amount =element(by.model('campaign.amount'));
-    //   amount.sendKeys('121212');
-    //    // amount.getAttribute().then(function(text){
-    //    //  console.log(text);
-    //    // });
-    //    console.log(element(by.binding('campaign.amount')));
-    //   expect(element(by.binding('campaign.amount')).getText()).toMatch('121212');
-    // });
+    it('should accept only numbers', function(){
+        //TYPE NUMBER FIELD NOT CLEARING PROBLEM WITH PROTRACTOR https://github.com/angular/protractor/issues/1583
+      myCampaign.click();
+      var amount = element(by.model('campaign.amount'));
+      amount.sendKeys('asdfghjkl');
+      expect(element(by.id('isInvalidErr')).isDisplayed()).toBe(true);
+    });
 });

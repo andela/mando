@@ -27,8 +27,8 @@
           <div class="col-sm-3">
             <input type="number" class="form-control" ng-model="campaign.amount" name="amount" id="amount" placeholder="Enter the amount needed for this campaign(in dollars)" required>
             <span class="help-block has-error addcampaign.amount.$dirty">
-              <span ng-show="addcampaign.amount.$error.number">Please enter a valid number</span>
-              <span ng-show="addcampaign.amount.$error.required &amp;&amp; !addcampaign.amount.$error.number &amp;&amp; addcampaign.amount.$dirty">This field can not be empty, please enter an amount</span>
+              <span id="isInvalidErr" ng-show="addcampaign.amount.$error.number">Please enter a valid number</span>
+              <span id="isEmptyErr" ng-show="addcampaign.amount.$error.required &amp;&amp; !addcampaign.amount.$error.number &amp;&amp; addcampaign.amount.$dirty">This field can not be empty, please enter an amount</span>
           </span>
           </div>
         </div>
