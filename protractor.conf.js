@@ -6,11 +6,11 @@ exports.config = {
   //multicapabilities to run different instances of the browser
   multiCapabilities: [{
     'browserName': 'chrome',
-    'specs': ['public/modules/e2e/*Spec.js'],
-    'exclude': ['public/modules/e2e/e2e.authentication.Spec.js']
+    'specs': ['app/tests/e2e/*Spec.js'],
+    'exclude': ['app/tests/e2e/e2e.authentication.Spec.js']
   }, {
     'browserName': 'chrome',
-    'specs': ['public/modules/e2e/e2e.authentication.Spec.js']
+    'specs': ['app/tests/e2e/e2e.authentication.Spec.js']
   }],
   onPrepare: function() {
     // The require statement must be down here, since jasmine-reporters@1.0
