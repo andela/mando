@@ -39,9 +39,9 @@ describe('Add and view Campaign', function() {
  //  });
 
     it('should not accept Title with Less Than 5 Characters or', function(){
-       helper.logoutifLoggedIn();
-       helper.login();
-       var title =element(by.id('title'));
+       // helper.logoutifLoggedIn();
+       // helper.login();
+       var title =element(by.model('campaign.title'));
        myCampaign.click();
        title.sendKeys('TEST');
        browser.driver.sleep(2000);
@@ -56,10 +56,10 @@ describe('Add and view Campaign', function() {
     });
 
     it('should not accept description with Less Than 20 Characters', function(){
-       helper.logoutifLoggedIn();
-       helper.login();
+       // helper.logoutifLoggedIn();
+       // helper.login();
        myCampaign.click();
-      var description =element(by.id('description'));
+       var description =element(by.model('campaign.description'));
        description.sendKeys('These Characters');
        browser.driver.sleep(2000);
        expect(element(by.id('lessThan20')).isDisplayed()).toBe(true);
@@ -72,7 +72,7 @@ describe('Add and view Campaign', function() {
        expect(element(by.id('descriptionErr')).isDisplayed()).toBe(true);
       });
 
-    // iit('should accept only numbers', function(){
+    // it('should accept only numbers', function(){
     //   helper.logoutifLoggedIn();
     //   helper.login();
     //   myCampaign.click();
