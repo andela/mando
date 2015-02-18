@@ -22,33 +22,19 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     }
 
     $scope.addCampaign = function() {
-      console.log('adding');
-      console.log($scope.campaign);
       var youtube = $scope.campaign.youtubeUrl.split('watch?v=');
       var youtubeId = null;
       if(youtube.length > 1){
          youtubeId = youtube[1];
       }
 
-      // backendService.checkYouTubeUrl(youtubeId)
-      // .success(function (result) {
-      //   $scope.youtubeError = '';
-        // Add campaign in youtube url is valid
-        // console.log(result);
         backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
-          console.log(data);
           $location.path('/campaign/'+ data._id);
         })
         .error(function(error, status, header, config) {
-          console.log(error);
           $scope.error = error;
         });
-      // });
-      // .error(function (error){
-      //   $scope.youtubeError = error;
-        //console.log('Invalid YouTube video');
-      // });
     };
 
     $scope.validateYoutubeUrl = function (url) {

@@ -29,6 +29,9 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
     $httpBackend.when('POST', '/campaign/add').respond(400, {
       'message': 'Missing Credentials'
     });
+    scope.campaign = {
+      youtubeUrl: 'https://www.youtube.com/watch?v=9xFsYfYrQHQ'
+    };
     scope.addCampaign();
 
     $httpBackend.flush();
@@ -46,7 +49,7 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
       dueDate:'25-02-2015',
       amount: 1000,
       title: 'A new Test',
-      youtubeUrl: 'http://andela.co'
+      youtubeUrl: 'https://www.youtube.com/watch?v=9xFsYfYrQHQ'
     };
     scope.addCampaign();
 
