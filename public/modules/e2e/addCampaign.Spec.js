@@ -22,21 +22,6 @@ describe('Add and view Campaign', function() {
      expect(element(by.id('title')).isDisplayed()).toBe(true);
   });
 
- //   iit('Should create A new Campaign', function() {
- //    helper.logoutifLoggedIn();
- //    helper.login();
- //    var myCampaign = browser.driver.findElement(by.id('myCampaign'));
- //    myCampaign.click();
- //     browser.driver.sleep(2500);
- //     browser.driver.findElement(by.id('title')).sendKeys('TESTING');
- //     browser.driver.findElement(by.id('amount')).sendKeys('20000');
- //     browser.driver.findElement(by.id('description')).sendKeys('A testing Server TO test');
- //    // browser.driver.findElement(by.css('[ng-click="open($event)"]')).click();
- //     browser.driver.findElement(by.id('youtubeUrl')).sendKeys('http://andela.co');
- //    // browser.driver.sleep(2000);
- //    // browser.driver.findElement(by.id('addCampaignButton')).click();
- // //  expect(element(by.id('title')).isDisplayed()).toBe(true);
- //  });
 
     it('should not accept Title with Less Than 5 Characters or', function(){
        // helper.logoutifLoggedIn();
