@@ -16,3 +16,4 @@ angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', fun
 }]);
 
 //ANGULAR 1.2 HAS A NEW SECURITY POLICY TO BLOCK OR PREVENT HACKERS
+
