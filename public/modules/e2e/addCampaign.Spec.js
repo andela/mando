@@ -58,6 +58,7 @@ describe('Add and view Campaign', function() {
       });
 
     it('should accept only numbers', function(){
+      
         //TYPE NUMBER FIELD NOT CLEARING PROBLEM WITH PROTRACTOR https://github.com/angular/protractor/issues/1583
       myCampaign.click();
       var amount = element(by.model('campaign.amount'));
