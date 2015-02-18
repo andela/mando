@@ -12,10 +12,11 @@ function($scope, backendService, $location, Authentication, $stateParams) {
       backendService.getCampaign($scope.campaign)
       .success(function(data, status, header, config) {
 
-          // var youtube = data.youtubeUrl.split('watch?v=');
-          // if(youtube.length > 1){
-          //   data.youtubeId = 'http://www.youtube.com/embed/'+youtube[1];
-          // }
+
+          var youtube = data.youtubeUrl.split('watch?v=');
+          if(youtube.length > 1){
+            data.youtubeId = 'http://www.youtube.com/embed/'+youtube[1];
+          }
           $scope.campaign = data;
           console.log(data);
           //$location.path('/campaign/'+ data._id);

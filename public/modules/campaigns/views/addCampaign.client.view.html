@@ -7,8 +7,8 @@
         <div class="col-sm-10">
           <input type="text" class="form-control" name="title" data-ng-model="campaign.title" id="title" placeholder="Enter a Title for your campaign" required ng-minlength="5" />
           <span class="help-block has-error">
-            <span ng-show="addcampaign.title.$error.required &amp;&amp; addcampaign.title.$dirty">Campaign title is required</span>
-            <span ng-show="addcampaign.title.$error.minlength &amp;&amp; addcampaign.title.$dirty">Campaign title must be more than 5 characters</span>
+            <span id="campaignIsRequired" ng-show="addcampaign.title.$error.required &amp;&amp; addcampaign.title.$dirty">Campaign title is required</span>
+            <span id="lessThan5" ng-show="addcampaign.title.$error.minlength &amp;&amp; addcampaign.title.$dirty">Campaign title must be more than 5 characters</span>
           </span>
         </div>
       </div>
@@ -27,8 +27,8 @@
           <div class="col-sm-3">
             <input type="number" class="form-control" ng-model="campaign.amount" name="amount" id="amount" placeholder="Enter the amount needed for this campaign(in dollars)" required>
             <span class="help-block has-error addcampaign.amount.$dirty">
-              <span ng-show="addcampaign.amount.$error.number">Please enter a valid number</span>
-              <span ng-show="addcampaign.amount.$error.required &amp;&amp; !addcampaign.amount.$error.number &amp;&amp; addcampaign.amount.$dirty">This field can not be empty, please enter an amount</span>
+              <span id="isInvalidErr" ng-show="addcampaign.amount.$error.number">Please enter a valid number</span>
+              <span id="isEmptyErr" ng-show="addcampaign.amount.$error.required &amp;&amp; !addcampaign.amount.$error.number &amp;&amp; addcampaign.amount.$dirty">This field can not be empty, please enter an amount</span>
           </span>
           </div>
         </div>
@@ -38,8 +38,8 @@
         <div class="col-sm-10">
           <textarea class="form-control description" ng-model="campaign.description" id="description" name="description" placeholder="Type in the description for this campaign" required ng-minlength="20"></textarea>
           <span class="help-block has-error">
-            <span ng-show="addcampaign.description.$error.required &amp;&amp; addcampaign.description.$dirty">Campaign Description is required</span>
-            <span ng-show="addcampaign.description.$error.minlength &amp;&amp; addcampaign.description.$dirty">Campaign Description must be more than 20 characters</span>
+            <span id="descriptionErr" ng-show="addcampaign.description.$error.required &amp;&amp; addcampaign.description.$dirty">Campaign Description is required</span>
+            <span id="lessThan20" ng-show="addcampaign.description.$error.minlength &amp;&amp; addcampaign.description.$dirty">Campaign Description must be more than 20 characters</span>
           </span>
         </div>
       </div>
@@ -52,7 +52,7 @@
       </div>
       <div class="form-group pull-right">
         <div class="col-sm-10">
-          <button class="btn btn-default" ng-click="addCampaign()" ng-disabled="addcampaign.$invalid">Add Campaign</button>
+          <button class="btn btn-default" name="addCampaignBtn" id="addCampaignBtn" ng-click="addCampaign()" ng-disabled="addcampaign.$invalid">Add Campaign</button>
         </div>
       </div>
     </form>

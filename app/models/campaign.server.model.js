@@ -18,6 +18,7 @@ var campaignSchema = new Schema({
   description: {
     type: String,
     required: 'Describe the campaign',
+    default: '',
     trim: true
   },
 
