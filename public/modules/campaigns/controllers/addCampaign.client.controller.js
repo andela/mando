@@ -22,7 +22,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
       if(youtube.length > 1){
          youtubeId = youtube[1];
       }
-      
+
       backendService.checkYouTubeUrl(youtubeId)
       .success(function (result) {
         $scope.youtubeError = '';
@@ -40,8 +40,8 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
       .error(function (error){
         $scope.youtubeError = error;
         //console.log('Invalid YouTube video');
-      }); 
-      
+      });
+
     };
     //to open the calendar
     $scope.open = function($event) {
