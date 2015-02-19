@@ -5,6 +5,7 @@ machine:
 dependencies:
   pre:
     - bower install
+    - grunt build
 test:
   pre:
     - npm run update-webdriver
