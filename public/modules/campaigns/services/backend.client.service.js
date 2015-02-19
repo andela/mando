@@ -12,7 +12,7 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   };
 
   var checkYouTubeUrl = function(videoId) {
-    return $http.get('http://gdata.youtube.com/feeds/api/videos/'+videoId+'?alt=json');
+    return $http.get('//gdata.youtube.com/feeds/api/videos/'+videoId+'?alt=json');
   };
 
   return {

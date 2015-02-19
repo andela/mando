@@ -14,7 +14,7 @@ function($scope, backendService, $location, Authentication, $stateParams) {
 
           var youtube = data.youtubeUrl.split('watch?v=');
           if(youtube.length > 1){
-             data.youtubeId = 'http://www.youtube.com/embed/'+youtube[1];
+             data.youtubeId = '//www.youtube.com/embed/'+youtube[1];
           }
           $scope.campaign = data;
           console.log(data);
