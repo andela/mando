@@ -157,7 +157,7 @@ function($scope, backendService, $location, Authentication, $stateParams) {
 
           var youtube = data.youtubeUrl.split('watch?v=');
           if(youtube.length > 1){
-             data.youtubeId = 'http://www.youtube.com/embed/'+youtube[1];
+             data.youtubeId = '//www.youtube.com/embed/'+youtube[1];
           }
           $scope.campaign = data;
           console.log(data);
@@ -182,7 +182,7 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   };
 
   var checkYouTubeUrl = function(videoId) {
-    return $http.get('http://gdata.youtube.com/feeds/api/videos/'+videoId+'?alt=json');
+    return $http.get('//gdata.youtube.com/feeds/api/videos/'+videoId+'?alt=json');
   };
 
   return {
