@@ -14,3 +14,32 @@
 .dueDate {
   padding-right: 0
 }
+
+#container {
+  margin-top: 30px;
+}
+
+body {
+  background: #F2EFED;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.CreatedAndDeadline {
+  font-weight: bold;
+}
+
+.cash {
+  font-size: 4vh;
+}
+
+.justify {
+  text-align: justify;
+}
+
+iframe {
+  width: 100%;
+  border-radius: 10px;
+}
