@@ -1,5 +1,6 @@
 <section data-ng-controller="getCampaignsCtrl">
   <div class="table-responsive">
+  <h2>My Campaigns</h2>
     <table class="table table-bordered">
       <tt>
         <th>Title</th>
@@ -11,7 +12,7 @@
         <th>Backers</th>
       </tt>
       <tr data-ng-repeat ="campaign in myCampaigns | limitTo :limit">
-        <td>{{campaign.title}}</td>
+        <td><a href="/#!/campaign/{{campaign._id}}">{{campaign.title}}</a></td>
         <td>{{campaign.status}}</td>
         <td>{{campaign.amount}}</td>
         <td>{{campaign.raised}}</td>
