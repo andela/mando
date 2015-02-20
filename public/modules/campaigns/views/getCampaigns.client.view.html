@@ -10,7 +10,7 @@
         <th>Deadline</th>
         <th>Backers</th>
       </tt>
-      <tr data-ng-repeat ="campaign in myCampaigns | limitTo :4 ">
+      <tr data-ng-repeat ="campaign in myCampaigns | limitTo :limit">
         <td>{{campaign.title}}</td>
         <td>{{campaign.status}}</td>
         <td>{{campaign.amount}}</td>
@@ -20,6 +20,7 @@
         <td>{{campaign.backers}}</td>
       </tr>
     </table>
-    <div><a href="#/more">SEE MORE</a></div>
+    <button ng-show="limit===4" ng-click="increment()">SEE ALL CAMPAIGNS</button>
+    <button ng-hide="limit===4" ng-click="decrement()">BACK</button>
   </div>
 </section>
