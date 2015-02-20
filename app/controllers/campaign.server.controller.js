@@ -50,8 +50,21 @@ exports.getCampaign = function(req, res){
           });
 };
 
-/******** LIST ALL CAMPAIGN **********/
-// exports.getAllCampaign = function (req, res){
-//   Campaign.find()
-// }
+exports.getCampaigns = function(req, res) {
+  var ObjectId = mongoose.Types.ObjectId;
+  console.log(1, new ObjectId(req.params.userId));
+  Campaign.find({'createdBy': new ObjectId(req.params.userId)})
+    .exec(function(err, campaign){
+      if(err){
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        // res.json(user);
+        Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
+            res.json(newCampaign);
+        });
+      }
+    });
+};
 
