@@ -1,5 +1,25 @@
 <section data-ng-controller="getCampaignsCtrl">
-  <div>
-    
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <tt>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Amount Needed</th>
+        <th>Amount Raised</th>
+        <th>Created</th>
+        <th>Deadline</th>
+        <th>Backers</th>
+      </tt>
+      <tr data-ng-repeat ="campaign in myCampaigns | limitTo :4 ">
+        <td>{{campaign.title}}</td>
+        <td>{{campaign.status}}</td>
+        <td>{{campaign.amount}}</td>
+        <td>{{campaign.raised}}</td>
+        <td>{{campaign.created | date}}</td>
+        <td>{{campaign.dueDate | date}}</td>
+        <td>{{campaign.backers}}</td>
+      </tr>
+    </table>
+    <div><a href="#/more">SEE MORE</a></div>
   </div>
 </section>
