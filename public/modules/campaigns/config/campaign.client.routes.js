@@ -1,10 +1,14 @@
 'use strict';
 
-angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', function($stateProvider, $sceDelegateProvider) {
+angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', function ($stateProvider, $sceDelegateProvider) {
   $stateProvider.
     state('addCampaign', {
       url: '/campaign/add',
       templateUrl: 'modules/campaigns/views/addCampaign.client.view.html'
+    }).
+    state('editCampaign', {
+      url: '/campaign/:campaignid/edit',
+      templateUrl: 'modules/campaigns/views/editCampaign.client.view.html'
     }).
     state('viewCampaign', {
       url: '/campaign/:campaignid',
