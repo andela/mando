@@ -5,11 +5,11 @@ var mongoose = require('mongoose'),
     errorHandler =require('./errors.server.controller'),
     moment = require('moment'),
     Campaign= mongoose.model('Campaign');
+//    _ = require('lodash');
 
 
 /****Create A campaign *****/
 exports.createCampaign= function(req, res){
-
   var campaign = new Campaign(req.body);
   campaign.createdBy = req.user._id;
   campaign.lastModifiedBy = req.user._id;
@@ -35,6 +35,7 @@ exports.createCampaign= function(req, res){
 };
 
 exports.getCampaign = function(req, res){
+  console.log(req.params.campaignId);
   Campaign.findById(req.params.campaignId)
           .exec(function(err, campaign){
               if(err){
@@ -67,4 +68,43 @@ exports.getCampaigns = function(req, res) {
       }
     });
 };
+
+exports.editCampaign = function (req, res) {
+  var campaign = new Campaign(req.body);
+  //campaign.lastModifiedBy = req.user._id;
+  //console.log(3, campaign.lastModifiedBy);
+  campaign.lastModified = Date.now;
+  console.log(4, campaign.LastModified);
+   if(!req.params.campaignId){
+    return res.status(400).send({
+      message: 'Campaign ID is required'
+    });
+   }else{
+    Campaign.findbyId(req.params.campaignId)
+            .save(function(err, editedCampaign){
+              if(err){
+                return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+                });
+              }
+              else {
+                // Campaign.populate( campaign, {path: 'lastModifiedBy'}, function( err, editedCampaign){
+                //   if (err){
+                //      return res.status(400).send({
+                //      message: errorHandler.getErrorMessage(err) });
+
+                //   }else{
+                  res.json(editedCampaign);
+                  }
+               // })
+             // }
+            });
+  }
+};
+
+/******** LIST ALL CAMPAIGN **********/
+// exports.getAllCampaign = function (req, res){
+//   Campaign.find()
+// }
+
 
