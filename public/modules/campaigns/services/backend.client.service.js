@@ -15,8 +15,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('//gdata.youtube.com/feeds/api/videos/'+videoId+'?alt=json');
   };
 
-  var getUserCampaigns = function(userData) {
-    return $http.get('/campaigns/' +userData._id);
+  var getUserCampaigns = function(userid) {
+    return $http.get('/campaigns/' + userid);
   };
 
   return {

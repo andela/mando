@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('campaign').controller('getCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
@@ -8,9 +8,10 @@ function($scope, backendService, $location, Authentication, $stateParams) {
   if (!$scope.authentication.user) {
     $location.path('/');
   }
-
+  //console.log($scope.authentication.user);
   // using the backend service to get campaign data from the back end
-  backendService.getUserCampaigns($scope.authentication.user).success(function(myCampaigns) {
+  var userid = $scope.authentication.user._id;
+  backendService.getUserCampaigns(userid).success(function(myCampaigns) {
     $scope.myCampaigns = myCampaigns;
   });
 

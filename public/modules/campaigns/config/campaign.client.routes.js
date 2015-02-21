@@ -12,7 +12,7 @@ angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', fun
     }).
     state('getCampaigns', {
       url: '/campaigns/:userId',
-      templateUrl: 'modules/campaigns/views/getCampaigns.client.view.html'
+      templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html'
     });
 
     //Add YouTube to resource whitelist so that we can embed YouTube videos
