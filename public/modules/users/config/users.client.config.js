@@ -17,7 +17,7 @@ angular.module('users').config(['$httpProvider',
 								$location.path('/');
 								break;
 							case 403:
-								// Add unauthorized behaviour 
+								// Add unauthorized behaviour
 								break;
 						}
 

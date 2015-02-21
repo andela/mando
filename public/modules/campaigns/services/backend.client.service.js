@@ -15,9 +15,14 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('//gdata.youtube.com/feeds/api/videos/'+videoId+'?alt=json');
   };
 
+  var getUserCampaigns = function(userid) {
+    return $http.get('/campaigns/' + userid);
+  };
+
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
-    checkYouTubeUrl: checkYouTubeUrl
+    checkYouTubeUrl: checkYouTubeUrl,
+    getUserCampaigns: getUserCampaigns
   };
 }]);

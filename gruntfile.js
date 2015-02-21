@@ -187,6 +187,8 @@ module.exports = function(grunt) {
 
   // Test task.
   grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit', 'protractor:all']);
+  //unit test task
+  grunt.registerTask('unittest', ['env:test','karma:unit']);
 
   //TEST Protractor
   grunt.registerTask('test-protractor', ['env:test', 'protractor:all']);
