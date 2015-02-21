@@ -64,6 +64,10 @@ angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', fun
     state('viewCampaign', {
       url: '/campaign/:campaignid',
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
+    }).
+    state('userCampaigns', {
+      url: '/campaigns/:userId',
+      templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html'
     });
 
     //Add YouTube to resource whitelist so that we can embed YouTube videos
@@ -143,6 +147,35 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
 ]);
 'use strict';
 
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
+function($scope, backendService, $location, Authentication, $stateParams) {
+  $scope.myCampaigns    = [];
+  $scope.authentication = Authentication;
+
+  if (!$scope.authentication.user) {
+    $location.path('/');
+  }
+  //console.log($scope.authentication.user);
+  // using the backend service to get campaign data from the back end
+  var userid = $scope.authentication.user._id;
+  backendService.getUserCampaigns(userid).success(function(myCampaigns) {
+    $scope.myCampaigns = myCampaigns;
+  });
+
+  // function to click the show more button on getMoreCampaigns page
+  $scope.limit = 4;
+  $scope.increment = function() {
+    var campaignLength = $scope.myCampaigns.length;
+    $scope.limit = campaignLength;
+  };
+
+  $scope.decrement = function() {
+    $scope.limit = 4;
+  };
+
+}]);
+'use strict';
+
 angular.module('campaign').controller('viewCampaignCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.authentication = Authentication;
@@ -185,10 +218,15 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('//gdata.youtube.com/feeds/api/videos/'+videoId+'?alt=json');
   };
 
+  var getUserCampaigns = function(userid) {
+    return $http.get('/campaigns/' + userid);
+  };
+
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
-    checkYouTubeUrl: checkYouTubeUrl
+    checkYouTubeUrl: checkYouTubeUrl,
+    getUserCampaigns: getUserCampaigns
   };
 }]);
 'use strict';
@@ -212,7 +250,17 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 angular.module('core').controller('HeaderController', ['$scope', 'Authentication',
   function($scope, Authentication) {
     $scope.authentication = Authentication;
-  }
+    $scope.isCollapsed = false;
+  
+    $scope.toggleCollapsibleMenu = function() {
+            $scope.isCollapsed = !$scope.isCollapsed;
+        };
+
+        // Collapsing the menu after navigation
+        $scope.$on('$stateChangeSuccess', function() {
+            $scope.isCollapsed = false;
+        });
+    }
 ]);
 'use strict';
 
@@ -242,7 +290,7 @@ angular.module('users').config(['$httpProvider',
 								$location.path('/');
 								break;
 							case 403:
-								// Add unauthorized behaviour 
+								// Add unauthorized behaviour
 								break;
 						}
 
