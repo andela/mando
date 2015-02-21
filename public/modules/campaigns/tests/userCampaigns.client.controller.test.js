@@ -21,9 +21,7 @@ describe('userCampaignsCtrl', function() {
         'lastModifiedBy' : '54da2257568f9cfd6d2dba2f',
       }
     );
-    console.log(scope.myCampaigns);
     $httpBackend.flush();
-    console.log(scope.myCampaigns);
     expect(typeof scope.myCampaigns).toBe('object');
   });
 });
