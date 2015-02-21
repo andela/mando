@@ -8,13 +8,14 @@
     </button>
     <a href="/#!/" class="navbar-brand">Andonation</a>
   </div>
-  <nav class="collapse navbar-collapse" role="navigation">
+  <nav class="collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
     <ul class="nav navbar-nav navbar-right" data-ng-hide="authentication.user">
       <li>
         <a href="/auth/google" id='signIn'>Sign In</a>
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right" data-ng-show="authentication.user">
+      <li><span data-ng-bind="authentication.user.gravatar"></span></li>
       <li>
         <a href="/#!/campaign/add" id="myCampaign">Add Campaign</a>
       </li>
