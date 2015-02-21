@@ -10,7 +10,7 @@ angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', fun
       url: '/campaign/:campaignid',
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     }).
-    state('getCampaigns', {
+    state('userCampaigns', {
       url: '/campaigns/:userId',
       templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html'
     });
