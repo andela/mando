@@ -5,10 +5,9 @@ function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
 
-  if (!$scope.authentication.user) {
+  if (!$scope.authentication.user || typeof $stateParams.userid !== 'number') {
     $location.path('/');
   }
-  //console.log($scope.authentication.user);
   // using the backend service to get campaign data from the back end
   var userid = $scope.authentication.user._id;
   backendService.getUserCampaigns(userid).success(function(myCampaigns) {
