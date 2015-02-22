@@ -18,7 +18,8 @@ module.exports = {
 				'public/lib/angular-ui-router/release/angular-ui-router.min.js',
 				'public/lib/angular-ui-utils/ui-utils.min.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
-				'public/lib/moment/moment.js'
+				'public/lib/moment/moment.js',
+				'public/lib/angular-youtube-mb/src/angular-youtube-embed.js'
 			]
 		},
 		css: 'public/dist/application.min.css',

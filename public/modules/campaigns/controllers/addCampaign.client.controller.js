@@ -4,8 +4,8 @@
 
 
 
-angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication',
-  function($scope, backendService, $location, Authentication) {
+angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
+  function($scope, backendService, $location, Authentication, youtubeEmbedUtils) {
     //provides the authentication object
     $scope.authentication = Authentication;
     $scope.campaign = {};
@@ -38,12 +38,8 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     };
 
     $scope.validateYoutubeUrl = function (url) {
-      // console.log('checking');youtubeError
-      var youtube = $scope.campaign.youtubeUrl.split('watch?v=');
-      var youtubeId = null;
-      if(youtube.length > 1){
-         youtubeId = youtube[1];
-      }
+      var youtubeId = youtubeEmbedUtils.getIdFromURL(url);
+      console.log(youtubeId);
       backendService.checkYouTubeUrl(youtubeId)
         .success(function (result) {
           $scope.youtubeError = '';
