@@ -20,11 +20,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     }
 
     $scope.addCampaign = function() {
-      var youtube = $scope.campaign.youtubeUrl.split('watch?v=');
-      var youtubeId = null;
-      if(youtube.length > 1){
-         youtubeId = youtube[1];
-      }
+      $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
 
         backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
@@ -36,7 +32,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     };
 
     $scope.validateYoutubeUrl = function (url, isValid) {
-      console.log(isValid);
+      //checks if input is a valid url
       if(!isValid) {
         $scope.youtubeError = 'Please enter a valid youtube Url';
         return;
