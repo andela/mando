@@ -2,8 +2,6 @@
 
 /*global moment */
 
-
-
 angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
   function($scope, backendService, $location, Authentication, youtubeEmbedUtils) {
     //provides the authentication object
