@@ -1,6 +1,6 @@
 'use strict';
 
-var helper = require('./helpers');
+var helper = require('./helpers.authentication.e2e.client.Spec');
 
 describe('userCampaigns', function() {
   beforeEach(function() {
