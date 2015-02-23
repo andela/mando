@@ -11,6 +11,10 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/campaign/'+campaignData._id);
   };
 
+  var deleteCampaign = function(campaignData) {
+    return $http.delete('/campaign/'+campaignData._id);
+  };
+
   var checkYouTubeUrl = function(videoId) {
     return $http.get('//gdata.youtube.com/feeds/api/videos/'+videoId+'?alt=json');
   };
@@ -29,6 +33,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getCampaign: getCampaign,
     checkYouTubeUrl: checkYouTubeUrl,
     getUserCampaigns: getUserCampaigns,
-    updateCampaign: updateCampaign
+    updateCampaign: updateCampaign,
+    deleteCampaign: deleteCampaign
+
   };
 }]);
