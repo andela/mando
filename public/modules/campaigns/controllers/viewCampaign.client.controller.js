@@ -17,5 +17,17 @@ function($scope, backendService, $location, Authentication, $stateParams) {
     .error(function(error, status, header, config) {
       console.log(error);
     });
+
+    $scope.deleteCampaign = function() {
+    backendService.deleteCampaign($scope.campaign).success(function() {
+      alert('Do you want to delete this campaign');
+      $scope.deletemsg = 'DELETED';
+       // $location.path('/campaigns/:userId');
+        console.log('deleted');
+    }).error(function(error) {
+      console.log('error');
+    });
+
+  };
   }
 ]);
