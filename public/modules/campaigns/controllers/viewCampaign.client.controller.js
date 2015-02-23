@@ -32,6 +32,7 @@ function($scope, toaster, backendService,$location, Authentication, $stateParams
         $location.path('/campaign/'+ data._id);
       }
 
+
   };
   }
 ]);
