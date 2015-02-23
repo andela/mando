@@ -68,3 +68,16 @@ exports.getCampaigns = function(req, res) {
     });
 };
 
+exports.deleteCampaign = function(req, res) {
+  Campaign.findByIdAndRemove(req.params.campaignId)
+  .exec(function(err, campaign) {
+    if(err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.send('deleted successfully');
+    }
+    });
+};
+
