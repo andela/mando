@@ -1,7 +1,13 @@
 <section id="section" data-ng-controller="viewCampaignCtrl">
-  <div class="container main-container">
+
+      <div ng-show="deletemsg" class="jumbotron text-center">
+        <h2>CAMPAIGN DELETED SUCCESSFULLY</h2>
+        <a href="/#!/campaigns/{{authentication.user._id}}">BACK TO YOUR CAMPAIGNS</a>
+      </div>
+  <div class="container main-container" ng-hide="deletemsg">
     <div class="row col-md-10 col-md-offset-1">
       <div class="row">
+        <button class="btn" data-ng-click="deleteCampaign()">DELETE</button>
         <h2 class="title">{{campaign.title}}</h2>
         <p class="CreatedAndDeadline">Created By: {{campaign.createdBy.displayName}}</p>
         <p class="CreatedAndDeadline">Deadline: {{campaign.dueDate | date}}</p>
