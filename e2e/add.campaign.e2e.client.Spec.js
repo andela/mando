@@ -61,10 +61,39 @@ describe('Add and view Campaign', function() {
 
   it('should validate wrong youtube url', function() {
     myCampaign.click();
-    var youtubeUrl = element(by.model('campaign.youtubeUrl'));
-    youtubeUrl.sendKeys('wrong url format');
     var submit = element(by.id('addCampaignBtn'));
+    var youtubeUrl = element(by.model('campaign.youtubeUrl'));
+    //send wrong url format
+    youtubeUrl.sendKeys('wrong url format');
     expect(submit.isEnabled()).toBe(false);
-    expect(youtubeUrl.getAttribute('class')).toBeTruthy();
+    expect(youtubeUrl.getAttribute('class')).toContain('ng-invalid-url');
+    expect(element(by.id('invalid-url')).isDisplayed()).toBe(true);
+    youtubeUrl.clear();
+    browser.refresh();
+
+    //test with another url format that is not correct
+    youtubeUrl.sendKeys('www.youtube.com');
+    expect(submit.isEnabled()).toBe(false);
+    expect(youtubeUrl.getAttribute('class')).toContain('ng-invalid-url');
+    expect(element(by.id('invalid-url')).isDisplayed()).toBe(true);
+    youtubeUrl.clear();
+    browser.refresh();
+    expect(youtubeUrl.getAttribute('class')).toContain('ng-pristine');
+
+    //test for wrong youtube video ids
+    youtubeUrl.sendKeys('https://www.youtube.com/watch?v=mq59iE3');
+    expect(element(by.binding('youtubeError')).isDisplayed()).toBe(true);
+    youtubeUrl.clear();
+    browser.refresh();
+
+    //test for invalid youtube video ids via youtube api
+    youtubeUrl.sendKeys('https://www.youtube.com/watch?v=mq59iE4MhaM');
+    expect(element(by.binding('youtubeError')).isDisplayed()).toBe(true);
+    youtubeUrl.clear();
+    browser.refresh();
+    youtubeUrl.sendKeys('https://www.youtube.com/watch?v=mq59iE3MhXM');
+    expect(element(by.binding('youtubeError')).isDisplayed()).toBe(false);
+    expect(youtubeUrl.getAttribute('class')).toContain('ng-valid');
+    expect(youtubeUrl.getAttribute('class')).toContain('ng-valid-url');
   });
 });
