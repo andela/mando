@@ -79,6 +79,9 @@ exports.updateCampaign = function(req, res) {
      });
    });
   };
+// =======
+//  };
+// >>>>>>> created back end server route to delete a campaign
 
 exports.deleteCampaign = function(req, res) {
   Campaign.findByIdAndRemove(req.params.campaignId)
@@ -90,7 +93,10 @@ exports.deleteCampaign = function(req, res) {
     } else {
       res.send('deleted successfully');
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> created back end server route to delete a campaign
     });
 };
 
