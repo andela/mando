@@ -9,24 +9,34 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
     //route unauhenticated user  to the camapaign view page goes
     if(!$scope.Authentication.user){
 
-    $location.path('/');
+        $location.path('/');
     }
     
     backendService.getCampaign($scope.campaign)
-        .success(function(data, status){
-            $scope.campaign = data;
-            $scope.campaign.youtubeUrl =  'https://www.youtube.com/watch?v='+data.youtubeUrl;
-        }).error(function(err){
-        console.log(err);
+      .success(function(data, status){
+        $scope.campaign = data;
+        $scope.campaign.youtubeUrl =  'https://www.youtube.com/watch?v='+data.youtubeUrl;
+      })
+      .error(function(err){
+        //console.log(err);
     });
 
     $scope.editCampaign =function(){
-        backendService.editCampaign().success(function(data, status){
+      backendService.updateCampaign($scope.campaign)
+      .success(function(data, status){
         $location.path('/campaign/' + data._id);
-        }).error(function(err){
+        console.log(10, data);
+        })
+      .error(function(err){
         $scope.error = err;
-        });
+      });
     };
 
-}
+    $scope.open = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.opened = true;
+    };
+  }
 ]);
