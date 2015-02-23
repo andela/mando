@@ -7,10 +7,10 @@ exports.config = {
   multiCapabilities: [{
     'browserName': 'chrome',
     'specs': ['e2e/*Spec.js'],
-    'exclude': ['e2e/e2e.authentication.Spec.js']
+    'exclude': ['e2e/authentication.campaign.e2e.client.Spec.js']
   }, {
     'browserName': 'chrome',
-    'specs': ['e2e/e2e.authentication.Spec.js']
+    'specs': ['e2e/authentication.campaign.e2e.client.Spec.js']
   }],
   onPrepare: function() {
     // The require statement must be down here, since jasmine-reporters@1.0

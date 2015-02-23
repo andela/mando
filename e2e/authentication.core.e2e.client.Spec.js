@@ -1,6 +1,6 @@
 'use strict';
 /* global describe */
-var helper = require('./helpers');
+var helper = require('./helpers.authentication.e2e.client.Spec');
 describe('Andonation Homepage', function() {
   beforeEach(function() {
     helper.loadApp('/');
