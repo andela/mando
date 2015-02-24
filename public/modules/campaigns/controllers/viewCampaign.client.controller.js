@@ -13,8 +13,6 @@ function($scope, backendService, $location, Authentication, $stateParams) {
     backendService.getCampaign($scope.campaign)
     .success(function(data, status, header, config) {
       $scope.campaign = data;
-      console.log(data);
-      //$location.path('/campaign/'+ data._id);
     })
     .error(function(error, status, header, config) {
       console.log(error);
