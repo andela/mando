@@ -18,15 +18,18 @@ function($scope, backendService, $location, Authentication, $stateParams) {
       console.log(error);
     });
 
-    $scope.deleteCampaign = function() {
+    $scope.deleteCampaign = function(data) {
+       var confirmMsg = confirm('Do you want to delete this Campaign?');
+       if(confirmMsg === true) {
     backendService.deleteCampaign($scope.campaign).success(function() {
-      alert('Do you want to delete this campaign');
-      $scope.deletemsg = 'DELETED';
-       // $location.path('/campaigns/:userId');
+        $location.path('/campaigns/:userId');
         console.log('deleted');
     }).error(function(error) {
       console.log('error');
     });
+  } else {
+    $location.path('/campaign/'+ data._id);
+  }
 
   };
   }
