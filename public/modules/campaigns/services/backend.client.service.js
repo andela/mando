@@ -20,7 +20,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   };
 
   var updateCampaign = function(campaignData) {
-    return $http.put('/campaign/' + campaignData._id + '/edit');
+    console.log(campaignData);
+    return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
   };
 
   return {

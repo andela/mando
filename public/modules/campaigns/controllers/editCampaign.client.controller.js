@@ -25,8 +25,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
       backendService.updateCampaign($scope.campaign)
       .success(function(data, status){
         $location.path('/campaign/' + data._id);
-        console.log(10, data);
-        })
+      })
       .error(function(err){
         $scope.error = err;
       });
