@@ -7,7 +7,7 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.min.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
-				'public/lib/toastr/toastr.css'
+				'public/lib/angularjs-toaster/toaster.css'
 			],
 			js: [
 				'public/lib/angular/angular.min.js',
@@ -21,7 +21,7 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
 				'public/lib/moment/moment.js',
 				'public/lib/angular-youtube-mb/src/angular-youtube-embed.js',
-				'public/lib/toastr/toastr.js'
+				'public/lib/angularjs-toaster/toaster.js'
 			]
 		},
 		css: 'public/dist/application.min.css',
