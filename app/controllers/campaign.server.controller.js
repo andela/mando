@@ -32,7 +32,7 @@ exports.createCampaign= function(req, res){
 
 exports.getCampaign = function(req, res){
   Campaign.findById(req.params.campaignId)
-    .select('-lastModifiedBy -created -lastModified')
+    .select('-lastModifiedBy -lastModified')
     .exec(function(err, campaign){
       if(err){
         return res.status(400).send({
