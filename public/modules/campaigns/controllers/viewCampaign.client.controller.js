@@ -18,6 +18,7 @@ function($scope, toaster, backendService,$location, Authentication, $stateParams
       console.log(error);
     });
 
+//delete this code
     $scope.deleteCampaign = function(data, toastr) {
        var confirmMsg = confirm('Do you want to delete this Campaign?');
       if(confirmMsg === true) {
@@ -31,8 +32,6 @@ function($scope, toaster, backendService,$location, Authentication, $stateParams
       } else {
         $location.path('/campaign/'+ data._id);
       }
-
-
   };
   }
 ]);
