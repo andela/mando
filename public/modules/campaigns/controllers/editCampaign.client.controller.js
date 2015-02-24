@@ -17,7 +17,9 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
         if($scope.authentication.user._id !== data.createdBy._id){
           $location.path('/campaign/'+ data._id);
         }
-        $scope.maxDate = data.dueDate;
+        //The Date of Campaign cannot exceed 30 days of the date it was created 
+        $scope.minDate = moment(data.created);
+        $scope.maxDate = moment(data.created).add(30, 'days');
         $scope.campaign = data;
         $scope.campaign.youtubeUrl = 'https://www.youtube.com/watch?v='+data.youtubeUrl;
       })
@@ -27,6 +29,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
 
     $scope.editCampaign =function(){
     delete $scope.campaign.createdBy;
+    delete $scope.campaign.created;
     $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
       backendService.updateCampaign($scope.campaign)
       .success(function(data, status, header, config){
@@ -61,7 +64,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
       });
     }; 
 
-//Open the Calendar
+    //Open the Calendar
     $scope.open = function($event) {
       $event.preventDefault();
       $event.stopPropagation();
