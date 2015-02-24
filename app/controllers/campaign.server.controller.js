@@ -5,8 +5,6 @@ var mongoose = require('mongoose'),
     errorHandler =require('./errors.server.controller'),
     moment = require('moment'),
     Campaign= mongoose.model('Campaign');
-//    _ = require('lodash');
-
 
 /****Create A campaign *****/
 exports.createCampaign= function(req, res){
@@ -41,7 +39,7 @@ exports.getCampaign = function(req, res){
           message: errorHandler.getErrorMessage(err)
         });
       } else {
-         Campaign.populate(campaign, {path: 'createdBy lastModifiedBy'}, function(err, newCampaign) {
+         Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
            res.json(newCampaign);
          });
       }

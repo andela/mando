@@ -5,7 +5,6 @@ var express = require('express'),
     campaigns = require('../../app/controllers/campaign.server.controller'),
     users = require('../../app/controllers/users.server.controller');
 
-
 module.exports = function(app) {
   app.route('/campaign/*').all(users.requiresLogin);
   app.route('/campaigns/*').all(users.requiresLogin);
