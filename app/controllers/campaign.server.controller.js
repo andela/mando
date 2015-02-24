@@ -34,18 +34,19 @@ exports.createCampaign= function(req, res){
 
 exports.getCampaign = function(req, res){
   Campaign.findById(req.params.campaignId)
-          .exec(function(err, campaign){
-              if(err){
-                return res.status(400).send({
-                  message: errorHandler.getErrorMessage(err)
-                });
-              } else {
-                // res.json(campaign);
-                Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-                    res.json(newCampaign);
-                  });
-              }
-          });
+    .select('-createdBy -lastModifiedBy -created -lastModified')
+    .exec(function(err, campaign){
+      if(err){
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        // res.json(campaign);
+        Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
+            res.json(newCampaign);
+        });
+      }
+    });
 };
 
 exports.getCampaigns = function(req, res) {
@@ -69,13 +70,12 @@ exports.updateCampaign = function(req, res) {
   var campaign = req.body;
   campaign.lastModifiedBy = req.user._id;
   campaign.lastModified = moment().format();
-  console.log(campaign);
   Campaign
     .findByIdAndUpdate(req.params.campaignId, campaign, {}, function(err, editedCampaign) {
       if(err){
+        console.log(err);
         res.status(400).json(err);
       }
-      console.log(editedCampaign);
       res.json(editedCampaign);
     });
 };
