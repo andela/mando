@@ -34,17 +34,16 @@ exports.createCampaign= function(req, res){
 
 exports.getCampaign = function(req, res){
   Campaign.findById(req.params.campaignId)
-    .select('-createdBy -lastModifiedBy -created -lastModified')
+    .select('-lastModifiedBy -created -lastModified')
     .exec(function(err, campaign){
       if(err){
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
       } else {
-        // res.json(campaign);
-        Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-            res.json(newCampaign);
-        });
+         Campaign.populate(campaign, {path: 'createdBy lastModifiedBy'}, function(err, newCampaign) {
+           res.json(newCampaign);
+         });
       }
     });
 };
@@ -58,7 +57,6 @@ exports.getCampaigns = function(req, res) {
           message: errorHandler.getErrorMessage(err)
         });
       } else {
-        // res.json(user);
         Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
             res.json(newCampaign);
         });
@@ -73,10 +71,11 @@ exports.updateCampaign = function(req, res) {
   Campaign
     .findByIdAndUpdate(req.params.campaignId, campaign, {}, function(err, editedCampaign) {
       if(err){
-        console.log(err);
-        res.status(400).json(err);
+          res.status(400).json(err);
       }
-      res.json(editedCampaign);
+     Campaign.populate(editedCampaign, {path: 'createdBy lastModifiedBy'}, function (err, campaign){
+      res.json(campaign);
+     });
     });
 };
 
