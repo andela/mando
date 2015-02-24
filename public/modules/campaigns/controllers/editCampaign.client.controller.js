@@ -2,20 +2,21 @@
 
 /*global moment */
 angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendService', '$location', 'Authentication','$stateParams','youtubeEmbedUtils', function ($scope, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils) {
-    $scope.Authentication = Authentication;
+    $scope.authentication = Authentication;
+
+    if(!$scope.authentication.user){
+        $location.path('/');
+    }
+
      $scope.campaign = {
         _id: $stateParams.campaignid
      };
-
-    //route unauhenticated user  to the camapaign view page goes
-    if(!$scope.Authentication.user){
-
-        $location.path('/');
-    }
-    
+    //authentication.user._id === campaign.createdBy._id
     backendService.getCampaign($scope.campaign)
       .success(function(data, status){
-        delete data.createdBy;
+        if($scope.authentication.user._id !== data.createdBy._id){
+          $location.path('/campaign/'+ data._id);
+        }
         $scope.maxDate = data.dueDate;
         $scope.campaign = data;
         $scope.campaign.youtubeUrl = 'https://www.youtube.com/watch?v='+data.youtubeUrl;
@@ -25,6 +26,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
     });
 
     $scope.editCampaign =function(){
+    delete $scope.campaign.createdBy;
     $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
       backendService.updateCampaign($scope.campaign)
       .success(function(data, status, header, config){
@@ -48,6 +50,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
         $scope.youtubeError = 'Please enter a valid youtube URL';
         return;
       }
+
       backendService.checkYouTubeUrl(youtubeId)
         .success(function (result) {
           $scope.youtubeError = '';

@@ -1,5 +1,5 @@
 <section data-ng-controller="editCampaignCtrl">
-  <div class=" col-md-9 col-md-offset-1">
+  <div class=" col-md-9 col-md-offset-1" data-ng-show=" authentication.user._id === campaign.createdBy._id">
     <h2 class='col-md-offset-2' id="editCampaign-head">Edit a Campaign...</h2>
     <form name="editCampaignForm" class="form-horizontal top-form" novalidate>
       <div class="form-group" ng-class="{'has-error': editCampaign.title.$invalid &amp;&amp; editCampaign.title.$dirty}">
