@@ -13,13 +13,11 @@ exports.createCampaign= function(req, res){
   var campaign = new Campaign(req.body);
   campaign.createdBy = req.user._id;
   campaign.lastModifiedBy = req.user._id;
-  console.log(4, req.user);
   if (!campaign.dueDate) {
     campaign.dueDate = moment().add(30, 'days');
   }
   campaign
     .save(function(err, campaign){
-      console.log(5, campaign);
     if(err){
        return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -35,7 +33,6 @@ exports.createCampaign= function(req, res){
 };
 
 exports.getCampaign = function(req, res){
-  console.log(req.params.campaignId);
   Campaign.findById(req.params.campaignId)
           .exec(function(err, campaign){
               if(err){
@@ -53,7 +50,6 @@ exports.getCampaign = function(req, res){
 
 exports.getCampaigns = function(req, res) {
   var ObjectId = mongoose.Types.ObjectId;
-  console.log(1, new ObjectId(req.params.userId));
   Campaign.find({'createdBy': new ObjectId(req.params.userId)})
     .exec(function(err, campaign){
       if(err){
@@ -66,6 +62,21 @@ exports.getCampaigns = function(req, res) {
             res.json(newCampaign);
         });
       }
+    });
+};
+
+exports.updateCampaign = function(req, res) {
+  var campaign = req.body;
+  campaign.lastModifiedBy = req.user._id;
+  campaign.lastModified = moment().format();
+  console.log(campaign);
+  Campaign
+    .findByIdAndUpdate(req.params.campaignId, campaign, {}, function(err, editedCampaign) {
+      if(err){
+        res.status(400).json(err);
+      }
+      console.log(editedCampaign);
+      res.json(editedCampaign);
     });
 };
 

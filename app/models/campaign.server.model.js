@@ -72,8 +72,6 @@ campaignSchema.path('description').validate(function(v) {
 },'Description Cannot Be Less Than 20 Characters');
 
 campaignSchema.path('dueDate').validate(function(date) {
-  console.log(1, moment(date).unix());
-  console.log(2, moment().add(30, 'days').unix() + 5);
   return moment(date).unix() < moment().add(30, 'days').unix() + 5;
 }, 'Deadline cannot be greater than 30 days');
 
