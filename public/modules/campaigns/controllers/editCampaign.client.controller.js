@@ -1,11 +1,12 @@
 'use strict';
 
+/*global moment */
 angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendService', '$location', 'Authentication','$stateParams','youtubeEmbedUtils', function ($scope, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils) {
     $scope.Authentication = Authentication;
      $scope.campaign = {
         _id: $stateParams.campaignid
      };
-   
+
     //route unauhenticated user  to the camapaign view page goes
     if(!$scope.Authentication.user){
 
@@ -15,6 +16,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
     backendService.getCampaign($scope.campaign)
       .success(function(data, status){
         delete data.createdBy;
+        $scope.maxDate = data.dueDate;
         $scope.campaign = data;
         $scope.campaign.youtubeUrl = 'https://www.youtube.com/watch?v='+data.youtubeUrl;
       })

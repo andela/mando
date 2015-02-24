@@ -68,6 +68,9 @@ exports.updateCampaign = function(req, res) {
   var campaign = req.body;
   campaign.lastModifiedBy = req.user._id;
   campaign.lastModified = moment().format();
+  if (!campaign.dueDate) {
+    campaign.dueDate = moment().add(30, 'days');
+  }
   Campaign
     .findByIdAndUpdate(req.params.campaignId, campaign, {}, function(err, editedCampaign) {
       if(err){
