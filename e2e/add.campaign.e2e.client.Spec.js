@@ -2,6 +2,7 @@
 'use strict';
 
 var helper = require('./helpers.authentication.e2e.client.Spec');
+var moment = require('moment');
 
 describe('Add and view Campaign', function() {
   beforeEach(function() {
@@ -96,4 +97,73 @@ describe('Add and view Campaign', function() {
     expect(youtubeUrl.getAttribute('class')).toContain('ng-valid');
     expect(youtubeUrl.getAttribute('class')).toContain('ng-valid-url');
   });
+  it('should disabled date field on page load', function() {
+    myCampaign.click();
+    var dueDate = element(by.model('campaign.dueDate'));
+    expect(dueDate.isEnabled()).toBe(false);
+  });
+
+  it('should be able to pick date via the datepicker', function() {
+    myCampaign.click();
+    var datepicker = element(by.css('.calendar'));
+    expect(datepicker.isDisplayed()).toBe(true);
+    expect(element(by.css('ul.dropdown-menu')).isDisplayed()).toBe(false);
+    datepicker.click();
+    expect(element(by.css('ul.dropdown-menu')).isDisplayed()).toBe(true);
+  });
+
+  it('should not allow user pick date above or below the limit', function() {
+    myCampaign.click();
+    var minDate = moment().add(1, 'days');
+    var week = moment().week();
+    var datepicker = element(by.css('span.col-sm-1.calendar'));
+    element.all(by.repeater('row in rows'));
+    expect(datepicker.isDisplayed()).toBe(true);
+    datepicker.click();
+    var tbody = element(by.css('tbody'));
+
+  });
+week.filter(function(elem, index) {
+ return elem.getText().then(function(text) {
+   return text === '6';
+  });
+  }).then(function(fil) {
+    console.log(1, fil)
+    console.log(2, fil[0])
+    fil[0].getText()
+    })
+
+element.all(by.repeater('row in rows')).all(by.binding(' weekNumbers[$index] '))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });

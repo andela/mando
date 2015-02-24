@@ -13,9 +13,9 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     $scope.maxDate = moment().add(30, 'days');
 
    // if unauthenticated, go to home
-    if (!$scope.authentication.user) {
-      $location.path('/');
-    }
+    // if (!$scope.authentication.user) {
+    //   $location.path('/');
+    // }
 
     $scope.addCampaign = function() {
       $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
