@@ -15,6 +15,7 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
+				'public/lib/angularjs-toaster/toaster.css'
 			],
 			js: [
 				'public/lib/angular/angular.js',
@@ -28,7 +29,7 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/moment/moment.js',
 				'public/lib/angular-youtube-mb/src/angular-youtube-embed.js',
-				'public/lib/toastr/toastr.css'
+				'public/lib/angularjs-toaster/toaster.js'
 			]
 		},
 		css: [
@@ -38,8 +39,7 @@ module.exports = {
 			'public/config.js',
 			'public/application.js',
 			'public/modules/*/*.js',
-			'public/modules/*/*[!tests]*/*.js',
-			'public/lib/toastr/toastr.js'
+			'public/modules/*/*[!tests]*/*.js'
 		],
 		tests: [
 			'public/lib/angular-mocks/angular-mocks.js',
