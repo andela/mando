@@ -27,7 +27,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
         //console.log(err);
     });
 
-    $scope.editCampaign =function(){
+    $scope.editCampaign = function(){
     delete $scope.campaign.createdBy;
     delete $scope.campaign.created;
     $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);

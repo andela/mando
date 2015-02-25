@@ -16,6 +16,7 @@ describe('Add and view Campaign', function() {
   var title =element(by.model('campaign.title'));
   var description = element(by.model('campaign.description'));
   var editCampaignBtn = element(by.id('editCampaignBtn'));
+  
   //******TEST**********//
   it('should show 4 campaigns from the existing campaign', function(){
 //    helper.logoutIfLoggedIn();
@@ -29,20 +30,17 @@ describe('Add and view Campaign', function() {
     //helper.logoutIfLoggedIn();
    // helper.login();
     myAndonation.click();
-    browser.sleep(2000);
     var campaignTitle = element.all(by.binding('campaign.title')).last();
     campaignTitle.click();
     browser.sleep(2000);
     expect(element(by.binding('campaign.title')).isPresent()).toBe(true);
     element(by.id('editBtn')).click();
-     browser.sleep(5000);
      title.clear();
      title.sendKeys('A TEST APP');
     description.clear();
-     description.sendKeys('LOREM IPSUM DOLOR SIT ELELE JHB S  SGS Skd welcome to the ne world i am typig ith my phone here but yoiu wiull be amased');
-     browser.sleep(2000);
+     description.sendKeys('LOREM IPSUM DOLOR SIT ELELE JHB S  SGS Skd welcome to the ne world i am typig ith my phone here but yocd descriptionu wiull be amased');
      editCampaignBtn.click();
-     browser.sleep(5000);
+     browser.sleep(2000);
     expect(element(by.binding('campaign.title')).getText()).toContain('A TEST APP');
   });
 });
