@@ -1,0 +1,45 @@
+/*gives the form description a height of 300px*/
+.description {
+  height: 300px !important;
+}
+/*adds top margin to form*/
+.top-form {
+  margin-top: 30px;
+}
+
+.calendar {
+  padding-left: 0
+}
+
+.dueDate {
+  padding-right: 0
+}
+
+.main-container {
+  margin-top: 30px;
+}
+
+body {
+  background: #F2EFED;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.CreatedAndDeadline {
+  font-weight: bold;
+}
+
+.cash {
+  font-size: 4vh;
+}
+
+.justify {
+  text-align: justify;
+}
+
+iframe {
+  width: 100%;
+  border-radius: 10px;
+}

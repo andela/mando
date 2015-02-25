@@ -1,0 +1,21 @@
+machine:
+  node:
+    version:
+      0.10.33
+dependencies:
+  pre:
+    - bower install
+    - grunt build
+test:
+  pre:
+    - npm run update-webdriver
+  override:
+    - grunt test
+    - cp xmloutput/TEST-AndonationAuthentication.xml $CIRCLE_TEST_REPORTS
+    - cp xmloutput/TEST-AndonationHomePage.xml $CIRCLE_TEST_REPORTS
+    - cp xmloutput/unit-test-results.xml $CIRCLE_TEST_REPORTS
+deployment:
+  production:
+    branch: dev
+    heroku:
+      appname: andonation-mando

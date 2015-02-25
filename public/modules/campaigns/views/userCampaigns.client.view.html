@@ -1,0 +1,27 @@
+<section data-ng-controller="userCampaignsCtrl">
+  <div class="table-responsive">
+  <h2>My Campaigns</h2>
+    <table class="table table-bordered">
+      <tt>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Amount Needed</th>
+        <th>Amount Raised</th>
+        <th>Created</th>
+        <th>Deadline</th>
+        <th>Backers</th>
+      </tt>
+      <tr data-ng-repeat ="campaign in myCampaigns | limitTo :limit">
+        <td><a href="/#!/campaign/{{campaign._id}}">{{campaign.title}}</a></td>
+        <td>{{campaign.status}}</td>
+        <td>{{campaign.amount}}</td>
+        <td>{{campaign.raised}}</td>
+        <td>{{campaign.created | date}}</td>
+        <td>{{campaign.dueDate | date}}</td>
+        <td>{{campaign.backers}}</td>
+      </tr>
+    </table>
+    <button ng-show="limit===4" ng-click="increment()">SEE ALL CAMPAIGNS</button>
+    <button ng-hide="limit===4" ng-click="decrement()">BACK</button>
+  </div>
+</section>
