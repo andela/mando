@@ -24,5 +24,4 @@ function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.decrement = function() {
     $scope.limit = 4;
   };
-
 }]);

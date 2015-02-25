@@ -19,7 +19,6 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
 
     $scope.addCampaign = function() {
       $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
-
         backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
           $location.path('/campaign/'+ data._id);

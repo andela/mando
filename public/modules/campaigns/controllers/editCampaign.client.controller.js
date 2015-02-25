@@ -7,11 +7,10 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
     if(!$scope.authentication.user){
         $location.path('/');
     }
-
      $scope.campaign = {
         _id: $stateParams.campaignid
      };
-    //authentication.user._id === campaign.createdBy._id
+
     backendService.getCampaign($scope.campaign)
       .success(function(data, status){
         if($scope.authentication.user._id !== data.createdBy._id){
@@ -25,6 +24,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
       })
       .error(function(err){
         //console.log(err);
+        //use toaster to get the error message here
     });
 
     $scope.editCampaign = function(){
@@ -40,13 +40,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
       });
     };
 
-    $scope.validateYoutubeUrl = function (url, isValid) {
-      //checks if input is a valid url
-      if(!isValid) {
-        $scope.youtubeError = 'Please enter a valid youtube Url';
-        return;
-      }
-      //get the youtube id from the url
+    $scope.validateYoutubeUrl = function (url) {
       var youtubeId = youtubeEmbedUtils.getIdFromURL(url);
       //if the youtubeid is the same as url, then the user entered a wrong youtube url/id
       if(youtubeId === url) {
@@ -62,7 +56,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','backendServ
         .error(function (error){
           $scope.youtubeError = error;
       });
-    }; 
+    };     
 
     //Open the Calendar
     $scope.open = function($event) {
