@@ -12,37 +12,6 @@
               <button class="btn btn-success btn-lg">$ SUPPORT</button>
             </div>
             <div class="col-md-5">
-<!-- =======
-        <button class="btn" data-ng-click="deleteCampaign()">DELETE</button>
-=======
-        <button class="btn" id="deleteButton" data-ng-click="deleteCampaign()">DELETE</button>
->>>>>>> added a delete id
-=======
-
-      <div ng-show="deletemsg" class="jumbotron text-center">
-        <h2>CAMPAIGN DELETED SUCCESSFULLY</h2>
-        <a href="/#!/campaigns/{{authentication.user._id}}">BACK TO YOUR CAMPAIGNS</a>
-      </div>
-=======
->>>>>>> modified the delete campaign and by using a confirm message
-  <div class="container main-container" ng-hide="deletemsg">
-    <div class="row col-md-10 col-md-offset-1">
-      <div class="row">
-        <h2 class="title" data-ng-bind="campaign.title"></h2>
-        <p class="CreatedAndDeadline">Created By: {{campaign.createdBy.displayName}} <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign._id}}/edit" id="editBtn">EDIT CAMPAIGN </a></span></p>
-        <button class="btn" data-ng-click="deleteCampaign()">DELETE</button>
->>>>>>> binded the delete button to delete a campaign and route back to user campaigns
-        <h2 class="title">{{campaign.title}}</h2>
-        <p class="CreatedAndDeadline">Created By: {{campaign.createdBy.displayName}}</p>
-        <p class="CreatedAndDeadline">Deadline: {{campaign.dueDate | date}}</p>
-      </div>
-      <div class="row">
-        <div class="col-md-6 justify"><p>{{campaign.description}}</p></div>
-        <div class="col-md-5 col-md-offset-1">
-          <div class="row">
-            <button class="btn btn-success btn-lg">$ SUPPORT</button>
-            <div>
->>>>>>> binded the delete button to delete a campaign and route back to user campaigns -->
               <p class="cash">Needs: ${{campaign.amount}}</p>
               <p class="cash">Raised: ${{}}</p>
             </div>
