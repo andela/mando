@@ -2,8 +2,8 @@
 
 /*global moment */
 
-angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
-  function($scope, backendService, $location, Authentication, youtubeEmbedUtils) {
+angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
+  function($scope, toaster, backendService, $location, Authentication, youtubeEmbedUtils) {
     //provides the authentication object
     $scope.authentication = Authentication;
     $scope.campaign = {};
@@ -22,6 +22,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
 
         backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
+            toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
           $location.path('/campaign/'+ data._id);
         })
         .error(function(error, status, header, config) {
