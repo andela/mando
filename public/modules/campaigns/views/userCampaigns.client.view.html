@@ -15,9 +15,8 @@
         <th>Deadline</th>
         <th>Backers</th>
       </tt>
-      <tr data-ng-repeat ="campaign in myCampaigns | limitTo :limit">
-        <!-- <td><a href="/#!/campaign/{{campaign._id}}">{{campaign.title}}</a></td> -->
-        <td><a href="/#!/campaign/{{campaign._id}}" data-ng-bind="campaign.title" id="title"></a></td>
+      <tr data-ng-repeat ="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
+        <td><a href="/#!/campaign/{{campaign._id}}">{{campaign.title}}</a></td>
         <td>{{campaign.status}}</td>
         <td>{{campaign.amount}}</td>
         <td>{{campaign.raised}}</td>
