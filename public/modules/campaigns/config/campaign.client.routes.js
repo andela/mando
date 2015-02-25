@@ -1,6 +1,10 @@
 'use strict';
 
-angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', function ($stateProvider, $sceDelegateProvider) {
+angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDelegateProvider', function($stateProvider, datepickerConfig, $sceDelegateProvider) {
+  //ui-bootstrap config service to set starting day to 1,
+  //this is done because of the disparity in week number between moment.js and ui-bootstrap
+  datepickerConfig.startingDay = '1';
+
   $stateProvider.
     state('addCampaign', {
       url: '/campaign/add',
@@ -22,6 +26,3 @@ angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', fun
     //Add YouTube to resource whitelist so that we can embed YouTube videos
     $sceDelegateProvider.resourceUrlWhitelist(['**']);
 }]);
-
-//ANGULAR 1.2 HAS A NEW SECURITY POLICY TO BLOCK OR PREVENT HACKERS
-
