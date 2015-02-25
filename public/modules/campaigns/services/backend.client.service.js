@@ -19,10 +19,16 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/campaigns/' + userid);
   };
 
+  var updateCampaign = function(campaignData) {
+    console.log(campaignData);
+    return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
+  };
+
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
     checkYouTubeUrl: checkYouTubeUrl,
-    getUserCampaigns: getUserCampaigns
+    getUserCampaigns: getUserCampaigns,
+    updateCampaign: updateCampaign
   };
 }]);
