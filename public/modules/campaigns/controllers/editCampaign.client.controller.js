@@ -1,7 +1,7 @@
 'use strict';
 
 /*global moment */
-angular.module('campaign').controller('editCampaignCtrl', ['$scope','toater','backendService', '$location', 'Authentication','$stateParams','youtubeEmbedUtils', function ($scope, toaster, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils) {
+angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster','backendService', '$location', 'Authentication','$stateParams','youtubeEmbedUtils', function ($scope, toaster, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils) {
     $scope.authentication = Authentication;
 
     if(!$scope.authentication.user){
@@ -23,8 +23,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toater','ba
         $scope.campaign.youtubeUrl = 'https://www.youtube.com/watch?v='+data.youtubeUrl;
       })
       .error(function(err){
-        //console.log(err);
-        //use toaster to get the error message here
+        toaster.pop('error', 'An Error Occurred'+ err);
     });
 
     $scope.editCampaign = function(){
