@@ -92,9 +92,7 @@ exports.updateCampaign = function(req, res) {
      });
    });
   };
-// =======
-//  };
-// >>>>>>> created back end server route to delete a campaign
+
 
 exports.deleteCampaign = function(req, res) {
   Campaign.findByIdAndRemove(req.params.campaignId)
