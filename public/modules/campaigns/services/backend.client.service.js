@@ -41,6 +41,5 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     updateCampaign: updateCampaign,
     deleteCampaign: deleteCampaign,
     getCampaigns: getCampaigns
-
-  };
+   };
 }]);
