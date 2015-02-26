@@ -19,6 +19,11 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/campaigns/' + userid);
   };
 
+  //get all campaigns for the homepage
+  var getCampaigns = function() {
+    return $http.get('/campaigns');
+  };
+
   var updateCampaign = function(campaignData) {
     console.log(campaignData);
     return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
@@ -29,6 +34,7 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getCampaign: getCampaign,
     checkYouTubeUrl: checkYouTubeUrl,
     getUserCampaigns: getUserCampaigns,
-    updateCampaign: updateCampaign
+    updateCampaign: updateCampaign,
+    getCampaigns: getCampaigns
   };
 }]);
