@@ -16,12 +16,18 @@ describe('userCampaignsCtrl', function() {
     });
   }));
   it('should return all campaigns created by a user', function() {
-    $httpBackend.when('GET', '/campaigns/' + userid).respond(200, {
+    $httpBackend.when('GET', '/campaigns/' + userid).respond(200, [
+      { 
+        '_id' : '54e4b7eba241567dbbec7122',
+        'lastModifiedBy' : '54da2257568f9cfd6d2dba2f',
+      },
+      { 
         '_id' : '54e4b7eba241567dbbec7122',
         'lastModifiedBy' : '54da2257568f9cfd6d2dba2f',
       }
+    ]
     );
     $httpBackend.flush();
-    expect(typeof scope.myCampaigns).toBe('object');
+    expect(scope.myCampaigns instanceof Array).toBe(true);
   });
 });

@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'andonation';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils'];
+	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'youtube-embed'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
@@ -55,18 +55,26 @@ ApplicationConfiguration.registerModule('core');
 ApplicationConfiguration.registerModule('users');
 'use strict';
 
-angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', function($stateProvider, $sceDelegateProvider) {
+angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDelegateProvider', function($stateProvider, datepickerConfig, $sceDelegateProvider) {
+  //ui-bootstrap config service to set starting day to 1,
+  //this is done because of the disparity in week number between moment.js and ui-bootstrap
+  datepickerConfig.startingDay = '1';
+
   $stateProvider.
     state('addCampaign', {
       url: '/campaign/add',
       templateUrl: 'modules/campaigns/views/addCampaign.client.view.html'
+    }).
+    state('editCampaign', {
+      url: '/campaign/:campaignid/edit',
+      templateUrl: 'modules/campaigns/views/editCampaign.client.view.html'
     }).
     state('viewCampaign', {
       url: '/campaign/:campaignid',
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     }).
     state('userCampaigns', {
-      url: '/campaigns/:userId',
+      url: '/campaigns/:userid',
       templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html'
     });
 
@@ -74,17 +82,12 @@ angular.module('campaign').config(['$stateProvider', '$sceDelegateProvider', fun
     $sceDelegateProvider.resourceUrlWhitelist(['**']);
 }]);
 
-//ANGULAR 1.2 HAS A NEW SECURITY POLICY TO BLOCK OR PREVENT HACKERS
-
-
 'use strict';
 
 /*global moment */
 
-
-
-angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication',
-  function($scope, backendService, $location, Authentication) {
+angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
+  function($scope, backendService, $location, Authentication, youtubeEmbedUtils) {
     //provides the authentication object
     $scope.authentication = Authentication;
     $scope.campaign = {};
@@ -93,20 +96,13 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     $scope.minDate = moment().add(1, 'days');
     $scope.maxDate = moment().add(30, 'days');
 
-    // console.log(1, backendService);
-
-   // if unauthenticated, go to home
+   //if unauthenticated, go to home
     if (!$scope.authentication.user) {
       $location.path('/');
     }
 
     $scope.addCampaign = function() {
-      var youtube = $scope.campaign.youtubeUrl.split('watch?v=');
-      var youtubeId = null;
-      if(youtube.length > 1){
-         youtubeId = youtube[1];
-      }
-
+      $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
         backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
           $location.path('/campaign/'+ data._id);
@@ -116,23 +112,26 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
         });
     };
 
-    $scope.validateYoutubeUrl = function (url) {
-      // console.log('checking');youtubeError
-      var youtube = $scope.campaign.youtubeUrl.split('watch?v=');
-      var youtubeId = null;
-      if(youtube.length > 1){
-         youtubeId = youtube[1];
+    $scope.validateYoutubeUrl = function (url, isValid) {
+      //checks if input is a valid url
+      if(!isValid) {
+        $scope.youtubeError = 'Please enter a valid youtube Url';
+        return;
+      }
+      //get the youtube id from the url
+      var youtubeId = youtubeEmbedUtils.getIdFromURL(url);
+      //if the youtubeid is the same as url, then the user entered a wrong youtube url/id
+      if(youtubeId === url) {
+        $scope.youtubeError = 'Please enter a valid youtube URL';
+        return;
       }
       backendService.checkYouTubeUrl(youtubeId)
         .success(function (result) {
           $scope.youtubeError = '';
           // Add campaign in youtube url is valid
-          console.log(result);
         })
         .error(function (error){
           $scope.youtubeError = error;
-          console.log(error);
-          //console.log('Invalid YouTube video');
         });
     };
 
@@ -147,12 +146,82 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
 ]);
 'use strict';
 
+/*global moment */
+angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster','backendService', '$location', 'Authentication','$stateParams','youtubeEmbedUtils', function ($scope, toaster, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils) {
+    $scope.authentication = Authentication;
+
+    if(!$scope.authentication.user){
+        $location.path('/');
+    }
+     $scope.campaign = {
+        _id: $stateParams.campaignid
+     };
+
+    backendService.getCampaign($scope.campaign)
+      .success(function(data, status){
+        if($scope.authentication.user._id !== data.createdBy._id){
+          $location.path('/campaign/'+ data._id);
+        }
+        //The Date of Campaign cannot exceed 30 days of the date it was created 
+        $scope.minDate = moment(data.created);
+        $scope.maxDate = moment(data.created).add(30, 'days');
+        $scope.campaign = data;
+        $scope.campaign.youtubeUrl = 'https://www.youtube.com/watch?v='+data.youtubeUrl;
+      })
+      .error(function(err){
+        toaster.pop('error', 'An Error Occurred'+ err);
+    });
+
+    $scope.editCampaign = function(){
+    delete $scope.campaign.createdBy;
+    delete $scope.campaign.created;
+    $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
+      backendService.updateCampaign($scope.campaign)
+      .success(function(data, status, header, config){
+        toaster.pop('success', 'Campaign Edited Successfully');
+        $location.path('/campaign/' + data._id);
+      })
+      .error(function(err,status, header, config){
+        $scope.error = err;
+        toaster.pop('error','An Error Occurred:'+ err);
+      });
+    };
+
+    $scope.validateYoutubeUrl = function (url) {
+      var youtubeId = youtubeEmbedUtils.getIdFromURL(url);
+      //if the youtubeid is the same as url, then the user entered a wrong youtube url/id
+      if(youtubeId === url) {
+        $scope.youtubeError = 'Please enter a valid youtube URL';
+        return;
+      }
+
+      backendService.checkYouTubeUrl(youtubeId)
+        .success(function (result) {
+          $scope.youtubeError = '';
+          // Add campaign in youtube url is valid
+        })
+        .error(function (error){
+          $scope.youtubeError = error;
+      });
+    };     
+
+    //Open the Calendar
+    $scope.open = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.opened = true;
+    };
+  }
+]);
+'use strict';
+
 angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
-
-  if (!$scope.authentication.user || typeof $stateParams.userid !== 'number') {
+  console.log($stateParams.userid);
+  if (!$scope.authentication.user || !$stateParams.userid) {
     $location.path('/');
   }
   // using the backend service to get campaign data from the back end
@@ -171,14 +240,13 @@ function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.decrement = function() {
     $scope.limit = 4;
   };
-
 }]);
 'use strict';
 
 angular.module('campaign').controller('viewCampaignCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.authentication = Authentication;
-    if (!$scope.authentication.user || typeof $stateParams.campaignid !== 'number') {
+    if (!$scope.authentication.user || !$stateParams.campaignid) {
       $location.path('/');
     }
     $scope.campaign = {
@@ -187,13 +255,7 @@ function($scope, backendService, $location, Authentication, $stateParams) {
 
     backendService.getCampaign($scope.campaign)
     .success(function(data, status, header, config) {
-      var youtube = data.youtubeUrl.split('watch?v=');
-      if(youtube.length > 1){
-         data.youtubeId = '//www.youtube.com/embed/'+youtube[1];
-      }
       $scope.campaign = data;
-      console.log(data);
-      //$location.path('/campaign/'+ data._id);
     })
     .error(function(error, status, header, config) {
       console.log(error);
@@ -221,11 +283,17 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/campaigns/' + userid);
   };
 
+  var updateCampaign = function(campaignData) {
+    console.log(campaignData);
+    return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
+  };
+
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
     checkYouTubeUrl: checkYouTubeUrl,
-    getUserCampaigns: getUserCampaigns
+    getUserCampaigns: getUserCampaigns,
+    updateCampaign: updateCampaign
   };
 }]);
 'use strict';

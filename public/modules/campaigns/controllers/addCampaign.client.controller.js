@@ -12,7 +12,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     $scope.minDate = moment().add(1, 'days');
     $scope.maxDate = moment().add(30, 'days');
 
-   // if unauthenticated, go to home
+   //if unauthenticated, go to home
     if (!$scope.authentication.user) {
       $location.path('/');
     }
