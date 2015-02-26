@@ -68,27 +68,20 @@ describe('Add Campaign', function() {
     it('should not accept Title with Less Than 5 Characters or', function(){
       var title =element(by.model('campaign.title'));
       title.sendKeys('TEST');
-      browser.sleep(2000);
       expect(element(by.id('lessThan5')).isDisplayed()).toBe(true);
-      browser.driver.sleep(2000);
       title.clear();
       //sending an a string of empty characters
       title.sendKeys('         ');
-      browser.driver.sleep(2000);
       expect(element(by.id('campaignIsRequired')).isDisplayed()).toBe(true);
     });
 
     it('should not accept description with Less Than 20 Characters', function(){
         var description =element(by.model('campaign.description'));
         description.sendKeys('These Characters');
-        browser.driver.sleep(2000);
         expect(element(by.id('lessThan20')).isDisplayed()).toBe(true);
-        browser.driver.sleep(2000);
         description.clear();
-        browser.driver.sleep(2000);
         //sending an a string of empty characters
         description.sendKeys('                                   ');
-        browser.driver.sleep(1000);
         expect(element(by.id('descriptionErr')).isDisplayed()).toBe(true);
     });
 
@@ -166,4 +159,5 @@ describe('Add Campaign', function() {
       expect(dueDate.getAttribute('value')).not.toContain(todayNo);
     });
   });
+//add more tests, not comprehensive enough
 });
