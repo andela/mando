@@ -18,5 +18,22 @@ function($scope, toaster, backendService,$location, Authentication, $stateParams
       console.log(error);
     });
 
+
+    $scope.deleteCampaign = function(data, toastr) {
+       var confirmMsg = confirm('Do you want to delete this Campaign?');
+      if(confirmMsg === true) {
+          backendService.deleteCampaign($scope.campaign).success(function(text) {
+          toaster.pop('success', $scope.campaign.title, 'Campaign deleted successfully');
+          $location.path('/campaigns/:userId');
+          console.log('deleted');
+          }).error(function(error) {
+          console.log('error');
+        });
+      } else {
+        $location.path('/campaign/'+ data._id);
+      }
+
+  };
+
   }
 ]);

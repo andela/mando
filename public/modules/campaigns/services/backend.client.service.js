@@ -33,6 +33,7 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getCampaign: getCampaign,
     checkYouTubeUrl: checkYouTubeUrl,
     getUserCampaigns: getUserCampaigns,
+
     updateCampaign: updateCampaign,
     deleteCampaign: deleteCampaign
 

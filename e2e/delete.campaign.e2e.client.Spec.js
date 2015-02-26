@@ -12,6 +12,7 @@ describe('deleteCampaigns', function() {
     signInButton.click();
     var myAndonation = element(by.id('myAndonation'));
     myAndonation.click();
+
     var titleButton = element.all(by.binding('campaign.title')).first().click();
     var titleUrl = titleButton.getAttribute('href');
     element(by.id('editBtn')).click();

@@ -80,6 +80,7 @@ exports.updateCampaign = function(req, res) {
    });
  };
 
+
 exports.deleteCampaign = function(req, res) {
   Campaign.findByIdAndRemove(req.params.campaignId)
   .exec(function(err, campaign) {
