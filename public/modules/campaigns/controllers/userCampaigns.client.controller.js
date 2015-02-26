@@ -4,14 +4,18 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
-  console.log($stateParams.userid);
   if (!$scope.authentication.user || !$stateParams.userid) {
     $location.path('/');
   }
   // using the backend service to get campaign data from the back end
   var userid = $scope.authentication.user._id;
   backendService.getUserCampaigns(userid).success(function(myCampaigns) {
+    if (myCampaigns.length < 1) {
+       myCampaigns = false;
+    } else {
     $scope.myCampaigns = myCampaigns;
+     myCampaigns = false;
+  }
   });
 
   // function to click the show more button on getMoreCampaigns page
