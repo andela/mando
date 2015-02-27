@@ -1,5 +1,5 @@
 <section id="section" data-ng-controller="viewCampaignCtrl">
-  <div class="container main-container" ng-hide="deletemsg">
+  <div class="container main-container">
     <div class="row col-md-10 col-md-offset-1">
       <div class="row">
         <div class="row">
@@ -12,8 +12,6 @@
             <div>
               <button class="btn btn-success btn-lg supportbtn">$ SUPPORT</button>
             </div>
-            
-            <div class="col-md-5">
               <p class="cash">Needs: ${{campaign.amount}}</p>
               <p class="cash">Raised: ${{}}</p>
           </div>
@@ -23,11 +21,12 @@
             <p>{{campaign.description}}</p>
           </div>
           <div class="col-md-5">
-              <div>
-                <youtube-video video-id="campaign.youtubeUrl"></youtube-video>
-              </div>
+            <div>
+              <youtube-video video-id="campaign.youtubeUrl"></youtube-video>
+            </div>
           </div>
         </div>
+      </div>
     </div>
   </div>
 </section>
