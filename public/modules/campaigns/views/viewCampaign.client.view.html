@@ -2,25 +2,40 @@
   <div class="container main-container">
     <div class="row col-md-10 col-md-offset-1">
       <div class="row">
-        <h2 class="title" data-ng-bind="campaign.title"></h2>
-        <p class="CreatedAndDeadline">Created By: {{campaign.createdBy.displayName}} <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign._id}}/edit" id="editBtn">EDIT CAMPAIGN </a></span></p>
-        <p class="CreatedAndDeadline">Deadline: {{campaign.dueDate | date}}</p>
-      </div
+        <div class="row">
+          <div class="col-md-6">
+            <p class="title" data-ng-bind="campaign.title"></p>
+            <p class="CreatedAndDeadline">Created By: {{campaign.createdBy.displayName}} <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign._id}}/edit" id="editBtn">EDIT CAMPAIGN </a></span></p>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-5">
+              <button class="btn btn-success btn-lg">$ SUPPORT</button>
+            </div>
+            <div class="col-md-5">
+              <p class="cash">Needs: ${{campaign.amount}}</p>
+              <p class="cash">Raised: ${{}}</p>
+            </div>
+        </div>
+      </div>
       <div class="row">
-        <div class="col-md-6 justify"><p>{{campaign.description}}</p></div>
-        <div class="col-md-5 col-md-offset-1">
-          <div class="row">
+
+        <div class="col-md-6 justify">
+          <p class="CreatedAndDeadline">Deadline: {{campaign.dueDate | date}}</p>
+          <p>{{campaign.description}}</p>
+        </div>
+        <div class="col-md-5">
+          <!-- <div class="row">
             <button class="btn btn-success btn-lg">$ SUPPORT</button>
             <div>
               <p class="cash">Needs: ${{campaign.amount}}</p>
               <p class="cash">Raised: ${{}}</p>
             </div>
-          </div>
-          <div class="row">
+          </div> -->
+          <!-- <div class="row"> -->
             <div>
               <youtube-video video-id="campaign.youtubeUrl"></youtube-video>
             </div>
-          </div>
+          <!-- </div> -->
         </div>
       </div>
     </div>
