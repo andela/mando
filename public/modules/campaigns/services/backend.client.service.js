@@ -8,11 +8,11 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   };
 
   var getCampaign = function(campaignData) {
-    return $http.get('/campaign/'+campaignData._id);
+    return $http.get('/campaign/' +campaignData._id);
   };
 
   var deleteCampaign = function(campaignData) {
-    return $http.delete('/campaign/'+campaignData._id+'/edit/');
+    return $http.delete('/campaign/' +campaignData._id);
   };
 
   var checkYouTubeUrl = function(videoId) {
