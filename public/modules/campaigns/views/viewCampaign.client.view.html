@@ -15,7 +15,13 @@
 <!-- =======
         <h2 class="title" data-ng-bind="campaign.title"></h2>
         <p class="CreatedAndDeadline">Created By: {{campaign.createdBy.displayName}} <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign._id}}/edit" id="editBtn">EDIT CAMPAIGN </a></span></p>
+<<<<<<< HEAD
         <p class="CreatedAndDeadline">Deadline: {{campaign.dueDate | date}}</p>
+=======
+        <!-- <h2 class="title">{{campaign.title}}</h2>
+        <p class="CreatedAndDeadline">Created By: {{campaign.createdBy.displayName}}</p>
+        <p class="CreatedAndDeadline">Deadline: {{campaign.dueDate | date}}</p> -->
+<!-- >>>>>> modified th
       </div
       <div class="row">
         <div class="col-md-6 justify"><p>{{campaign.description}}</p></div>
@@ -23,7 +29,7 @@
           <div class="row">
             <button class="btn btn-success btn-lg">$ SUPPORT</button>
             <div>
->>>>>>> added the delete button in the edit page -->
+>>>>>>> added the delete button in the edit page --> 
               <p class="cash">Needs: ${{campaign.amount}}</p>
               <p class="cash">Raised: ${{}}</p>
             </div>
