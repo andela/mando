@@ -59,10 +59,6 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
       });
     };
 
-<<<<<<< HEAD
-      //Deleting a campaign
-=======
->>>>>>> 1f90f3840315ce7c73ca78251503214b2326241e
     $scope.deleteCampaign = function(data, toastr) {
        var confirmMsg = confirm('Do you want to delete this Campaign?');
       if(confirmMsg === true) {
