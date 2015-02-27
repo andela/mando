@@ -93,10 +93,7 @@ exports.deleteCampaign = function(req, res) {
     } else {
       res.send('deleted successfully');
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> created back end server route to delete a campaign
     });
 };
 
