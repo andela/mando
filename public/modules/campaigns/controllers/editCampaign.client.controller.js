@@ -69,8 +69,6 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
           }).error(function(error) {
           console.log('error');
         });
-      } else {
-        $location.path('/campaign/'+ data._id);
       }
 
   };
