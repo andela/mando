@@ -12,7 +12,7 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   };
 
   var deleteCampaign = function(campaignData) {
-    return $http.delete('/campaign/'+campaignData._id);
+    return $http.delete('/campaign/'+campaignData._id+'/edit/');
   };
 
   var checkYouTubeUrl = function(videoId) {
