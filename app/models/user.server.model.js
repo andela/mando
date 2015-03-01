@@ -73,10 +73,10 @@ var UserSchema = new Schema({
 		default: 0
 	},
 
-	role: {
-		type: [Schema.Types.ObjectId],
+	roles: [{
+		type: Schema.Types.ObjectId,
 		ref: 'UserRole'
-	}
+	}]
 });
 
 /**
