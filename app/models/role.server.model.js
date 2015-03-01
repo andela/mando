@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
 var roleSchema = new Schema({
   roleType: {
     type: String,
-    enum: ['member', 'admin', 'banker']
+    enum: ['member', 'admin', 'banker', 'distributor']
   },
 
   created: {
