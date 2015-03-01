@@ -6,8 +6,9 @@
 
 module.exports = function(app) {
   app.route('/admin/*').all(users.requiresLogin);
-  app.route('/admin/roles/add').post(adminRoles.addRoles);
+  app.route('/admin/role/add').post(adminRoles.addRoles);
   app.route('/admin/roles').get(adminRoles.getRoles);
-  app.route('/admin/users/role').post(adminRoles.getRoles);
+  app.route('/admin/user/role').post(adminRoles.getRoles);
   app.route('/admin/users').get(adminRoles.getUsers);
+  app.route('/admin/user/role/add').post(adminRoles.addUserRoles);
 };
