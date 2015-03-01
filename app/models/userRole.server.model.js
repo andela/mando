@@ -10,7 +10,7 @@ var userRoleSchema = new  Schema({
   },
 
   roleId: {
-    type: Schema.Types.ObjectId,
+    type: [Schema.Types.ObjectId],
     ref: 'Role'
   },
   created: {
