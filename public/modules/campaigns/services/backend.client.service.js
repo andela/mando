@@ -32,6 +32,14 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
   };
 
+  var getRoles = function() {
+    return $http.get('/admin/roles');
+  };
+
+  var getUsers = function() {
+    return $http.get('/admin/users');
+  };
+
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
@@ -39,6 +47,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getUserCampaigns: getUserCampaigns,
     updateCampaign: updateCampaign,
     deleteCampaign: deleteCampaign,
-    getCampaigns: getCampaigns
-   };
+    getCampaigns: getCampaigns,
+    getRoles: getRoles,
+    getUsers: getUsers
+  };
 }]);
