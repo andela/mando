@@ -44,7 +44,7 @@ var UserSchema = new Schema({
 
 	providerData: {},
 	additionalProvidersData: {},
-	
+
 	updated: {
 		type: Date
 	},
@@ -71,6 +71,11 @@ var UserSchema = new Schema({
 	balance: {
 		type: Number,
 		default: 0
+	},
+
+	role: {
+		type: [Schema.Types.ObjectId],
+		ref: 'UserRole'
 	}
 });
 
