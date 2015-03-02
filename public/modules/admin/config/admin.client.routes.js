@@ -4,7 +4,7 @@ angular.module('admin').config(['$stateProvider',function($stateProvider) {
 
   $stateProvider.
     state('allUsers', {
-      url: '/admina/users',
+      url: '/admin/users',
       templateUrl: 'modules/admin/views/users.admin.client.view.html'
     });
 }]);
