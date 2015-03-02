@@ -77,6 +77,23 @@ exports.updateCampaign = function(req, res) {
      Campaign.populate(editedCampaign, {path: 'createdBy lastModifiedBy'}, function (err, campaign){
       res.json(campaign);
      });
+   });
+  };
+// =======
+//  };
+// >>>>>>> created back end server route to delete a campaign
+
+exports.deleteCampaign = function(req, res) {
+  Campaign.findByIdAndRemove(req.params.campaignId)
+  .exec(function(err, campaign) {
+    if(err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.send('deleted successfully');
+    }
+
     });
 };
 
