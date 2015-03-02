@@ -7,6 +7,7 @@ var _ = require('lodash'),
 	errorHandler = require('../errors.server.controller'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
+	adminRoles = require('../admin/roles.server.controller.js'),
 	User = mongoose.model('User');
 
 /**
@@ -87,8 +88,10 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 						});
 
 						// And save the user
-						user.save(function(err) {
-							return done(err, user);
+						user.save(function(err, user) {
+							adminRoles.addRolesToUser(user._id, user._id, 'member', function(err, user) {
+								return done(err, user);
+							});
 						});
 					});
 				} else {
