@@ -32,5 +32,6 @@ li{
 @media screen and (min-width: 1000px) {
   .home-campaigns{
     width:32%;
+    min-height: 200px;
   }
 }
