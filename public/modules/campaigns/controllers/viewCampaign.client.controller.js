@@ -15,7 +15,7 @@ function($scope, toaster, backendService,$location, Authentication, $stateParams
       $scope.campaign = data;
     })
     .error(function(error, status, header, config) {
-      console.log(error);
+      $location.path('/');
     });
 
   }
