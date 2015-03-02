@@ -33,23 +33,24 @@ exports.getRoles = function(req, res) {
   });
 };
 
-//adds a role to a user
-exports.addUserRoles = function(req, res) {
-  var userRole = new UserRole(req.body);
-  userRole.createdBy = req.user._id;
-  userRole.lastModifiedBy = req.user._id;
-  userRole.userId = req.body.user._id;
+
+var saveUserRole = function(adminid, userid, roleType, done) {
+  var userRole = new UserRole({});
+  userRole.createdBy = adminid;
+  userRole.lastModifiedBy = adminid;
+  userRole.userId = userid;
 
   async.series([
     function(cb) {
-      Role.findOne({roleType: req.body.role}, function (err, role) {
+      Role.findOne({roleType: roleType}, function (err, role) {
         if(err){
-          return res.status(400).send({
-            message: errorHandler.getErrorMessage(err)
-          });
+          done(err);
+          return cb(err);
         }
         if(!role) {
-          return res.status(400).send({message: 'Invalid Role Type'});
+          var errMsg = {message: 'Invalid Role Type'};
+          done(errMsg);
+          return cb(errMsg);
         }
         userRole.roleId.push(role._id);
         cb(err);
@@ -58,19 +59,20 @@ exports.addUserRoles = function(req, res) {
     function(cb) {
       userRole.save(function(err, newUserRole) {
         if(err){
-          return res.status(400).send({
-            message: errorHandler.getErrorMessage(err)
-          });
+          done(err);
+          return cb(err);
         }
-        //updates the usel document with the new role added
-        User.findByIdAndUpdate(req.body.user._id, {role: newUserRole._id}, {}, function(err, updatedUser) {
+        //updates the user document with the new role added
+        User.findByIdAndUpdate(userid, {'roles': newUserRole._id}, {}, function(err, updatedUser) {
+          if(err){
+            done(err);
+            return cb(err);
+          }
           //populates the role field in the user document
-          User.populate(updatedUser, {path: 'role'}, function(err, populatedUser) {
+          User.populate(updatedUser, {path: 'roles'}, function(err, populatedUser) {
             //updates the roleId field in the userRole document
-            UserRole.populate(populatedUser.role, {path: 'roleId'}, function(err, populatedUserRole) {
-            console.log(1, populatedUser);
-            console.log(2, populatedUserRole);
-            res.json(populatedUser);
+            UserRole.populate(populatedUser.roles, {path: 'roleId'}, function(err, populatedUserRole) {
+              done(err, populatedUserRole);
             });
           });
         });
@@ -78,6 +80,18 @@ exports.addUserRoles = function(req, res) {
       });
     }
   ]);
+};
+
+//exports saveUserRole function
+exports.addRolesToUser = saveUserRole;
+//adds a role to a user
+exports.addUserRoles = function(req, res) {
+  saveUserRole(req.user._id, req.body.user._id, req.body.role, function(err, data) {
+    if(err){
+      return res.status(400).json(err);
+    }
+    res.json(data);
+  });
 };
 
 //get all users as an admin
