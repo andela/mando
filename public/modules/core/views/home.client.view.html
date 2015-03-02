@@ -1,14 +1,11 @@
 <section data-ng-controller="HomeController">
-  <div>
+  <div class="brd">
     <h2>Current Campaigns</h2>
-    <div class="row">
-      <div class="col-md-4 home-campaigns" ng-repeat="campaign in campaigns | orderBy:'createdBy' | limitTo:3">
-      <div class="col-md-4" ng-repeat="campaign in campaigns | limitTo:3">
-      <div class="col-md-4 home-campaigns" ng-repeat="campaign in campaigns | orderBy:'createdBy' | limitTo:3">
-        <p><a href="/#!/campaign/{{campaign._id}}"> {{campaign.title}}</a></p> <p>{{campaign.amount}}</p>
+      <div class=" col-md-4 home-campaigns" ng-repeat="campaign in campaigns | orderBy: 'created'.descending | limitTo:3">
+        <p><a href="/#!/campaign/{{campaign._id}}"> {{campaign.title }}</a></p> <p>{{campaign.amount}}</p>
         <p>{{campaign.dueDate | date}}</p> <p>{{campaign.balance}}</p>
-        <p>{{campaign.description}}</p>
+        <span class="text-muted">Description</span>
+        <p class="">{{campaign.description |limitTo: 136}} ...</p>
       </div>
-    </div>
   </div>
 </section>
