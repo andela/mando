@@ -5,10 +5,11 @@
       <div class="form-group" ng-class="{'has-error': addcampaign.title.$invalid &amp;&amp; addcampaign.title.$dirty}">
         <label for="title" class="col-sm-2 control-label">Title</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name="title" data-ng-model="campaign.title" id="title" placeholder="Enter a Title for your campaign" required ng-minlength="5" />
+          <input type="text" class="form-control" name="title" data-ng-model="campaign.title" id="title" placeholder="Enter a Title for your campaign"  ng-minlength="5" ng-maxlength="30" required/>
           <span class="help-block has-error">
             <span id="campaignIsRequired" ng-show="addcampaign.title.$error.required &amp;&amp; addcampaign.title.$dirty">Campaign title is required</span>
             <span id="lessThan5" ng-show="addcampaign.title.$error.minlength &amp;&amp; addcampaign.title.$dirty">Campaign title must be more than 5 characters</span>
+            <span id="greaterThan30" ng-show="addcampaign.title.$error.maxlength &amp;&amp; addcampaign.title.$dirty">Campaign title must not be more than 30 characters</span>
           </span>
         </div>
       </div>
