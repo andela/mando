@@ -21,6 +21,7 @@
   -o-border-radius:10px;
   border-radius:10px;
   margin: 2px;
+  background-color :rgba(31,26,30,.1);
 }
 
 li{

@@ -12,7 +12,6 @@ module.exports = function(app) {
   app.route('/campaign/:campaignId').get(campaigns.getCampaign);
   app.route('/campaign/:campaignId/edit').put(campaigns.updateCampaign);
   app.route('/campaign/:campaignId').delete(campaigns.deleteCampaign);
-  app.route('/campaigns/:userId').get(campaigns.getCampaigns);
   app.route('/campaigns/:userId').get(campaigns.getUserCampaigns);
   app.route('/campaigns').get(campaigns.getCampaigns);
 };
