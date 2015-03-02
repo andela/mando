@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'andonation';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'youtube-embed'];
+	var applicationModuleVendorDependencies = ['ngResource', 'toaster', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'youtube-embed'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
@@ -86,8 +86,8 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
 
 /*global moment */
 
-angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
-  function($scope, backendService, $location, Authentication, youtubeEmbedUtils) {
+angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
+  function($scope, toaster, backendService, $location, Authentication, youtubeEmbedUtils) {
     //provides the authentication object
     $scope.authentication = Authentication;
     $scope.campaign = {};
@@ -105,6 +105,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
       $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
         backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
+            toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
           $location.path('/campaign/'+ data._id);
         })
         .error(function(error, status, header, config) {
@@ -147,7 +148,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
 'use strict';
 
 /*global moment */
-angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster','backendService', '$location', 'Authentication','$stateParams','youtubeEmbedUtils', function ($scope, toaster, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils) {
+angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', 'backendService', '$location', 'Authentication','$stateParams','youtubeEmbedUtils', function ($scope,toaster, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils) {
     $scope.authentication = Authentication;
 
     if(!$scope.authentication.user){
@@ -203,7 +204,21 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster','b
         .error(function (error){
           $scope.youtubeError = error;
       });
-    };     
+    };
+
+    $scope.deleteCampaign = function(data, toastr) {
+       var confirmMsg = confirm('Do you want to delete this Campaign?');
+      if(confirmMsg === true) {
+          backendService.deleteCampaign($scope.campaign).success(function(text) {
+          toaster.pop('success', $scope.campaign.title, 'Campaign deleted successfully');
+          $location.path('/campaigns/:userId');
+          console.log('deleted');
+          }).error(function(error) {
+          console.log('error');
+        });
+      }
+
+  };
 
     //Open the Calendar
     $scope.open = function($event) {
@@ -220,14 +235,18 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
-  console.log($stateParams.userid);
   if (!$scope.authentication.user || !$stateParams.userid) {
     $location.path('/');
   }
   // using the backend service to get campaign data from the back end
   var userid = $scope.authentication.user._id;
   backendService.getUserCampaigns(userid).success(function(myCampaigns) {
+    if (myCampaigns.length < 1) {
+       myCampaigns = false;
+    } else {
     $scope.myCampaigns = myCampaigns;
+     myCampaigns = false;
+  }
   });
 
   // function to click the show more button on getMoreCampaigns page
@@ -243,8 +262,8 @@ function($scope, backendService, $location, Authentication, $stateParams) {
 }]);
 'use strict';
 
-angular.module('campaign').controller('viewCampaignCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
-function($scope, backendService, $location, Authentication, $stateParams) {
+angular.module('campaign').controller('viewCampaignCtrl', ['$scope','toaster' , 'backendService','$location', 'Authentication', '$stateParams',
+function($scope, toaster, backendService,$location, Authentication, $stateParams) {
   $scope.authentication = Authentication;
     if (!$scope.authentication.user || !$stateParams.campaignid) {
       $location.path('/');
@@ -260,6 +279,7 @@ function($scope, backendService, $location, Authentication, $stateParams) {
     .error(function(error, status, header, config) {
       console.log(error);
     });
+
   }
 ]);
 'use strict';
@@ -272,7 +292,11 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   };
 
   var getCampaign = function(campaignData) {
-    return $http.get('/campaign/'+campaignData._id);
+    return $http.get('/campaign/' +campaignData._id);
+  };
+
+  var deleteCampaign = function(campaignData) {
+    return $http.delete('/campaign/' +campaignData._id);
   };
 
   var checkYouTubeUrl = function(videoId) {
@@ -293,7 +317,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getCampaign: getCampaign,
     checkYouTubeUrl: checkYouTubeUrl,
     getUserCampaigns: getUserCampaigns,
-    updateCampaign: updateCampaign
+    updateCampaign: updateCampaign,
+    deleteCampaign: deleteCampaign
   };
 }]);
 'use strict';
