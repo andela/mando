@@ -8,13 +8,15 @@ function($scope, backendService, $location, Authentication, $stateParams) {
     $location.path('/');
   }
   // using the backend service to get campaign data from the back end
-  var userid = $scope.authentication.user._id;
+  var userid = $stateParams.userid;
   backendService.getUserCampaigns(userid)
     .success(function(myCampaigns) {
       $scope.myCampaigns = myCampaigns;
     })
     .error(function(error, status, header, config) {
-      location.path('/');
+      //not cool to redirect the user if any error occured, should be improved by
+      //checking for the exact error act base on the error
+      $location.path('/');
     });
 
   // function to click the show more button on getMoreCampaigns page

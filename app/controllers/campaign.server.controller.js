@@ -53,6 +53,7 @@ exports.getCampaign = function(req, res){
 };
 
 exports.getUserCampaigns = function(req, res) {
+  //validates the user id if valid or not
   User.findById(req.params.userId)
     .exec(function(err, user) {
       if(err) {
@@ -75,15 +76,9 @@ exports.getUserCampaigns = function(req, res) {
           message: errorHandler.getErrorMessage(err)
         });
       }
-      //if the user has no campaign created
-      if (!campaign) {
-        return res.status(400).send({
-          message: 'No created campaign for the user'
-        });
-      }
-        Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-            res.json(newCampaign);
-        });
+      Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
+          res.json(newCampaign);
+      });
     });
 };
 
