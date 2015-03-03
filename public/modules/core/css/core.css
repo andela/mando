@@ -21,14 +21,14 @@
   -o-border-radius:10px;
   border-radius:10px;
   margin: 2px;
-  background-color :rgba(31,26,30,.1);
+  background-color :#dfdcde;
   min-height: 17em;
+  
 }
 
 li{
   list-style-type: none;
 }
-
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 @media screen and (min-width: 1000px) {
