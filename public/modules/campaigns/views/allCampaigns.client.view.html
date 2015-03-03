@@ -1,8 +1,8 @@
 <section data-ng-controller="allCampaignCtrl">
 <div class="row">
-    <h2> All Current Campaigns</h2>
-    <ul>
-      <li class="col-sm-4 home-campaigns" ng-repeat="campaign in campaigns | orderBy: 'created'.descending | limitTo:20">
+    <ul class="rig">
+      <h2> All Current Campaigns</h2>
+      <li class="col-sm-4 home-campaigns" data-ng-repeat="campaign in filteredCampaigns | orderBy: 'created'.descending">
         <p><a href="/#!/campaign/{{campaign._id}}">{{campaign.title}}</a></p> 
         <p> ${{campaign.amount}}</p>
         <p>DueDate: {{campaign.dueDate | date}}</p> 
@@ -11,5 +11,18 @@
         <p class="">{{campaign.description |limitTo: 136}} ...</p>
       </li>
     </ul>
+
+    <pagination total-items="totalItems" items-per-page="itemsPerPage" 
+         ng-model="currentPage" ng-change="pageChanged()"></pagination>
+      <p>
+         Total items: {{totalItems}}<br />
+         Items per page: {{itemsPerPage}}<br />
+         Current Page: {{currentPage}}<br />
+         Showing: {{startItems}} - {{endItems}}
+      </p>
+    <!-- <hr /> -->
+    <!-- <h4>Pager</h4> -->
+    <!-- <pager total-items="totalItems" ng-model="currentPage"></pager> -->
+    <!-- <hr /> -->
   </div>
 </section>
