@@ -4,6 +4,7 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
+
   if (!$scope.authentication.user) {
     $location.path('/');
   }
