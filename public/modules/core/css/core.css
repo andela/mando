@@ -13,3 +13,26 @@
 .ng-valid.ng-dirty {
 	border-color: #78FA89;
 }
+
+.home-campaigns {
+  border: 1px solid #e2e2e2;
+  -webkit-border-radius: 10px;
+  -moz-border-radius:10px;
+  -o-border-radius:10px;
+  border-radius:10px;
+  margin: 2px;
+  background-color :rgba(31,26,30,.1);
+}
+
+li{
+  list-style-type: none;
+}
+
+
+/* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
+@media screen and (min-width: 1000px) {
+  .home-campaigns{
+    width:32%;
+    min-height: 200px;
+  }
+}

@@ -46,7 +46,7 @@ exports.getCampaign = function(req, res){
     });
 };
 
-exports.getCampaigns = function(req, res) {
+exports.getUserCampaigns = function(req, res) {
   var ObjectId = mongoose.Types.ObjectId;
   Campaign.find({'createdBy': new ObjectId(req.params.userId)})
     .exec(function(err, campaign){
@@ -60,6 +60,19 @@ exports.getCampaigns = function(req, res) {
         });
       }
     });
+};
+
+exports.getCampaigns = function(req, res) {
+  Campaign.find({}, function(err, campaigns) {
+    if (err) {
+      return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+      });
+    }
+    Campaign.populate(campaigns, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
+      res.json(newCampaign);
+    });
+  });
 };
 
 exports.updateCampaign = function(req, res) {
@@ -79,9 +92,7 @@ exports.updateCampaign = function(req, res) {
      });
    });
   };
-// =======
-//  };
-// >>>>>>> created back end server route to delete a campaign
+
 
 exports.deleteCampaign = function(req, res) {
   Campaign.findByIdAndRemove(req.params.campaignId)
