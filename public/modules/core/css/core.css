@@ -22,6 +22,7 @@
   border-radius:10px;
   margin: 2px;
   background-color :rgba(31,26,30,.1);
+  min-height: 17em;
 }
 
 li{
@@ -33,6 +34,5 @@ li{
 @media screen and (min-width: 1000px) {
   .home-campaigns{
     width:32%;
-    min-height: 200px;
   }
 }

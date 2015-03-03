@@ -1,0 +1,15 @@
+<section data-ng-controller="allCampaignCtrl">
+<div class="row">
+    <h2> All Current Campaigns</h2>
+    <ul>
+      <li class="col-sm-4 home-campaigns" ng-repeat="campaign in campaigns | orderBy: 'created'.descending | limitTo:20">
+        <p><a href="/#!/campaign/{{campaign._id}}">{{campaign.title}}</a></p> 
+        <p> ${{campaign.amount}}</p>
+        <p>DueDate: {{campaign.dueDate | date}}</p> 
+        <p>{{campaign.balance}}</p>
+        <span class="text-muted">Description</span>
+        <p class="">{{campaign.description |limitTo: 136}} ...</p>
+      </li>
+    </ul>
+  </div>
+</section>
