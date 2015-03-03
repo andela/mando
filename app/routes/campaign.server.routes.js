@@ -6,6 +6,7 @@ var express = require('express'),
     users = require('../../app/controllers/users.server.controller');
 
 module.exports = function(app) {
+  //added user.requresLogin for request that needs authentication 
   app.route('/campaign/add').post( users.requiresLogin, campaigns.createCampaign);
   app.route('/campaign/:campaignId').get(campaigns.getCampaign);
   app.route('/campaign/:campaignId/edit').put(users.requiresLogin, campaigns.updateCampaign);
