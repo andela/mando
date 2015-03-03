@@ -307,6 +307,11 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/campaigns/' + userid);
   };
 
+  //get all campaigns for the homepage
+  var getCampaigns = function() {
+    return $http.get('/campaigns');
+  };
+
   var updateCampaign = function(campaignData) {
     console.log(campaignData);
     return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
@@ -318,8 +323,9 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     checkYouTubeUrl: checkYouTubeUrl,
     getUserCampaigns: getUserCampaigns,
     updateCampaign: updateCampaign,
-    deleteCampaign: deleteCampaign
-  };
+    deleteCampaign: deleteCampaign,
+    getCampaigns: getCampaigns
+   };
 }]);
 'use strict';
 
@@ -357,10 +363,19 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
 'use strict';
 
 
-angular.module('core').controller('HomeController', ['$scope', 'Authentication',
-	function($scope, Authentication) {
+angular.module('core').controller('HomeController', ['$scope', 'Authentication', 'backendService',
+	function($scope, Authentication, backendService) {
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
+    $scope.campaigns = [];
+
+    backendService.getCampaigns()
+      .success(function(data, status, header, config) {
+        $scope.campaigns = data;
+      })
+      .error(function(error, status, header, config) {
+        $scope.error = error;
+      });
 	}
 ]);
 'use strict';
