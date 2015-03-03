@@ -18,6 +18,10 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       url: '/campaign/:campaignid',
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     }).
+    state('allCampaigns', {
+      url: '/campaigns',
+      templateUrl: 'modules/campaigns/views/allCampaigns.client.view.html'
+    }).
     state('userCampaigns', {
       url: '/campaigns/:userid',
       templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html'
