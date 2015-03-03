@@ -239,15 +239,16 @@ function($scope, backendService, $location, Authentication, $stateParams) {
     $location.path('/');
   }
   // using the backend service to get campaign data from the back end
-  var userid = $scope.authentication.user._id;
-  backendService.getUserCampaigns(userid).success(function(myCampaigns) {
-    if (myCampaigns.length < 1) {
-       myCampaigns = false;
-    } else {
-    $scope.myCampaigns = myCampaigns;
-     myCampaigns = false;
-  }
-  });
+  var userid = $stateParams.userid;
+  backendService.getUserCampaigns(userid)
+    .success(function(myCampaigns) {
+      $scope.myCampaigns = myCampaigns;
+    })
+    .error(function(error, status, header, config) {
+      //not cool to redirect the user if any error occured, should be improved by
+      //checking for the exact error act base on the error
+      $location.path('/');
+    });
 
   // function to click the show more button on getMoreCampaigns page
   $scope.limit = 4;
@@ -277,7 +278,7 @@ function($scope, toaster, backendService,$location, Authentication, $stateParams
       $scope.campaign = data;
     })
     .error(function(error, status, header, config) {
-      console.log(error);
+      $location.path('/');
     });
 
   }
