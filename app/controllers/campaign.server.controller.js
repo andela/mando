@@ -4,7 +4,8 @@
 var mongoose = require('mongoose'),
     errorHandler =require('./errors.server.controller'),
     moment = require('moment'),
-    Campaign= mongoose.model('Campaign');
+    User = mongoose.model('User'),
+    Campaign = mongoose.model('Campaign');
 
 /****Create A campaign *****/
 exports.createCampaign= function(req, res){
@@ -38,15 +39,35 @@ exports.getCampaign = function(req, res){
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
-      } else {
-         Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-           res.json(newCampaign);
-         });
       }
+      //if the user has no campaign created
+      if (!campaign) {
+        return res.status(400).send({
+          message: 'Invalid campaignid'
+        });
+      }
+      Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
+        res.json(newCampaign);
+      });
     });
 };
 
 exports.getUserCampaigns = function(req, res) {
+  //validates the user id if valid or not
+  User.findById(req.params.userId)
+    .exec(function(err, user) {
+      if(err) {
+        return res.status(404).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      }
+      //if the user has no campaign created
+      if (!user) {
+        return res.status(404).send({
+          message: 'Invalid User Id'
+        });
+      }
+    });
   var ObjectId = mongoose.Types.ObjectId;
   Campaign.find({'createdBy': new ObjectId(req.params.userId)})
     .exec(function(err, campaign){
@@ -54,11 +75,10 @@ exports.getUserCampaigns = function(req, res) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
-      } else {
-        Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-            res.json(newCampaign);
-        });
       }
+      Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
+          res.json(newCampaign);
+      });
     });
 };
 
@@ -86,6 +106,12 @@ exports.updateCampaign = function(req, res) {
     .findByIdAndUpdate(req.params.campaignId, campaign, {}, function(err, editedCampaign) {
       if(err){
           res.status(400).json(err);
+      }
+      //if the user has no campaign created
+      if (!editedCampaign) {
+        return res.status(400).send({
+          message: 'Invalid campaign id'
+        });
       }
      Campaign.populate(editedCampaign, {path: 'createdBy lastModifiedBy'}, function (err, campaign){
       res.json(campaign);
