@@ -23,7 +23,7 @@ describe('userCampaigns', function() {
     myAndonation.click();
     expect(browser.getCurrentUrl()).toMatch(/myAndonation$/);
     browser.get('http://localhost:3000/#!/campaigns/54f39eb02e5e56fc7690e2sd');
-    expect(browser.getCurrentUrl()).not.toMatch(/myAndonation/);
+    expect(browser.getCurrentUrl()).not.toMatch(/myAndonation$/);
     expect(browser.getCurrentUrl()).toBe('http://localhost:3000/#!/');
   });
 });
