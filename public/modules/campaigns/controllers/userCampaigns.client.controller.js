@@ -4,11 +4,14 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
-  if (!$scope.authentication.user || !$stateParams.userid) {
+  if (!$scope.authentication.user) {
     $location.path('/');
   }
-  // using the backend service to get campaign data from the back end
-  var userid = $stateParams.userid;
+  // using the backend service to get campaign data from the back end || 
+  
+  //uses the Currently signed-in id to get the user id.
+  var userid = $scope.authentication.user._id;
+
   backendService.getUserCampaigns(userid)
     .success(function(myCampaigns) {
       $scope.myCampaigns = myCampaigns;
@@ -17,6 +20,7 @@ function($scope, backendService, $location, Authentication, $stateParams) {
       //not cool to redirect the user if any error occured, should be improved by
       //checking for the exact error act base on the error
       $location.path('/');
+
     });
 
   // function to click the show more button on getMoreCampaigns page
