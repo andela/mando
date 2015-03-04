@@ -74,7 +74,7 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     }).
     state('userCampaigns', {
-      url: '/campaigns/:userid',
+      url: '/campaigns/myAndonation',
       templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html'
     });
 
@@ -235,11 +235,14 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
-  if (!$scope.authentication.user || !$stateParams.userid) {
+  if (!$scope.authentication.user) {
     $location.path('/');
   }
-  // using the backend service to get campaign data from the back end
-  var userid = $stateParams.userid;
+  // using the backend service to get campaign data from the back end || 
+  
+  //uses the Currently signed-in id to get the user id.
+  var userid = $scope.authentication.user._id;
+
   backendService.getUserCampaigns(userid)
     .success(function(myCampaigns) {
       $scope.myCampaigns = myCampaigns;
@@ -248,6 +251,7 @@ function($scope, backendService, $location, Authentication, $stateParams) {
       //not cool to redirect the user if any error occured, should be improved by
       //checking for the exact error act base on the error
       $location.path('/');
+
     });
 
   // function to click the show more button on getMoreCampaigns page
@@ -266,7 +270,6 @@ function($scope, backendService, $location, Authentication, $stateParams) {
 angular.module('campaign').controller('viewCampaignCtrl', ['$scope','toaster' , 'backendService','$location', 'Authentication', '$stateParams',
 function($scope, toaster, backendService,$location, Authentication, $stateParams) {
   $scope.authentication = Authentication;
-  
     $scope.campaign = {
       _id: $stateParams.campaignid
     };
