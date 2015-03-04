@@ -35,6 +35,9 @@ var campaignSchema = new Schema({
   dueDate: {
     type: Date
   },
+  slug: {
+    type: String,
+  },
 
   status: {
     type: String,
@@ -61,6 +64,25 @@ var campaignSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   }
+});
+
+//function to slugify the title
+//copied from http://blog.benmcmahen.com/post/41122888102/creating-slugs-for-your-blog-using-express-js-and
+function slugify(text) {
+  return text.toString().toLowerCase()
+    .replace(/\s+/g, '-')        // Replace spaces with -
+    .replace(/[^\w\-]+/g, '')   // Remove all non-word chars
+    .replace(/\-\-+/g, '-')      // Replace multiple - with single -
+    .replace(/^-+/, '')          // Trim - from start of text
+    .replace(/-+$/, '');         // Trim - from end of text
+}
+
+// Generate the slug
+campaignSchema.pre('save', function (next) {
+  this.slug = slugify(this.title);
+  var timestamp = moment(this.created).format('hhmmss');
+  this.slug = timestamp + '/' + this.slug;
+  next();
 });
 
 campaignSchema.path('title').validate(function(v) {

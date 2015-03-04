@@ -7,12 +7,12 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.post('/campaign/add', campaignData);
   };
 
-  var getCampaign = function(campaignData) {
-    return $http.get('/campaign/' +campaignData._id);
+  var getCampaign = function(campaignid) {
+    return $http.get('/campaign/' + campaignid);
   };
 
-  var deleteCampaign = function(campaignData) {
-    return $http.delete('/campaign/' +campaignData._id);
+  var deleteCampaign = function(campaignid) {
+    return $http.delete('/campaign/' +campaignid);
   };
 
   var checkYouTubeUrl = function(videoId) {

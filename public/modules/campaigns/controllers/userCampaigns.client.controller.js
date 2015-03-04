@@ -4,11 +4,11 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
+
   if (!$scope.authentication.user) {
     $location.path('/');
   }
-  // using the backend service to get campaign data from the back end || 
-  
+
   //uses the Currently signed-in id to get the user id.
   var userid = $scope.authentication.user._id;
 

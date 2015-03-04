@@ -11,11 +11,11 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       templateUrl: 'modules/campaigns/views/addCampaign.client.view.html'
     }).
     state('editCampaign', {
-      url: '/campaign/:campaignid/edit',
+      url: '/campaign/:campaignTimestamp/:campaignslug/edit',
       templateUrl: 'modules/campaigns/views/editCampaign.client.view.html'
     }).
     state('viewCampaign', {
-      url: '/campaign/:campaignid',
+      url: '/campaign/:campaignTimeStamp/:campaignslug',
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     }).
     state('userCampaigns', {
