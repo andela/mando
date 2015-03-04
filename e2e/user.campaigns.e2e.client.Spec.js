@@ -21,9 +21,9 @@ describe('userCampaigns', function() {
 
   it('should redirect user to home page if invalid user id is entered', function() {
     myAndonation.click();
-    expect(browser.getCurrentUrl()).toMatch(/[0-9a-fA-F]{24}$/);
+    expect(browser.getCurrentUrl()).toMatch(/myAndonation$/);
     browser.get('http://localhost:3000/#!/campaigns/54f39eb02e5e56fc7690e2sd');
-    expect(browser.getCurrentUrl()).not.toMatch(/^[0-9a-fA-F]{24}$/);
+    expect(browser.getCurrentUrl()).not.toMatch(/myAndonation/);
     expect(browser.getCurrentUrl()).toBe('http://localhost:3000/#!/');
   });
 });
