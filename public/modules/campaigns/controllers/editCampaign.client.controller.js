@@ -57,11 +57,12 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
 
     $scope.deleteCampaign = function(data, toastr) {
        var confirmMsg = confirm('Do you want to delete this Campaign?');
-      if(confirmMsg === true) {
-          backendService.deleteCampaign($scope.campaign).success(function(text) {
+      if(confirmMsg) {
+          backendService.deleteCampaign($scope.campaign._id).success(function(text) {
           toaster.pop('success', $scope.campaign.title, 'Campaign deleted successfully');
           $location.path('/campaigns/myAndonation');
           }).error(function(error) {
+            //do a more comprehensive error checking
         });
       }
 
