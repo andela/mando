@@ -66,11 +66,11 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       templateUrl: 'modules/campaigns/views/addCampaign.client.view.html'
     }).
     state('editCampaign', {
-      url: '/campaign/:campaignid/edit',
+      url: '/campaign/:campaignTimestamp/:campaignslug/edit',
       templateUrl: 'modules/campaigns/views/editCampaign.client.view.html'
     }).
     state('viewCampaign', {
-      url: '/campaign/:campaignid',
+      url: '/campaign/:campaignTimeStamp/:campaignslug',
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     }).
     state('userCampaigns', {
@@ -105,10 +105,11 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'b
       $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
         backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
-            toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
-          $location.path('/campaign/'+ data._id);
+          toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
+          $location.path('/campaign/'+ data.slug);
         })
         .error(function(error, status, header, config) {
+          //no $scope.error on the view, need to work on the error
           $scope.error = error;
         });
     };
@@ -154,16 +155,12 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
     if(!$scope.authentication.user){
         $location.path('/');
     }
-     $scope.campaign = {
-        _id: $stateParams.campaignid
-     };
-
-    backendService.getCampaign($scope.campaign)
+    backendService.getCampaign($stateParams.campaignTimestamp + '/' + $stateParams.campaignslug)
       .success(function(data, status){
         if($scope.authentication.user._id !== data.createdBy._id){
-          $location.path('/campaign/'+ data._id);
+          $location.path('/campaign/'+ data.slug);
         }
-        //The Date of Campaign cannot exceed 30 days of the date it was created 
+        //The Date of Campaign cannot exceed 30 days of the date it was created
         $scope.minDate = moment(data.created);
         $scope.maxDate = moment(data.created).add(30, 'days');
         $scope.campaign = data;
@@ -171,21 +168,21 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
       })
       .error(function(err){
         toaster.pop('error', 'An Error Occurred'+ err);
-    });
+      });
 
     $scope.editCampaign = function(){
-    delete $scope.campaign.createdBy;
-    delete $scope.campaign.created;
-    $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
+      delete $scope.campaign.createdBy;
+      delete $scope.campaign.created;
+      $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
       backendService.updateCampaign($scope.campaign)
-      .success(function(data, status, header, config){
-        toaster.pop('success', 'Campaign Edited Successfully');
-        $location.path('/campaign/' + data._id);
-      })
-      .error(function(err,status, header, config){
-        $scope.error = err;
-        toaster.pop('error','An Error Occurred:'+ err);
-      });
+        .success(function(data, status, header, config){
+          toaster.pop('success', 'Campaign Edited Successfully');
+          $location.path('/campaign/' + data.slug);
+        })
+        .error(function(err,status, header, config){
+          $scope.error = err;
+          toaster.pop('error','An Error Occurred:'+ err);
+        });
     };
 
     $scope.validateYoutubeUrl = function (url) {
@@ -211,10 +208,8 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
       if(confirmMsg === true) {
           backendService.deleteCampaign($scope.campaign).success(function(text) {
           toaster.pop('success', $scope.campaign.title, 'Campaign deleted successfully');
-          $location.path('/campaigns/:userId');
-          console.log('deleted');
+          $location.path('/campaigns/myAndonation');
           }).error(function(error) {
-          console.log('error');
         });
       }
 
@@ -235,11 +230,11 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 function($scope, backendService, $location, Authentication, $stateParams) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
+
   if (!$scope.authentication.user) {
     $location.path('/');
   }
-  // using the backend service to get campaign data from the back end || 
-  
+
   //uses the Currently signed-in id to get the user id.
   var userid = $scope.authentication.user._id;
 
@@ -270,20 +265,17 @@ function($scope, backendService, $location, Authentication, $stateParams) {
 angular.module('campaign').controller('viewCampaignCtrl', ['$scope','toaster' , 'backendService','$location', 'Authentication', '$stateParams',
 function($scope, toaster, backendService,$location, Authentication, $stateParams) {
   $scope.authentication = Authentication;
-    $scope.campaign = {
-      _id: $stateParams.campaignid
-    };
 
-    backendService.getCampaign($scope.campaign)
-    .success(function(data, status, header, config) {
-      $scope.campaign = data;
-    })
-    .error(function(error, status, header, config) {
-      $location.path('/');
-    });
-
-  }
-]);
+  backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
+  .success(function(data, status, header, config) {
+    console.log(data);
+    $scope.campaign = data;
+  })
+  .error(function(error, status, header, config) {
+    console.log(error);
+    $location.path('/');
+  });
+}]);
 'use strict';
 
 angular.module('campaign').factory('backendService', ['$http', function($http) {
@@ -293,12 +285,12 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.post('/campaign/add', campaignData);
   };
 
-  var getCampaign = function(campaignData) {
-    return $http.get('/campaign/' +campaignData._id);
+  var getCampaign = function(campaignid) {
+    return $http.get('/campaign/' + campaignid);
   };
 
-  var deleteCampaign = function(campaignData) {
-    return $http.delete('/campaign/' +campaignData._id);
+  var deleteCampaign = function(campaignid) {
+    return $http.delete('/campaign/' +campaignid);
   };
 
   var checkYouTubeUrl = function(videoId) {
