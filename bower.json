@@ -16,6 +16,6 @@
     "angular-ui-router": "~0.2.11",
     "moment": "~2.9.0",
     "angular-youtube-mb": "~0.1.6",
-    "angularjs-toaster": "~0.4.10"
+    "angularjs-toaster": "~0.4.9"
   }
 }
