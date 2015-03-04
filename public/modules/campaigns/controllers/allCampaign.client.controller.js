@@ -14,7 +14,9 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope','$log', '$loc
     console.log(error);
     });
 
+
   $scope.filterCampaigns = function () {
+
     var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
     var end = begin + $scope.itemsPerPage;
     $scope.startItems = begin+1;
@@ -27,6 +29,7 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope','$log', '$loc
 
     $scope.Campaigns = $scope.campaigns.slice(begin, end);
   };
+
 
   $scope.currentPage = 1;
   $scope.itemsPerPage = 21;

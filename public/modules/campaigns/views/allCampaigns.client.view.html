@@ -14,7 +14,7 @@
 
   </div>
 
-  <div class="text-center">
+  <div class="text-center" ng-show="campaigns.length > itemsPerPage">
     <pagination total-items="totalItems" items-per-page="itemsPerPage"
          ng-model="currentPage" ng-change="pageChanged()">
     </pagination>
