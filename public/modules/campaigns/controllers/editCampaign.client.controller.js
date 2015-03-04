@@ -7,7 +7,6 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
     if(!$scope.authentication.user){
         $location.path('/');
     }
-    console.log($stateParams.campaignTimestamp + '/' + $stateParams.campaignslug)
     backendService.getCampaign($stateParams.campaignTimestamp + '/' + $stateParams.campaignslug)
       .success(function(data, status){
         if($scope.authentication.user._id !== data.createdBy._id){
@@ -62,9 +61,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
           backendService.deleteCampaign($scope.campaign).success(function(text) {
           toaster.pop('success', $scope.campaign.title, 'Campaign deleted successfully');
           $location.path('/campaigns/myAndonation');
-          console.log('deleted');
           }).error(function(error) {
-          console.log('error');
         });
       }
 
