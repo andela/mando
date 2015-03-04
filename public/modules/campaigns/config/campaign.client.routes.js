@@ -19,7 +19,7 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     }).
     state('userCampaigns', {
-      url: '/campaigns/:userid',
+      url: '/campaigns/myAndonation',
       templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html'
     });
 
