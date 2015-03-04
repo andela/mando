@@ -15,59 +15,35 @@
 }
 
 .home-campaigns {
-  border: 1px solid #e2e2e2;
   -webkit-border-radius: 10px;
   -moz-border-radius:10px;
   -o-border-radius:10px;
   border-radius:10px;
   margin: 2px;
-  background-color :#dfdcde;
+  background-color :#F5EFEE;
   min-height: 17em;
+  box-shadow: 2px 1px 2px #CDD1D1;
+  padding: 20px;
+  border: 2px solid #ddd;
+  list-style-type: none;
+  color: #222;
 }
 
-li{
-  list-style-type: none;
+.class-title {
+  font-size: 1.7em;
+  color:#2A2B2B;
+  text-transform: capitalize;
 }
+
+.home-campaigns p {
+  font-size: .9em;
+  line-height: 1.5em;
+}
+
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 @media screen and (min-width: 1000px) {
-  .home-campaigns{
+  .home-campaigns {
     width:32%;
   }
 }
-
-/*ul.rig {
-  list-style: none;
-  font-size: 0px;
-  margin-left: -2.5%;
-}
-
-ul.rig li {
-  display: inline-block;
-  padding: 10px;
-  margin: 0 0 2.5% 2.5%;
-  background: #fff;
-  border: 1px solid #ddd;
-  font-size: 16px;
-  font-size: 1rem;
-  vertical-align: top;
-  box-shadow: 0 0 5px #ddd;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-
-ul.rig li h2 {
-  list-style: none;
-  margin: 0 0 5px;
-}
-
-ul.rig li p a{
-  font-size: .9em;
-  line-height: 1.5em;
-  color: #999;
-}
-
-ul.rig.columns-3 li {
-  width: 30.83%;
-}*/
