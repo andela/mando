@@ -7,16 +7,13 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
     if(!$scope.authentication.user){
         $location.path('/');
     }
-     $scope.campaign = {
-        _id: $stateParams.campaignid
-     };
-
-    backendService.getCampaign($scope.campaign)
+    console.log($stateParams.campaignTimestamp + '/' + $stateParams.campaignslug)
+    backendService.getCampaign($stateParams.campaignTimestamp + '/' + $stateParams.campaignslug)
       .success(function(data, status){
         if($scope.authentication.user._id !== data.createdBy._id){
-          $location.path('/campaign/'+ data._id);
+          $location.path('/campaign/'+ data.slug);
         }
-        //The Date of Campaign cannot exceed 30 days of the date it was created 
+        //The Date of Campaign cannot exceed 30 days of the date it was created
         $scope.minDate = moment(data.created);
         $scope.maxDate = moment(data.created).add(30, 'days');
         $scope.campaign = data;
@@ -24,21 +21,21 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
       })
       .error(function(err){
         toaster.pop('error', 'An Error Occurred'+ err);
-    });
+      });
 
     $scope.editCampaign = function(){
-    delete $scope.campaign.createdBy;
-    delete $scope.campaign.created;
-    $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
+      delete $scope.campaign.createdBy;
+      delete $scope.campaign.created;
+      $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
       backendService.updateCampaign($scope.campaign)
-      .success(function(data, status, header, config){
-        toaster.pop('success', 'Campaign Edited Successfully');
-        $location.path('/campaign/' + data._id);
-      })
-      .error(function(err,status, header, config){
-        $scope.error = err;
-        toaster.pop('error','An Error Occurred:'+ err);
-      });
+        .success(function(data, status, header, config){
+          toaster.pop('success', 'Campaign Edited Successfully');
+          $location.path('/campaign/' + data.slug);
+        })
+        .error(function(err,status, header, config){
+          $scope.error = err;
+          toaster.pop('error','An Error Occurred:'+ err);
+        });
     };
 
     $scope.validateYoutubeUrl = function (url) {

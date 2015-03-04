@@ -21,10 +21,11 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'b
       $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
         backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
-            toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
-          $location.path('/campaign/'+ data._id);
+          toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
+          $location.path('/campaign/'+ data.slug);
         })
         .error(function(error, status, header, config) {
+          //no $scope.error on the view, need to work on the error
           $scope.error = error;
         });
     };

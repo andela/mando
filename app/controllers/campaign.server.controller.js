@@ -32,7 +32,8 @@ exports.createCampaign= function(req, res){
 };
 
 exports.getCampaign = function(req, res){
-  Campaign.findById(req.params.campaignId)
+  //the slug format is 080808/new-campaign, hence the addition in the find object
+  Campaign.findOne({slug: req.params.timestamp + '/' + req.params.campaignslug})
     .select('-lastModifiedBy -lastModified')
     .exec(function(err, campaign){
       if(err){
@@ -43,7 +44,7 @@ exports.getCampaign = function(req, res){
       //if the user has no campaign created
       if (!campaign) {
         return res.status(400).send({
-          message: 'Invalid campaignid'
+          message: 'Invalid campaignslug'
         });
       }
       Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
