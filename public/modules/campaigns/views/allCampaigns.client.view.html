@@ -2,27 +2,26 @@
 <div class="row">
     <ul class="rig">
       <h2> All Current Campaigns</h2>
-      <li class="col-sm-4 home-campaigns" data-ng-repeat="campaign in filteredCampaigns | orderBy: 'created'.descending">
-        <p><a href="/#!/campaign/{{campaign._id}}">{{campaign.title}}</a></p> 
+      <li class="col-sm-4 home-campaigns" data-ng-repeat="campaign in Campaigns | orderBy: 'created'.descending">
+        <p><a href="/#!/campaign/{{campaign._id}}" class="class-title">{{campaign.title}}</a></p>
         <p> ${{campaign.amount}}</p>
-        <p>DueDate: {{campaign.dueDate | date}}</p> 
+        <p>Expiry Date: "{{campaign.dueDate | date}}"</p>
         <p>{{campaign.balance}}</p>
-        <span class="text-muted">Description</span>
+        <span><i>Description</i></span>
         <p class="">{{campaign.description |limitTo: 136}} ...</p>
       </li>
     </ul>
 
-    <pagination total-items="totalItems" items-per-page="itemsPerPage" 
-         ng-model="currentPage" ng-change="pageChanged()"></pagination>
-      <p>
-         Total items: {{totalItems}}<br />
-         Items per page: {{itemsPerPage}}<br />
-         Current Page: {{currentPage}}<br />
-         Showing: {{startItems}} - {{endItems}}
-      </p>
-    <!-- <hr /> -->
-    <!-- <h4>Pager</h4> -->
-    <!-- <pager total-items="totalItems" ng-model="currentPage"></pager> -->
-    <!-- <hr /> -->
+  </div>
+
+  <div class="text-center">
+    <pagination total-items="totalItems" items-per-page="itemsPerPage"
+         ng-model="currentPage" ng-change="pageChanged()">
+    </pagination>
+    <p>
+      Showing: {{startItems}} - {{endItems}} Campaigns<br/>
+      Total Campaigns Created: {{totalItems}}<br />
+      Page {{currentPage}}
+    </p>
   </div>
 </section>

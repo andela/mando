@@ -25,12 +25,12 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope','$log', '$loc
       $scope.endItems = $scope.totalItems;
     }
 
-    $scope.filteredCampaigns = $scope.campaigns.slice(begin, end);
+    $scope.Campaigns = $scope.campaigns.slice(begin, end);
   };
 
   $scope.currentPage = 1;
   $scope.itemsPerPage = 21;
-  $scope.filteredCampaigns = [];
+  $scope.Campaigns = [];
 
   $scope.pageChanged = function() {
     console.log(10);
