@@ -15,24 +15,34 @@
 }
 
 .home-campaigns {
-  border: 1px solid #e2e2e2;
   -webkit-border-radius: 10px;
   -moz-border-radius:10px;
   -o-border-radius:10px;
   border-radius:10px;
   margin: 2px;
-  background-color :rgba(31,26,30,.1);
-}
-
-li{
+  background-color :#F5EFEE;
+  min-height: 17em;
+  box-shadow: 2px 1px 2px #CDD1D1;
+  padding: 20px;
+  border: 2px solid #ddd;
   list-style-type: none;
+  color: #222;
 }
 
+.class-title {
+  font-size: 1.7em;
+  color:#2A2B2B;
+  text-transform: capitalize;
+}
+
+.home-campaigns p {
+  font-size: .9em;
+  line-height: 1.5em;
+}
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 @media screen and (min-width: 1000px) {
-  .home-campaigns{
+  .home-campaigns {
     width:32%;
-    min-height: 200px;
   }
 }

@@ -1,0 +1,27 @@
+<section data-ng-controller="allCampaignCtrl">
+<div class="row">
+    <ul class="rig">
+      <h2> All Current Campaigns</h2>
+      <li class="col-sm-4 home-campaigns" data-ng-repeat="campaign in Campaigns | orderBy: 'created'.descending">
+        <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a></p>
+        <p> ${{campaign.amount}}</p>
+        <p>Expiry Date: "{{campaign.dueDate | date}}"</p>
+        <p>{{campaign.balance}}</p>
+        <span><i>Description</i></span>
+        <p class="">{{campaign.description |limitTo: 136}} ...</p>
+      </li>
+    </ul>
+
+  </div>
+
+  <div class="text-center" ng-show="campaigns.length > itemsPerPage">
+    <pagination total-items="totalItems" items-per-page="itemsPerPage"
+         ng-model="currentPage" ng-change="pageChanged()">
+    </pagination>
+    <p>
+      <em> Displaying {{startItems}} - {{endItems}} out of
+        {{totalItems}} Campaigns.
+      </em>
+    </p>
+  </div>
+</section>
