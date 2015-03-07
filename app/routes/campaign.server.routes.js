@@ -1,9 +1,8 @@
 'use strict';
 
-var express = require('express'),
-    router = express.Router(),
-    campaigns = require('../../app/controllers/campaign.server.controller'),
-    users = require('../../app/controllers/users.server.controller');
+
+var campaigns = require('../../app/controllers/campaign.server.controller');
+var users = require('../../app/controllers/users.server.controller');
 
 module.exports = function(app) {
   //added user.requresLogin for request that needs authentication 

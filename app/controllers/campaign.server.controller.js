@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
     errorHandler =require('./errors.server.controller'),
     moment = require('moment'),
     User = mongoose.model('User'),
+    subledger = require('./banker.server.controller'),
     Campaign = mongoose.model('Campaign');
 
 /****Create A campaign *****/
@@ -15,19 +16,33 @@ exports.createCampaign= function(req, res){
   if (!campaign.dueDate) {
     campaign.dueDate = moment().add(30, 'days');
   }
-  campaign
-    .save(function(err, campaign){
-    if(err){
-       return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
+     // create subledger account for a campaign
+     subledger.createAccount({
+      'description': campaign.title + campaign._id,
+      'reference': 'http://andela.co',
+      'normal_balance': 'credit'
+    }, function(err, account) {
+      if (err) {
+          // fail the transaction
+          return res.json(err);
+        } else {
+          campaign.account_id = account.active_account.id;
+          // continue with saving the user
+          campaign.save(function(err, campaign){
+            if(err){
+              return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+           } else {
+              //querying the database again because we want to populate the createdBy and lastModifiedBy field
+              Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
+                res.json(newCampaign);
+              });
+            }
+          });
+          
+        }
       });
-    } else {
-      //querying the database again because we want to populate the createdBy and lastModifiedBy field
-      Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-          res.json(newCampaign);
-      });
-    }
-  });
 
 };
 
