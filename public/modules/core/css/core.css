@@ -40,9 +40,14 @@
   line-height: 1.5em;
 }
 
+.img {
+  width: 10%;
+  /*height: 5%;*/
+}
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 @media screen and (min-width: 1000px) {
   .home-campaigns {
     width:32%;
   }
 }
+
