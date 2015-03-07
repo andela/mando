@@ -63,6 +63,9 @@ var campaignSchema = new Schema({
   lastModifiedBy: {
     type: Schema.Types.ObjectId,
     ref: 'User'
+  },
+  account_id: {
+    type: String
   }
 });
 
