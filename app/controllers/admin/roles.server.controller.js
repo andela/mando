@@ -66,10 +66,10 @@ var saveUserRole = function(adminid, userid, roleType, done) {
       //
       if(roleType === 'member') {
         _user.createdBy = userid;
-        _user.created = Date.now;
+        _user.created = Date.now();
       } else {
         _user.lastModifiedBy = adminid;
-        _user.lastModified = Date.now;
+        _user.lastModified = Date.now();
       }
       _user.save(function(err, user) {
         if(err){
