@@ -90,13 +90,7 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 						// And save the user
 						user.save(function(err, user) {
 							adminRoles.addRolesToUser(user._id, user._id, 'member', function(err, user) {
-								if (user.email === 'abimbola.idowu@andela.co') {
-									adminRoles.addRolesToUser(user._id, user._id, 'admin', function(err, user) {
-										return done(err, user);
-									});
-								} else {
-									return done(err, user);
-								}
+								return done(err, user);
 							});
 						});
 					});

@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose'),
     async = require('async'),
+    moment = require('moment'),
     Role = mongoose.model('Role'),
     User = mongoose.model('User'),
     UserRole = mongoose.model('UserRole'),
@@ -33,14 +34,21 @@ exports.getRoles = function(req, res) {
   });
 };
 
-
 var saveUserRole = function(adminid, userid, roleType, done) {
-  var userRole = new UserRole({});
-  userRole.createdBy = adminid;
-  userRole.lastModifiedBy = adminid;
-  userRole.userId = userid;
+  var _user = {};
 
   async.series([
+    function(cb) {
+      User.findById(userid)
+        .exec(function(err, user) {
+          if(err){
+            done(err);
+            return cb(err);
+          }
+          _user = user;
+          cb(err);
+        });
+    },
     function(cb) {
       Role.findOne({roleType: roleType}, function (err, role) {
         if(err){
@@ -52,41 +60,105 @@ var saveUserRole = function(adminid, userid, roleType, done) {
           done(errMsg);
           return cb(errMsg);
         }
-        userRole.roleId.push(role._id);
+        _user.roles.push(role._id);
         cb(err);
       });
     },
     function(cb) {
-      userRole.save(function(err, newUserRole) {
+      //
+      if(roleType === 'member') {
+        _user.createdBy = userid;
+        _user.created = Date.now;
+      } else {
+        _user.lastModifiedBy = adminid;
+        _user.lastModified = Date.now;
+      }
+      _user.save(function(err, user) {
         if(err){
           done(err);
           return cb(err);
         }
-        //updates the user document with the new role added
-        User.findByIdAndUpdate(userid, {'roles': newUserRole._id}, {}, function(err, updatedUser) {
+        User.populate(user, {path: 'roles'}, function(err, populatedUser) {
           if(err){
             done(err);
             return cb(err);
           }
-          //populates the role field in the user document
-          User.populate(updatedUser, {path: 'roles'}, function(err, populatedUser) {
-            //updates the roleId field in the userRole document
-            UserRole.populate(populatedUser.roles, {path: 'roleId'}, function(err, populatedUserRole) {
-              done(err, populatedUserRole);
-            });
-          });
+          done(err, populatedUser);
         });
-        cb();
       });
+      cb();
     }
   ]);
 };
 
+//controller to manually add roles to admin,
+//there is need to refactor this to add some level of authentication
+//or find a better way to do this
+exports.manuallyAddRoles = function(req, res) {
+  var _user = {};
+
+  async.series([
+    function(cb) {
+      User.findOne({email: req.body.email})
+        .exec(function(err, user) {
+          if(err){
+            cb(err);
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          }
+          _user = user;
+          cb(err);
+        });
+    },
+    function(cb) {
+      Role.findOne({roleType: req.body.role}, function (err, role) {
+        if(err){
+          cb(err);
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        }
+        if(!role){
+          cb('Invalid Role Type');
+          return res.status(400).send({
+            message: 'Invalid Role Type'
+          });
+        }
+        _user.roles.push(role._id);
+        cb(err);
+      });
+    },
+    function(cb) {
+      _user.lastModifiedBy = _user._id;
+      //Date.now wasn't working for lastModified for some reasons I don't know
+      //so had to use moment
+      _user.lastModified = moment().format();
+      _user.save(function(err, user) {
+        if(err){
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        }
+        User.populate(user, {path: 'roles'}, function(err, populatedUser) {
+          if(err){
+            cb(err);
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          }
+          res.json(populatedUser);
+        });
+      });
+      cb();
+    }
+  ]);
+};
 //exports saveUserRole function
 exports.addRolesToUser = saveUserRole;
 //adds a role to a user
 exports.addUserRoles = function(req, res) {
-  saveUserRole(req.user._id, req.body.user._id, req.body.role, function(err, data) {
+  saveUserRole(req.user._id, req.body.userid, req.body.role, function(err, data) {
     if(err){
       return res.status(400).json(err);
     }
