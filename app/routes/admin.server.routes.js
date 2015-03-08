@@ -11,4 +11,5 @@ module.exports = function(app) {
   app.route('/admin/user/role').post(adminRoles.getRoles);
   app.route('/admin/users').get(adminRoles.getUsers);
   app.route('/admin/user/role/add').post(adminRoles.addUserRoles);
+  app.route('/add/admin/role').post(adminRoles.manuallyAddRoles);
 };

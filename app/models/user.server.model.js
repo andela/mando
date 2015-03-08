@@ -43,7 +43,6 @@ var UserSchema = new Schema({
 	},
 
 	providerData: {},
-	additionalProvidersData: {},
 
 	updated: {
 		type: Date
@@ -75,7 +74,7 @@ var UserSchema = new Schema({
 
 	roles: [{
 		type: Schema.Types.ObjectId,
-		ref: 'UserRole'
+		ref: 'Role'
 	}]
 });
 
