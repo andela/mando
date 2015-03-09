@@ -47,31 +47,5 @@ exports.getUniqueAccount = function (req, res){
   });
 };
 
-//Archive an account 
-// exports.ArchiveAccount = function (req, res){
-//   var account_id = req.params.account_id;
-//   console.log(account_id);
-//    subledger.organization(org_id).book(book_id).account(account_id).archive({'description': 'USD'}, function (error, apiRes){
-//       if(error) {
-//         return res.json(error);
-//       }else{
-//         console.log('archived');
-//         return res.json(apiRes);
 
-//       }
-//   });
-// };
-//get journal reports for all transaction (all banker)
-
-//get journal report for a user
-
-//get journal reports for a campaign
-
-//move funds from a user to a campaign (support campaign)
-
-//move funds from a bank to a user
-
-//close/archive a campaign account after it has elapsed.
-
-//get unique transaction journal for a banker(single)
 
