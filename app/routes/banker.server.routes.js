@@ -9,4 +9,5 @@ module.exports = function(app){
   // The below route will be removed and moved to delete my account setting in the future as accounts can only be archived a user suspends his/her accounts.
   app.route('/account').get(banker.ArchiveAccount);
 
+
 };
