@@ -1,7 +1,7 @@
 'use strict';
-
 angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams', 'lodash',
 function($scope, backendService, $location, Authentication, $stateParams, lodash) {
+
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
 
