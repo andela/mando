@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'bankerFactory','Authentication', '$stateParams', 'lodash',
-function($scope, backendService, $location, bankerFactory, Authentication, $stateParams, lodash) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster','$location', 'bankerFactory','Authentication', '$stateParams', 'lodash',
+function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams, lodash) {
 
 ///bankerFactory  add this to the dependency to get the system balance
 
@@ -30,16 +30,12 @@ function($scope, backendService, $location, bankerFactory, Authentication, $stat
     });
     //if role = banker use the banker id here else you the user's id$scope.authentication.user.account_id
     var account_id = 'mnE22eIutb5SwDH69Ernfx';
-    console.log('account is '+ $scope.authentication.user.account_id);
-//    $scope.systemBalance = function(account_id){ 
-  //    console.log('inside'+account_id);
       bankerFactory.getSystemBalance(account_id).balance({description: 'USD'}, function(error, apiRes){
         if (error){
-          console.log(error);
+           toaster.pop('error', 'An Error Occurred'+ error);
+            return;
         }else{
-          console.log(3, apiRes);
           var amount = parseInt(apiRes.balance.value.amount);
-          console.log('here', amount);
           $scope.balance.amount = amount;
           $scope.$digest();
         }
