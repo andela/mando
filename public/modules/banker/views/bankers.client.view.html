@@ -1,5 +1,4 @@
-<div data-ng-controller="transactionCtrl">
-  <p>System Balance: {{balance.all}}</p>
-  <input type= "submit" data-ng-click="myBalance()">GET BALANCE</input>
-  {{balance}}
+<div data-ng-controller = "transactionCtrl">
+  <p> System Balance: {{balance.amount | currency : symbol : fractionSize}}</p>
+
 </div>
