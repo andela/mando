@@ -1,13 +1,15 @@
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
-function($scope, backendService, $location, Authentication, $stateParams) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams', 'lodash',
+function($scope, backendService, $location, Authentication, $stateParams, lodash) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
 
   if (!$scope.authentication.user) {
     $location.path('/');
   }
+  //checks if user is an admin
+  $scope.isAdmin = lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'}) ? true : false;
 
   //uses the Currently signed-in id to get the user id.
   var userid = $scope.authentication.user._id;
