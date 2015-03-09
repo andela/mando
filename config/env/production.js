@@ -21,7 +21,8 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
 				'public/lib/moment/moment.js',
 				'public/lib/angular-youtube-mb/src/angular-youtube-embed.js',
-				'public/lib/angularjs-toaster/toaster.js'
+				'public/lib/angularjs-toaster/toaster.js',
+				'public/lib/ng-lodash/build/ng-lodash.min.js'
 			]
 		},
 		css: 'public/dist/application.min.css',
