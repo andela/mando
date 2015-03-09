@@ -19,9 +19,10 @@ module.exports = function() {
 
 	// Deserialize sessions
 	passport.deserializeUser(function(id, done) {
-		User.findOne({
-			_id: id
-		}, '-salt -password', function(err, user) {
+		User.findOne({_id: id})
+			.select('-salt -password')
+			.populate('roles')
+			.exec(function(err, user) {
 			done(err, user);
 		});
 	});
