@@ -73,6 +73,10 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       url: '/campaign/:campaignTimeStamp/:campaignslug',
       templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
     }).
+    state('allCampaigns', {
+      url: '/campaigns',
+      templateUrl: 'modules/campaigns/views/allCampaigns.client.view.html'
+    }).
     state('userCampaigns', {
       url: '/campaigns/myAndonation',
       templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html'
@@ -148,6 +152,49 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'b
 ]);
 'use strict';
 
+angular.module('campaign').controller('allCampaignCtrl', ['$scope','$log', '$location','backendService', function ($scope, $location, $log, backendService) {
+
+ $scope.totalItems = 1;
+
+  backendService.getCampaigns()
+  .success(function (data, status, header, config){
+    $scope.campaigns = data;
+    $scope.totalItems = data.length;
+    $scope.filterCampaigns();
+  })
+  .error(function (error, status, header, config){
+    console.log(error);
+    });
+
+
+  $scope.filterCampaigns = function () {
+
+    var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
+    var end = begin + $scope.itemsPerPage;
+    $scope.startItems = begin+1;
+    // $scope.endItems = end < $scope.totalItems ? end : $scope.totalItems;
+    if(end < $scope.totalItems){
+      $scope.endItems = end;
+    }else{
+      $scope.endItems = $scope.totalItems;
+    }
+
+    $scope.Campaigns = $scope.campaigns.slice(begin, end);
+  };
+
+
+  $scope.currentPage = 1;
+  $scope.itemsPerPage = 21;
+  $scope.Campaigns = [];
+
+  $scope.pageChanged = function() {
+    console.log(10);
+    $scope.filterCampaigns();
+  };
+  }
+]);
+'use strict';
+
 /*global moment */
 angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', 'backendService', '$location', 'Authentication','$stateParams','youtubeEmbedUtils', function ($scope,toaster, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils) {
     $scope.authentication = Authentication;
@@ -205,11 +252,12 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
 
     $scope.deleteCampaign = function(data, toastr) {
        var confirmMsg = confirm('Do you want to delete this Campaign?');
-      if(confirmMsg === true) {
-          backendService.deleteCampaign($scope.campaign).success(function(text) {
+      if(confirmMsg) {
+          backendService.deleteCampaign($scope.campaign._id).success(function(text) {
           toaster.pop('success', $scope.campaign.title, 'Campaign deleted successfully');
           $location.path('/campaigns/myAndonation');
           }).error(function(error) {
+            //do a more comprehensive error checking
         });
       }
 
@@ -307,7 +355,6 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   };
 
   var updateCampaign = function(campaignData) {
-    console.log(campaignData);
     return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
   };
 
