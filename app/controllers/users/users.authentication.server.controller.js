@@ -77,7 +77,7 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 					var possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
 
 					User.findUniqueUsername(possibleUsername, null, function(availableUsername) {
-						user = new User({
+						user = {
 							firstName: providerUserProfile.firstName,
 							lastName: providerUserProfile.lastName,
 							username: availableUsername,
@@ -85,10 +85,10 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 							email: providerUserProfile.email,
 							provider: providerUserProfile.provider,
 							providerData: providerUserProfile.providerData
-						});
-
-						// And save the user
-						user.save(function(err, user) {
+						};
+						//updates the user object or create in not existing,
+						//doing this because of the Admin user that would be manually created
+						User.findOneAndUpdate({email: user.email}, user, {upsert: true}, function(err, user) {
 							adminRoles.addRolesToUser(user._id, user._id, 'member', function(err, user) {
 								return done(err, user);
 							});
