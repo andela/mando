@@ -14,7 +14,6 @@ exports.getIdentity = function(req, res) {
       return res.json(error);
 
     } else {
-      console.log(apiRes);
       return res.json(apiRes);
     }
   });
@@ -25,16 +24,51 @@ exports.createAccount = function(data, done) {
   subledger.organization(org_id).book(book_id).account().create(data, done);
 };
 
+//get all Accounts 
+exports.getAllAccounts =function(req, res) {
+  subledger.organization(org_id).book(book_id).account().get({'description': 'USD'},function (error, apiRes){
+    if(error){
+      return res.json(error);
+    }else {
+      return res.json(apiRes);
+    }
+  });
+};
+
+//get a single accounts
+exports.getUniqueAccount = function (req, res){
+  var account_id = req.params.account_id ;
+  subledger.organization(org_id).book(book_id).account(account_id).get({'description': 'USD'},function (error,apiRes){
+       if(error){
+          return res.json(error);
+      }else {
+        return res.json(apiRes);
+    }
+  });
+};
+
+//Archive an account 
+exports.ArchiveAccount =function (req, res){
+  var account_id = req.body.account_id;
+  subledger.organization(org_id).book(book_id).account(account_id).archive(function (error,apiRes){
+      if(error) {
+        return res.json(error);
+      }else{
+        return res.json(apiRes);
+      }
+  });
+};
+//get journal reports for all transaction (all banker)
+
 //get journal report for a user
 
 //get journal reports for a campaign
 
 //move funds from a user to a campaign (support campaign)
 
-//move frunds from a bank to a user
+//move funds from a bank to a user
 
 //close/archive a campaign account after it has elapsed.
 
 //get unique transaction journal for a banker(single)
 
-//get journal reports for all transaction (all banker)

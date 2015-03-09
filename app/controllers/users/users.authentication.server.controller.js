@@ -172,7 +172,7 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
             subledger.createAccount({
               'description': user.email,
               'reference': 'http://andela.co',
-              'normal_balance': 'credit'
+              'normal_balance': 'debit'
             }, function(err, account) {
               if (err) {
                 // fail the transaction
