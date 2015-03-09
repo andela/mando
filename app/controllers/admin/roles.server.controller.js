@@ -10,7 +10,6 @@ var mongoose = require('mongoose'),
 exports.addRoles = function(req, res) {
   var role = new Role(req.body);
   role.createdBy = req.user._id;
-  role.lastModifiedBy = req.user._id;
   role.save(function(err, role) {
     if(err){
       return res.status(400).send({
@@ -32,7 +31,8 @@ exports.getRoles = function(req, res) {
   });
 };
 
-var saveUserRole = function(adminid, userid, roleType, done) {
+//adds default role of member to user
+exports.addRolesToUser = function(adminid, userid, roleType, done) {
   var _user = {};
 
   async.series([
@@ -63,14 +63,8 @@ var saveUserRole = function(adminid, userid, roleType, done) {
       });
     },
     function(cb) {
-      //
-      if(roleType === 'member') {
-        _user.createdBy = userid;
-        _user.created = Date.now();
-      } else {
-        _user.lastModifiedBy = adminid;
-        _user.lastModified = Date.now();
-      }
+      _user.createdBy = userid;
+      _user.created = Date.now();
       _user.save(function(err, user) {
         if(err){
           done(err);
@@ -89,14 +83,54 @@ var saveUserRole = function(adminid, userid, roleType, done) {
   ]);
 };
 
-//exports saveUserRole function
-exports.addRolesToUser = saveUserRole;
-//adds a role to a user
-exports.addUserRoles = function(req, res) {
-  saveUserRole(req.user._id, req.body.userid, req.body.role, function(err, data) {
-    if(err){
-      return res.status(400).json(err);
-    }
-    res.json(data);
-  });
+//updates user roles
+exports.updateUserRole = function(req, res) {
+  var roles = req.body.roles, _roles = [];
+  roles = roles.replace(' ', '').split(',');
+  async.series([
+    function(cb) {
+      async.eachSeries(roles, function(role, callback) {
+        Role
+          .findOne({roleType: role})
+          .exec(function(err, nRole) {
+            if (err) callback(err);
+            _roles.push(nRole._id);
+            callback();
+          });
+      },
+      function(err) {
+        if(err){
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        }
+        cb();
+      });
+    },
+    function(cb) {
+      var user = {};
+      user.roles = _roles;
+      user.lastModified = Date.now();
+      user.lastModifiedBy = req.user._id;
+      User.findByIdAndUpdate(req.body.userid, user, function(err, nUser) {
+        if(err){
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        }
+        User.populate(nUser, {path: 'roles'}, function(err, populatedUser) {
+          if(err){
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          }
+          res.json(populatedUser);
+        });
+      });
+    }]);
 };
+
+
+
+
+
