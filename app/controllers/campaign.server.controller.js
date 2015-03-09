@@ -20,7 +20,7 @@ exports.createCampaign= function(req, res){
      subledger.createAccount({
       'description': campaign.title + campaign._id,
       'reference': 'http://andela.co',
-      'normal_balance': 'credit'
+      'normal_balance': 'debit'
     }, function(err, account) {
       if (err) {
           // fail the transaction
@@ -144,6 +144,7 @@ exports.deleteCampaign = function(req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
+//archive the account before deleting the campaign.
       res.send('deleted successfully');
     }
 
