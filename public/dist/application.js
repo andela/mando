@@ -49,6 +49,10 @@ ApplicationConfiguration.registerModule('admin');
 'use strict';
 
 // Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('banker');
+'use strict';
+
+// Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('campaign');
 'use strict';
 
@@ -254,9 +258,111 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       });
     };
 
+angular.module('banker').config(['$stateProvider', function($stateProvider){
+    $stateProvider
+    .state('bank', {
+       url: '/bank',
+       templateUrl: 'modules/banker/views/bankers.client.view.html'
+    });
+  }
+]);
+
+'use strict';
+/*global Subledger*/
+angular.module('banker').controller('transactionCtrl',['$scope','$http','toaster','bankerFactory',function($scope, $http,toaster, bankerFactory){
+$scope.reports = [];
+$scope.balance = {
+  bank_id: 'mnE22eIutb5SwDH69Ernfx',
+  amount: ''
+};
+var date = new Date().toISOString();
+
+//console.log('THE DATE IS'+ date);
+  bankerFactory.getSystemBalance($scope.balance.bank_id).balance({description:'USD', at:date}, function(error, apiRes){
+        if (error){
+           toaster.pop('error', 'An Error Occurred'+ error);
+           return;
+        }else{
+          var amount = parseInt(apiRes.balance.value.amount);
+          $scope.balance.amount = amount;
+          $scope.$digest();
+        }
+      });
+
+// //debtor and creditor 
+// var InitiateTransaction = function(){
+//   var params = {
+//   'effective_at': new Date().toISOString(),
+//   'description': $scope.description,
+//   'reference': 'http://andela.co',
+//   'lines': [
+//       {
+//       'account': $scope.account_id, //debtor
+//       'description': $scope.descrition,
+//       'reference': 'http://andela.co',
+//        'value': {
+//          'type': 'debit',
+//          'amount': $scope.amount
+//          }
+//       },
+//      {
+//       'account': $scope.account_id, //creditor
+//       'description':$scope.description,
+//       'reference': 'http://andela.co',
+//        'value': {
+//          'type': 'credit',
+//          'amount': $scope.amount
+//         }
+//       }
+//     ]
+//   };
+  
+
+//   bankerFactory.createAndPostTransaction().createAndPost({params:params}, function(error, apiRes){
+//     if(error){
+//       return error;
+//     } else {
+//       console.log('createAndPost'+ apiRes);
+//     }
+//   });
+
+// };
+  //get All lines of transaction
+  bankerFactory.getJournalReports($scope.balance.bank_id).get({
+    'description': 'USD',
+    'action': 'before',
+    'effective_at': new Date().toISOString()
+  }, function (error, apiRes){
+      if(error){
+          return error;
+      }else {
+      $scope.journal = apiRes.posted_lines;
+      toaster.pop('success', 'Loading Transaction Details');
+      $scope.$digest();
+      }
+  });
+
+  //get All banking Reports 
+    bankerFactory.getReports().get({
+      'description': 'USD', 
+      'state': 'active',
+      'action': 'before',
+
+    },function (error,apiRes){
+      if(error){
+        return error;
+      }else {
+        $scope.reports = apiRes;
+        $scope.$digest();
+      }
+    
+    });
+
+
 }]);
 
 'use strict';
+
 
 angular.module('campaign').factory('adminBackendService', ['$http', function($http) {
 
@@ -278,6 +384,39 @@ angular.module('campaign').factory('adminBackendService', ['$http', function($ht
     getRoles: getRoles
   };
 }]);
+
+/*global Subledger*/
+
+angular.module('banker').factory('bankerFactory', [ function(){
+  var subledger = new Subledger();
+  var identity_id = 'PNKWmtgMsLoHzB4LhUw4qN';
+  var org_id = 'EpXxbhcVpxyC8BH0icuIQF';
+  var book_id = 'R6WkhSAmw4STDyGHbrrFJL';
+  subledger.setCredentials('2lzQysbyNXhPgYxx8pp2vE','CJzZPwRw01thgquyeD6RYc');
+  
+    var getSystemBalance = function (account_id){
+      return subledger.organization(org_id).book(book_id).account(account_id);
+    };
+
+    var createAndPostTransaction = function (){
+     return subledger.organization(org_id).book(book_id).journalEntry();
+    };
+
+    var getJournalReports = function(account_id){
+       return subledger.organization(org_id).book(book_id).account(account_id).line();
+    };
+
+    var getReports = function(){
+       return subledger.organization(org_id).book(book_id).report();
+    };
+
+    return {
+      getSystemBalance: getSystemBalance,
+      createAndPostTransaction: createAndPostTransaction,
+      getJournalReports: getJournalReports,
+      getReports: getReports
+    };
+  }]);
 'use strict';
 
 angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDelegateProvider', function($stateProvider, datepickerConfig, $sceDelegateProvider) {
@@ -493,10 +632,17 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
   }
 ]);
 'use strict';
+// <<<<<<< HEAD
 
 angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams', 'lodash',
 function($scope, backendService, $location, Authentication, $stateParams, lodash) {
+// =======
+///bankerFactory  add this to the dependency to get the system balance
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService','toaster','$location','bankerFactory', 'Authentication', '$stateParams','lodash',
+function($scope, backendService, toaster, $location, bankerFactory , Authentication, $stateParams, lodash) {
+
   $scope.myCampaigns    = [];
+  $scope.balance = {};
   $scope.authentication = Authentication;
 
   if (!$scope.authentication.user) {
@@ -518,7 +664,19 @@ function($scope, backendService, $location, Authentication, $stateParams, lodash
       $location.path('/');
 
     });
-
+    //if role = banker use the banker id here else you the user's id$scope.authentication.user.account_id
+    var account_id = 'mnE22eIutb5SwDH69Ernfx';
+      bankerFactory.getSystemBalance(account_id).balance({description: 'USD'}, function(error, apiRes){
+        if (error){
+           toaster.pop('error', 'An Error Occurred'+ error);
+            return;
+        }else{
+          var amount = parseInt(apiRes.balance.value.amount);
+          $scope.balance.amount = amount;
+          $scope.$digest();
+        }
+      });
+ // };
   // function to click the show more button on getMoreCampaigns page
   $scope.limit = 4;
   $scope.increment = function() {
@@ -612,7 +770,7 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
   function($scope, Authentication) {
     $scope.authentication = Authentication;
     $scope.isCollapsed = false;
-  
+  console.log($scope.authentication.user.providerData);
     $scope.toggleCollapsibleMenu = function() {
             $scope.isCollapsed = !$scope.isCollapsed;
         };
