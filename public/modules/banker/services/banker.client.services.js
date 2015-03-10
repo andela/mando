@@ -10,9 +10,24 @@ angular.module('banker').factory('bankerFactory', [ function(){
   
     var getSystemBalance = function (account_id){
       return subledger.organization(org_id).book(book_id).account(account_id);
-
     };
+
+    var createAndPostTransaction = function (){
+     return subledger.organization(org_id).book(book_id).journalEntry();
+    };
+
+    var getJournalReports = function(account_id){
+       return subledger.organization(org_id).book(book_id).account(account_id).line();
+    };
+
+    var getReports = function(){
+       return subledger.organization(org_id).book(book_id).report();
+    };
+
     return {
-      getSystemBalance: getSystemBalance
+      getSystemBalance: getSystemBalance,
+      createAndPostTransaction: createAndPostTransaction,
+      getJournalReports: getJournalReports,
+      getReports: getReports
     };
   }]);
