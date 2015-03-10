@@ -3,6 +3,7 @@
 angular.module('banker').controller('transactionCtrl',['$scope','$http','toaster','$modal','bankerFactory',function($scope, $http,toaster, $modal, bankerFactory){
   $scope.reports = [];
   $scope.withdrawal= {};
+  $scope.transaction = { amount: ''};
   $scope.balance = {
     bank_id: '6HNEAjoyxWtXjVXD2TyZqE',
     amount: ''
@@ -21,12 +22,11 @@ bankerFactory.getSystemBalance($scope.balance.bank_id).balance({description: 'US
 }
 });
 
-$scope.withdrawFromBank = function (){
- var amount = $scope.withdrawal.amount;
+$scope.withdrawFromBank = function (amount){
  console.log('here', amount);
   bankerFactory.createAndPostTransaction().createAndPost({
     'effective_at': new Date().toISOString(),
-    'description': 'withdrawal',
+    'description': 'Cash withdrawal',
     'reference': 'http://andonation-mando.herokuapp.com/bank',
     'lines': [
     {
@@ -38,13 +38,50 @@ $scope.withdrawFromBank = function (){
         'amount': amount
       }
     },
-    // {$scope.system_balance_id
     {
       'account': 'E8GtyKhrPjSduG8aHSUusc',
       'description': 'cash deposit',
       'reference':  'http://andonation-mando.herokuapp.com/bank',
       'value': {
         'type': 'credit',
+        'amount': amount
+      }
+    }
+    ]
+  }, function (error, apiRes){
+    if(error){
+      console.log(error);
+    }
+    else{
+      //toaster.pop('success', amount +'was  Withdrawn Succesfully');
+    //$scope.digest($scope.balance);
+    $scope.$digest();
+  }
+});
+};
+$scope.depositIntoBank = function (amount){
+ console.log('here', amount);
+  bankerFactory.createAndPostTransaction().createAndPost({
+    'effective_at': new Date().toISOString(),
+    'description': 'Cash deposit',
+    'reference': 'http://andonation-mando.herokuapp.com/bank',
+    'lines': [
+    {
+      'account': $scope.balance.bank_id,
+      'description': 'cash deposit ',
+      'reference':  'http://andonation-mando.herokuapp.com/bank',
+      'value': {
+        'type': 'credit',
+        'amount': amount
+      }
+    },
+    // {$scope.system_balance_id
+    {
+      'account': 'E8GtyKhrPjSduG8aHSUusc',
+      'description': 'cash deposit',
+      'reference':  'http://andonation-mando.herokuapp.com/bank',
+      'value': {
+        'type': 'debit',
         'amount': amount
       }
     }
@@ -71,7 +108,7 @@ $scope.withdrawFromBank = function (){
     }else {
      // toaster.pop('success', 'Loading Transaction Details');
       $scope.journal = apiRes.posted_lines;
-      $scope.$digest();
+ //     $scope.$digest();
     }
   });
 
@@ -86,31 +123,65 @@ $scope.withdrawFromBank = function (){
       return error;
     }else {
       $scope.reports = apiRes;
-      $scope.$digest();
+//      $scope.$digest();
     }
     
   });
+console.log($scope.transaction);
+ // OPEN MODAL WINDOW
+     $scope.openModalWithdraw = function(size){
+      var modalInstance = $modal.open({
+        templateUrl: 'modules/banker/views/withdraw.modal.view.html',
+        controller : function ($scope, $modalInstance){
+        //  $scope.authentication = Authentication;
+          $scope.ok = function () {
+            console.log($scope.transaction);
+           // $modalInstance.close(transaction.amount);
+          };
+   //      $scope.ok = function(transaction) {
+   //     // console.log(transaction.amount);
+   //       // var amount = $scope.transaction.amount;
+   //      //  $modalInstance.close(amount);
+   // //  console.log('amount', amount);
+   //      };
+        $scope.cancel = function () {
+          $modalInstance.dismiss('cancel');
+        };
+      },
+      size: size,
+    });
+      // modalInstance.result.then(function (amount) {
+      //   console.log(amount);
+      //  $scope.withdrawFromBank(amount);
+      //  toaster.pop('success', 'Transaction Completed');
+      //  $scope.$digest();
+   // });
+};
+}]);
+// OPEN MODAL WINDOW
+    //  $scope.openModalDeposit = function(size){
+    //   var modalInstance = $modal.open({
+    //     templateUrl: 'modules/banker/views/deposit.modal.view.html',
+    //     controller : function ($scope, $modalInstance){
+    //     //  $scope.authentication = Authentication;
 
-  //OPEN MODAL WINDOW
-  
-  // $scope.openModal = function(size){
-  //   var modalInstance = $modal.open({
-  //     templateUrl: 'modules/banker/views/support.modal.view.html',
-  //     controller : function ($scope, $modalInstance){
-  //   //  $scope.authentication = Authentication;
+    //     $scope.ok = function (transaction) {
+    //         var amount = $scope.transaction.amount;
+    //       $modalInstance.close(amount);
+    //   console.log('amount 2', $scope.transaction.amount);
+    //     };
+    //     $scope.cancel = function () {
+    //       $modalInstance.dismiss('cancel');
+    //     };
+    //   },
+    //   size: size,
+    // });
+      // modalInstance.result.then(function (amount) {
+      //   console.log(amount);
+      //  $scope.depositIntoBank(amount);
+      //  toaster.pop('success', 'Transaction Completed');
+      // $scope.$digest();
+    //});
+//};
 
-  //     $scope.ok = function () {
-  //       $modalInstance.close($scope.amount);
-  //     };
-  //     $scope.cancel = function () {
-  //       $modalInstance.dismiss('cancel');
-  //     };
-  //     },
-  //     size: size,
-  //     });
-  //     modalInstance.result().then(function () {
-  //     console.log();
 
-  //   });
-  //  };
- }]);
