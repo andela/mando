@@ -1,8 +1,10 @@
-<div class="modal-header text-center" data-ng-controller="transactionCtrl">
-    <h5 class="modal-title">WITHDRAW FROM ACCOUNT</h5>
- <div class="text-center"><input type="number" data-ng-model="transaction.amount" Placeholder="Amount to Withdraw"></div>
+<div class="modal-header" data-ng-controller="transactionCtrl">
+    <h3 class="modal-title">WITHDRAW FROM ACCOUNT</h3>
 </div>
-<div class="modal-footer text-center">
-    <button class="btn btn-primary" ng-click="ok(transaction)">Withdraw</button>
+<div class="modal-body">
+ <input type="number" data-ng-model="withdraw.amount" Placeholder="Amount to Withdraw"></div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok(withdraw)">Withdraw</button>
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
 </div>

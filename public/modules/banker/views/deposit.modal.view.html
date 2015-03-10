@@ -1,8 +1,11 @@
 <div class="modal-header text-center" data-ng-controller="transactionCtrl">
     <h5 class="modal-title">DEPOSIT INTO ACCOUNT</h5>
-    <div><input type="number" data-ng-model="transaction.amount" Placeholder="Amount to Deposit"></div>
 </div>
+<div class="modal-body">
+  <input type="number" data-ng-model="deposit.amount" Placeholder="Amount to Deposit">
+</div>
+
 <div class="modal-footer text-center">
-    <button class="btn btn-primary" ng-click="ok(transaction)">Deposit</button>
+    <button class="btn btn-primary" ng-click="ok(deposit)">Deposit</button>
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
 </div>
