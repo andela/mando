@@ -4,8 +4,8 @@
   </div>
   <div>
     <p>ALL TRANSACTION DETAILS</p>
-    <div class="pull-right"><form name="withDrawForm "><input type="number" ng-model="withdrawal.amount"><button class="btn btn-warning withdraw" ng-click="withdrawFromBank(withdrawal)">WITHDRAW</button></form></div>
-    <table class="table table-bordered">
+    <table class="table table-bordered"> 
+    <div class="pull-right"><button class="btn btn-warning withdraw" ng-click="openModalWithdraw('sm')">WITHDRAW</button><button class="btn btn-success" ng-click="openModalDeposit('sm')">Deposit</button></div>
       <tt>
         <th>Date</th>
         <th>Description</th>
