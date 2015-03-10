@@ -4,7 +4,7 @@
   </div>
   <div>
     <p>ALL TRANSACTION DETAILS</p>
-    <div class="pull-right"><button class="btn btn-warning withdraw" ng-click="withdraw()">WITHDRAW</button><button class="btn btn-success" ng-click="deposit()"> DEPOSIT</button></div>
+    <div class="pull-right"><form name="withDrawForm "><input type="number" ng-model="withdrawal.amount"><button class="btn btn-warning withdraw" ng-click="withdrawFromBank(withdrawal)">WITHDRAW</button></form></div>
     <table class="table table-bordered">
       <tt>
         <th>Date</th>
@@ -23,3 +23,4 @@
     </table>
   </div>
 </section>
+<!-- <button class="btn btn-success" ng-click="deposit()"> DEPOSIT</button> -->
