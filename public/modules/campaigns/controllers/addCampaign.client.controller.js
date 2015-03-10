@@ -2,8 +2,8 @@
 
 /*global moment */
 
-angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
-  function($scope, backendService, $location, Authentication, youtubeEmbedUtils) {
+angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
+  function($scope, toaster, backendService, $location, Authentication, youtubeEmbedUtils) {
     //provides the authentication object
     $scope.authentication = Authentication;
     $scope.campaign = {};
@@ -12,19 +12,20 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'backendServ
     $scope.minDate = moment().add(1, 'days');
     $scope.maxDate = moment().add(30, 'days');
 
-   // if unauthenticated, go to home
+   //if unauthenticated, go to home
     if (!$scope.authentication.user) {
       $location.path('/');
     }
 
     $scope.addCampaign = function() {
       $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
-
         backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
-          $location.path('/campaign/'+ data._id);
+          toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
+          $location.path('/campaign/'+ data.slug);
         })
         .error(function(error, status, header, config) {
+          //no $scope.error on the view, need to work on the error
           $scope.error = error;
         });
     };

@@ -7,8 +7,12 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.post('/campaign/add', campaignData);
   };
 
-  var getCampaign = function(campaignData) {
-    return $http.get('/campaign/'+campaignData._id);
+  var getCampaign = function(campaignid) {
+    return $http.get('/campaign/' + campaignid);
+  };
+
+  var deleteCampaign = function(campaignid) {
+    return $http.delete('/campaign/' +campaignid);
   };
 
   var checkYouTubeUrl = function(videoId) {
@@ -19,10 +23,22 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/campaigns/' + userid);
   };
 
+  //get all campaigns for the homepage
+  var getCampaigns = function() {
+    return $http.get('/campaigns');
+  };
+
+  var updateCampaign = function(campaignData) {
+    return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
+  };
+
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
     checkYouTubeUrl: checkYouTubeUrl,
-    getUserCampaigns: getUserCampaigns
-  };
+    getUserCampaigns: getUserCampaigns,
+    updateCampaign: updateCampaign,
+    deleteCampaign: deleteCampaign,
+    getCampaigns: getCampaigns
+   };
 }]);
