@@ -1,7 +1,11 @@
 'use strict';
 /*global Subledger*/
 
-angular.module('banker').factory('bankerFactory', [ function(){
+angular.module('banker').constant('bankerConstant', {
+  BANK_ID: '6HNEAjoyxWtXjVXD2TyZqE',
+  SYSTEM_ID: 'E8GtyKhrPjSduG8aHSUusc',
+})
+.factory('bankerFactory', [ function(){
   var subledger = new Subledger();
   var identity_id = 'PNKWmtgMsLoHzB4LhUw4qN';
   var org_id = 'EpXxbhcVpxyC8BH0icuIQF';
