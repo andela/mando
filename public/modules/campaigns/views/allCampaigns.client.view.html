@@ -1,8 +1,18 @@
 <section data-ng-controller="allCampaignCtrl">
 <div class="row">
-    <ul class="rig">
+    <ul>
+      <div class="pull-right">
+        Sort By:
+        <select ng-model="criteria">
+          <option value="created"> Date created </option>
+          <option value="dueDate"> Dead-Line(Nearest to Furthest)</option>
+          <option value="-dueDate"> Dead-Line(Furthest to Nearest)</option>
+          <option value="amount"> Amount(Lowest to Highest)</option>
+          <option value="-amount"> Amount(Highest to Lowest)</option>
+        </select>
+      </div>
       <h2> All Current Campaigns</h2>
-      <li class="col-sm-4 home-campaigns" data-ng-repeat="campaign in Campaigns | orderBy: 'created'.descending">
+      <li class="col-sm-4 home-campaigns" data-ng-repeat="campaign in Campaigns | orderBy: criteria">
         <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a></p>
         <p> ${{campaign.amount}}</p>
         <p>Expiry Date: "{{campaign.dueDate | date}}"</p>
