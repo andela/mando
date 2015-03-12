@@ -86,50 +86,58 @@ exports.addRolesToUser = function(adminid, userid, roleType, done) {
 //updates user roles
 exports.updateUserRole = function(req, res) {
   var roles = req.body.roles, _roles = [];
-  roles = roles.replace(' ', '').split(',');
-  async.series([
-    function(cb) {
-      async.eachSeries(roles, function(role, callback) {
-        Role
-          .findOne({roleType: role})
-          .exec(function(err, nRole) {
-            if (err) callback(err);
-            _roles.push(nRole._id);
-            callback();
-          });
-      },
-      function(err) {
-        if(err){
-          return res.status(400).send({
-            message: errorHandler.getErrorMessage(err)
-          });
-        }
-        cb();
-      });
-    },
-    function(cb) {
-      var user = {};
-      user.roles = _roles;
-      user.lastModified = Date.now();
-      user.lastModifiedBy = req.user._id;
-      User.findByIdAndUpdate(req.body.userid, user, function(err, nUser) {
-        if(err){
-          return res.status(400).send({
-            message: errorHandler.getErrorMessage(err)
-          });
-        }
-        User.populate(nUser, {path: 'roles'}, function(err, populatedUser) {
+  roles.push('member');
+  var usersid = req.body.usersid;
+  var allUsers = [];
+  async.eachSeries(usersid, function(userid, callb) {
+    async.series([
+      function(cb) {
+        async.eachSeries(roles, function(role, callback) {
+          Role
+            .findOne({roleType: role})
+            .exec(function(err, nRole) {
+              if (err) callback(err);
+              _roles.push(nRole._id);
+              callback();
+            });
+        },
+        function(err) {
           if(err){
             return res.status(400).send({
               message: errorHandler.getErrorMessage(err)
             });
           }
-          res.json(populatedUser);
+          cb();
         });
-      });
-    }]);
+      },
+      function(cb) {
+        var oneUser = {};
+        oneUser.roles = _roles;
+        oneUser.lastModified = Date.now();
+        oneUser.lastModifiedBy = req.user._id;
+        User.findByIdAndUpdate(userid, oneUser, function(err, nUser) {
+          if(err){
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          }
+          User.populate(nUser, {path: 'roles'}, function(err, populatedUser) {
+            if(err){
+              return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+              });
+            }
+            allUsers.push(populatedUser);
+            console.log(-1, allUsers);
+            callb();
+          });
+        });
+      }]);
+  }, function(err) {
+    console.log(-1, allUsers);
+    res.json(allUsers);
+  });
 };
-
 
 
 

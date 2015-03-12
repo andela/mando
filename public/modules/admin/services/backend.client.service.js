@@ -7,7 +7,7 @@ angular.module('campaign').factory('adminBackendService', ['$http', function($ht
   };
 
   var updateUserRoles = function(data) {
-    return $http.post('/admin/user/roles/edit', data);
+    return $http.put('/admin/user/roles/edit', data);
   };
 
   return {

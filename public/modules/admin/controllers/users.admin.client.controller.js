@@ -51,7 +51,6 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
         }
       });
 
-            console.log(roles);
       var modalInstance = $modal.open({
         templateUrl: 'modules/admin/views/updateRoles.admin.modal.client.view.html',
         controller: 'ModalInstanceCtrl',
@@ -67,12 +66,12 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       });
 
       modalInstance.result.then(function (roles) {
-        var userid = [], _roles = [];
+        var usersid = [], _roles = [];
         for(var i=0; i < $scope.users.length; i++) {
           for(var j=0; j<roles.length; j++) {
             if(roles[j].checked === $scope.users[i].checked && $scope.users[i].checked === true) {
-              if(userid.indexOf($scope.users[i]._id) === -1) {
-                userid.push($scope.users[i]._id);
+              if(usersid.indexOf($scope.users[i]._id) === -1) {
+                usersid.push($scope.users[i]._id);
               }
               if(_roles.indexOf(roles[j].roleType) === -1) {
                 _roles.push(roles[j].roleType);
@@ -80,10 +79,13 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
             }
           }
         }
-        console.log(1,userid);
-        console.log(2, _roles);
-        console.log(roles);
-        console.log($scope.users);
+        var data = {};
+        data.roles = _roles;
+        data.usersid = usersid;
+        adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
+        })
+        .error(function(error, status, header, config) {
+          });
       });
     };
 
