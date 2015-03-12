@@ -49,7 +49,8 @@
     "protractor": "^1.6.1",
     "subledger": "file:../../../../../tmp/npm-1213-d79ffca8/git-cache-f6c9d03b2bb3/730ebf922f53be80ab5919772f1d34f134ff990e",
     "swig": "~1.4.1",
-    "xmlhttprequest": "^1.7.0"
+    "xmlhttprequest": "^1.7.0",
+    "sinon": "^1.13.0"
   },
   "devDependencies": {
     "grunt-concurrent": "~1.0.0",
