@@ -68,7 +68,7 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       });
 
       modalInstance.result.then(function (roles) {
-        var usersid = [], _roles = [];
+        var usersid = [], _roles = ['member'];
         angular.forEach($scope.users, function(user) {
           if(user.checked) {
             usersid.push(user._id);
