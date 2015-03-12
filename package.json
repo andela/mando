@@ -73,6 +73,7 @@
     "karma-jasmine": "~0.2.1",
     "karma-junit-reporter": "^0.2.2",
     "karma-phantomjs-launcher": "~0.1.2",
+    "karma-spec-reporter": "0.0.16",
     "load-grunt-tasks": "~1.0.0",
     "protractor": "^1.6.1",
     "should": "~4.1.0",
