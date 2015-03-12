@@ -23,20 +23,30 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
   }));
 
     it('should be able to edit a campaign successfully', function(){
-        $httpBackend.expectPOST('/campaign/54e2236b7146262c2c67423e/edit').respond( 200, {'message' : 'Edited successfully'});
+         $httpBackend.expectPOST('060151/latest-campaign').respond( 200, 
+            {
+              'slug': '060151/latest-campaign',
+              'message' : 'Edited successfully',
+              'title': 'Edit Campaign'
+
+        });
         
         scope.campaign = {
           title : 'Edit Campaign',
           description: 'This Controller test the edit campaign button',
           amount: '10022',
           dueDate: '30-03-2012',
-          youtubeUrl: 'https://www.youtube.com/watch?v=9xFsYfYrQHQ'
-
+          youtubeUrl: 'https://www.youtube.com/watch?v=9xFsYfYrQHQ',
+          slug: '060151/latest-campaign'
         };
-
         scope.editCampaign();
-        $httpBackend.flush();
-        expect($location.path().toBe('/campaign/54e2236b7146262c2c67423e'));
+     //expect('/GET', youtubeUrl);
+       $httpBackend.expectGET('/GET').respond(200, {
+        youtubeUrl: 'https://www.youtube.com/watch?v=9xFsYfYrQHQ'
+       });
+       $httpBackend.flush();
+      expect($location.path().toBe('/campaign/060151/latest-campaign')); 
+      // expect()
     });
 
 });

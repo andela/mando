@@ -18,7 +18,7 @@ exports.getIdentity = function(req, res) {
     }
   });
 };
-  
+
 //create a new account for every new user --params are passed at the point of authentication (user.authentication.server.contoller) also create a new account for every new campaign
 exports.createAccount = function(data, done) {
   subledger.organization(org_id).book(book_id).account().create(data, done);
@@ -39,12 +39,25 @@ exports.getAllAccounts =function(req, res) {
 exports.getUniqueAccount = function (req, res){
   var account_id = req.params.account_id ;
   subledger.organization(org_id).book(book_id).account(account_id).get({'description': 'USD'},function (error,apiRes){
-       if(error){
-          return res.json(error);
-      }else {
-        return res.json(apiRes);
-    }
-  });
+   if(error){
+      return res.json(error);
+    }else {
+      return res.json(apiRes);
+  }
+});
+
+  exports.getConstants = function(req, res){
+    var datas ={
+    identity_id : 'PNKWmtgMsLoHzB4LhUw4qN',
+    org_id : 'EpXxbhcVpxyC8BH0icuIQF',
+    book_id : 'R6WkhSAmw4STDyGHbrrFJL',
+    key_id: '2lzQysbyNXhPgYxx8pp2vE',
+    secret_id: 'CJzZPwRw01thgquyeD6RYc',
+    Bank_id: '6HNEAjoyxWtXjVXD2TyZqE',
+    system_id: 'E8GtyKhrPjSduG8aHSUusc',
+    };
+    return res.json(datas);
+  };
 };
 
 
