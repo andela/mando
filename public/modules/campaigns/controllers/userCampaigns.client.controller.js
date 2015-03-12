@@ -1,5 +1,6 @@
 'use strict';
 
+// <<<<<<< HEAD
 // angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster','$location', 'bankerFactory','Authentication', '$stateParams', 'lodash',
 // function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams, lodash) {
 
@@ -10,6 +11,10 @@
 angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService','toaster','$location','bankerFactory','bankerConstant' ,'Authentication', '$stateParams','lodash',
 function($scope, backendService, toaster, $location, bankerFactory ,bankerConstant, Authentication, $stateParams,lodash) {
 // >>>>>>> added constants for the system id and bank id
+// =======
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService','toaster','$location','bankerFactory','bankerConstant' ,'Authentication', '$stateParams',
+function($scope, backendService, toaster, $location, bankerFactory ,bankerConstant, Authentication, $stateParams) {
+// >>>>>>> a user with the banker role can get the system balance on their my-andonation page
   $scope.myCampaigns    = [];
   $scope.balance = {};
   $scope.authentication = Authentication;
@@ -33,7 +38,9 @@ function($scope, backendService, toaster, $location, bankerFactory ,bankerConsta
       $location.path('/');
 
     });
+
     //if role = banker use the banker id here else you the user's id$scope.authentication.user.account_id
+  
     var account_id = bankerConstant.BANK_ID;
       bankerFactory.getSystemBalance(account_id).balance({description: 'USD'}, function(error, apiRes){
         if (error){
