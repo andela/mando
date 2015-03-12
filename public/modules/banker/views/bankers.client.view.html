@@ -1,4 +1,4 @@
-<section data-ng-controller="transactionCtrl">
+<section data-ng-controller="transactionCtrl" >
   <div>
     <p> System Balance: {{balance.amount | currency : symbol : fractionSize}}</p>
   </div>
@@ -15,10 +15,10 @@
       </tt>
       <tr data-ng-repeat ="transaction in journal">
         <td>{{transaction.posted_at | date }}</td>
-        <td>{{transaction.description}}</td>
+        <td>{{ transaction.description.description}}</td>
         <td>{{transaction.value.type}}</td>
         <td>{{transaction.value.amount}}</td>
-        <td>{{transaction.reference}}</td>
+        <td>{{transaction.description.name}}</td>
       </tr>
     </table>
   </div>
