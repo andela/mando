@@ -120,6 +120,7 @@ exports.updateCampaign = function(req, res) {
   }
   Campaign
     .findByIdAndUpdate(req.params.campaignId, campaign, {}, function(err, editedCampaign) {
+    // .findByIdAndUpdate(req.params.campaignId, {$set: campaign}, {}, function(err, editedCampaign) {
       if(err){
           res.status(400).json(err);
       }
