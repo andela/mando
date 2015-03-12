@@ -41,7 +41,7 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
 
   it('$scope.addCampaign should create a campaign with the right credentials', function() {
     $httpBackend.expectPOST('/campaign/add').respond({
-      _id: '54e2236b7146262c2c67423e'
+      slug: '060151/latest-campaign'
     });
 
     scope.campaign = {
@@ -55,6 +55,6 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
 
     $httpBackend.flush();
 
-    expect($location.path()).toBe('/campaign/54e2236b7146262c2c67423e');
+    expect($location.path()).toBe('/campaign/060151/latest-campaign');
   });
 });
