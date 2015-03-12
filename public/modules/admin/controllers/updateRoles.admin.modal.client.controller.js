@@ -3,7 +3,6 @@
 angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 'roles', 'len', function($scope, $modalInstance, roles, len) {
   $scope.userroles = roles;
   $scope.NoOfUser = len;
-  console.log(len);
   $scope.roles = [
     {
       'roleType': 'admin',
@@ -51,7 +50,6 @@ angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstan
       }
     }
   }
-console.log($scope.roles);
   $scope.ok = function () {
     $modalInstance.close($scope.roles);
   };
