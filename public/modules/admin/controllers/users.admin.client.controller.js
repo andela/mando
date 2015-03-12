@@ -27,25 +27,27 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
     var NoOfCheckedUser = 0;
     //activates the modal window
     $scope.openModal = function () {
-      var roles = [];
-      angular.forEach($scope.users, function (user, key){
-        if(user.checked){
+      var roles = []; var count = 0;
+      angular.forEach($scope.users, function (user, key) {
+        if (user.checked) {
           NoOfCheckedUser++;
-          for(var i=0; i<user.roles.length; i++){
-              var id = false;
-              for(var r=0; r<roles.length; r++){
-                if(user.roles[i].roleType === roles[r].roleType){
-                  id = r;
+          for (var i = 0; i < user.roles.length; i++) {
+              if (NoOfCheckedUser > 1) {
+                if(lodash.findWhere(roles, {'roleType': user.roles[i].roleType})) {
+                  var temp = lodash.findWhere(roles, {'roleType': user.roles[i].roleType});
+                  temp.count++;
+                } else {
+                   if (user.roles[i].roleType === 'admin' && user._id === $scope.authentication.user._id) {
+                      user.roles[i].isAdmin = true;
+                    }
+                    roles.push(user.roles[i]);
                 }
-              }
-              if(id === false){
-                if(user._id === $scope.authentication.user._id) {
+              } else {
+                if (user.roles[i].roleType === 'admin' && user._id === $scope.authentication.user._id) {
                   user.roles[i].isAdmin = true;
                 }
                 user.roles[i].count = 1;
                 roles.push(user.roles[i]);
-              }else{
-                roles[id].count++;
               }
           }
         }
@@ -67,16 +69,14 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
 
       modalInstance.result.then(function (roles) {
         var usersid = [], _roles = [];
-        for(var i=0; i < $scope.users.length; i++) {
-          for(var j=0; j<roles.length; j++) {
-            if(roles[j].checked === $scope.users[i].checked && $scope.users[i].checked === true) {
-              if(usersid.indexOf($scope.users[i]._id) === -1) {
-                usersid.push($scope.users[i]._id);
-              }
-              if(_roles.indexOf(roles[j].roleType) === -1) {
-                _roles.push(roles[j].roleType);
-              }
-            }
+        angular.forEach($scope.users, function(user) {
+          if(user.checked) {
+            usersid.push(user._id);
+          }
+        });
+        for (var y = 0; y < roles.length; y++) {
+          if(roles[y].checked) {
+            _roles.push(roles[y].roleType);
           }
         }
         var data = {};
