@@ -191,5 +191,5 @@ module.exports = function(grunt) {
   grunt.registerTask('unittest', ['env:test','karma:unit']);
 
   //TEST Protractor
-  grunt.registerTask('test-protractor', ['env:test', 'protractor:all']);
+  grunt.registerTask('e2etest', ['env:test', 'protractor:all']);
 };
