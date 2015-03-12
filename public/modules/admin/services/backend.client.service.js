@@ -6,12 +6,12 @@ angular.module('campaign').factory('adminBackendService', ['$http', function($ht
     return $http.get('/admin/users');
   };
 
-  var addRolesToUser = function(data) {
-    return $http.post('/admin/user/role/add', data);
+  var updateUserRoles = function(data) {
+    return $http.post('/admin/user/roles/edit', data);
   };
 
   return {
     getUsers: getUsers,
-    addRolesToUser: addRolesToUser
+    updateUserRoles: updateUserRoles
   };
 }]);

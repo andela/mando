@@ -1,0 +1,20 @@
+<section>
+  <div class="modal-header">
+    <h3 class="modal-title">
+      Which roles do you want to remove or add
+    </h3>
+  </div>
+  <div class="modal-body">
+    <ul>
+      <li ng-repeat="role in roles" mando-tooltip-state="{{role.isAdmin}}">
+        <div tooltip="{{role.isAdmin ? 'Admin Role cannot be removed from self' : '' }}" tooltip-placement="left">
+        <input type="checkbox" ui-indeterminate="role.count < NoOfUser" ng-model="role.checked" ng-disabled="role.isAdmin">{{role.roleType}}
+      </div>
+      </li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <button ng-click="cancel()">Cancel</button>
+    <button ng-click="ok()">Save</button>
+  </div>
+</section>
