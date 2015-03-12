@@ -14,7 +14,7 @@
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
         <td>{{user.email}}</td>
-        <td><span ng-repeat="role in user.roles">{{role.roleType}}<span ng-hide="$last">, </span></span></td>
+        <td><span ng-repeat="role in user.roles | orderBy:'roleType'" class="text-capitalize">{{role.roleType}}<span ng-hide="$last">, </span></span></td>
       </tr>
     </table>
 </section>
