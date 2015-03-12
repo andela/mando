@@ -85,11 +85,11 @@ exports.addRolesToUser = function(adminid, userid, roleType, done) {
 
 //updates user roles
 exports.updateUserRole = function(req, res) {
-  var roles = req.body.roles, _roles = [];
-  roles.push('member');
+  var roles = req.body.roles;
   var usersid = req.body.usersid;
   var allUsers = [];
   async.eachSeries(usersid, function(userid, callb) {
+    var _roles = [];
     async.series([
       function(cb) {
         async.eachSeries(roles, function(role, callback) {
