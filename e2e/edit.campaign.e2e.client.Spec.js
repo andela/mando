@@ -18,13 +18,13 @@
 //   var editCampaignBtn = element(by.id('editCampaignBtn'));
 
 //   //******TEST**********//
-//   it('should show 4 campaigns from the existing campaign', function(){
-// //    helper.logoutIfLoggedIn();
-//      signInButton.click();
-//      browser.sleep(1000);
-//      myAndonation.click();
-//      //expect(campaignList.count()).toBe(4);
-//   });
+// //   it('should show 4 campaigns from the existing campaign', function(){
+// // //    helper.logoutIfLoggedIn();
+// //      signInButton.click();
+// //      browser.sleep(1000);
+// //      myAndonation.click();
+// //      //expect(campaignList.count()).toBe(4);
+// //   });
 
 //   it('should edit a campaign', function(){
 //     myAndonation.click();
