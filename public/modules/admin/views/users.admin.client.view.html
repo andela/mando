@@ -10,7 +10,7 @@
         <th>Roles</th>
       </tt>
       <tr ng-repeat="user in users | orderBy: 'firstName'">
-        <td><input type="checkbox" ng-model="user.checked"></td>
+        <td><input type="checkbox" ng-model="user.checked" ng-click="check()"></td>
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
         <td>{{user.email}}</td>
