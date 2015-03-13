@@ -3,7 +3,7 @@
   <button ng-click="openModal()">Update User Roles</button>
   <table class="table table-bordered">
       <tt>
-        <th><input type="checkbox"></th>
+        <th><input type="checkbox" ng-model="allChecked" ng-click="checkAll(allChecked)"></th>
         <th>First Name</th>
         <th>Last Name</th>
         <th>Email</th>
