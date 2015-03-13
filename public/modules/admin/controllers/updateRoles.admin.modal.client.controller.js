@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 'roles', 'len', function($scope, $modalInstance, roles, len) {
+angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 'roles', 'len', '$timeout', function($scope, $modalInstance, roles, len, $timeout) {
   $scope.NoOfUser = len;
   $scope.roles = [
     {
@@ -19,6 +19,13 @@ angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstan
       'isAdmin': false
     }
   ];
+  $scope.disableSaveButton = function(isAdmin, checkStatus) {
+    $timeout(function() {
+      if (checkStatus !== 'indeterminate') {
+        $scope.disable = !(isAdmin && !checkStatus);
+      }
+    }, 100);
+  };
 
   if(len === 1) {
     for(var i=0; i < roles.length;i++) {
@@ -49,7 +56,6 @@ angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstan
       }
     }
   }
-  console.log($scope.roles);
   $scope.ok = function () {
     $modalInstance.close($scope.roles);
   };
