@@ -87,13 +87,11 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
         }
         data.roles.push(addRoles);
         data.roles.push(rmRoles);
-        console.log(data.roles);
         adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
-          console.log(data);
+          $scope.users = data;
           toaster.pop('success', 'User Roles updated successfully');
         })
         .error(function(error, status, header, config) {
-          console.log(error);
           toaster.pop('error', 'Error Occured, Please try again or contact the Admin');
           });
       });
