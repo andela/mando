@@ -121,9 +121,6 @@ exports.updateUserRole = function(req, res) {
             };
           }
           User.where({_id: userid}).update(query, function(err, noOfUser, nUser) {
-            console.log(1, noOfUser);
-            console.log(2, nUser);
-            console.log(3, err);
             callback(err);
             cb();
           });
@@ -156,6 +153,16 @@ exports.updateUserRole = function(req, res) {
     });
   }, function(err) {
     if(err) res.status(400).send('Error Occurred');
-    res.status(200).send('Roles Updated');
+    User
+      .find({})
+      .populate('roles')
+      .exec(function(err, users) {
+        if(err){
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        }
+        res.json(users);
+      });
   });
 };
