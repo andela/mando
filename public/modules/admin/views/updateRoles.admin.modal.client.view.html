@@ -5,13 +5,9 @@
     </h3>
   </div>
   <div class="modal-body">
-    <ul>
-      <li ng-repeat="role in roles">
-        <div>
-        <input type="checkbox" ui-indeterminate="role.count < NoOfUser" ng-model="role.checked" ng-click="disableSaveButton(role.isAdmin, role.checked)">{{role.roleType}}{{role.checked}}
-      </div>
-      </li>
-    </ul>
+    <div ng-repeat="role in roles">
+      <input type="checkbox" ui-indeterminate="role.count < NoOfUser" ng-model="role.checked" ng-click="disableSaveButton(role.isAdmin, role.checked)"><span class="text-capitalize"> {{role.roleType}}</span>
+    </div>
     <div ng-show="disable" class="label label-danger">
       You cannot remove admin role from yourself
     </div>
