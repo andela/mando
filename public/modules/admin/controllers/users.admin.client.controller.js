@@ -106,9 +106,9 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
         });
         for (var y = 0; y < roles.length; y++) {
           if(roles[y].checked === true) {
-            addRoles.addRoles.push(roles[y].roleType);
+            addRoles.addRoles.push(roles[y]._id);
           } else if (roles[y].checked === false) {
-            rmRoles.rmRoles.push(roles[y].roleType);
+            rmRoles.rmRoles.push(roles[y]._id);
           }
         }
         data.roles.push(addRoles);

@@ -21,7 +21,7 @@ exports.addRoles = function(req, res) {
 };
 
 exports.getRoles = function(req, res) {
-  Role.find({}, function(err, roles) {
+  Role.find({'roleType': {$ne: 'member'}}).select('roleType').exec(function(err, roles) {
     if(err){
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -86,7 +86,6 @@ exports.addRolesToUser = function(adminid, userid, roleType, done) {
 //updates user roles
 exports.updateUserRole = function(req, res) {
   var usersid = req.body.usersid;
-  var _rolesid;
   var getRoles = function(role, done) {
     Role
       .findOne({roleType: role})
@@ -96,26 +95,19 @@ exports.updateUserRole = function(req, res) {
       });
   };
   var updateRoles = function(isAdding, roles, userid, _callback) {
-    async.eachSeries(roles, function(role, callback) {
+    async.eachSeries(roles, function(roleid, callback) {
       async.series([
-        function(cb) {
-          getRoles(role, function(err, roleid) {
-            if (err) cb(err);
-            _rolesid = roleid;
-            cb();
-          });
-        },
         function(cb) {
           var query;
           if (isAdding) {
             query = {
-              $addToSet: {roles: _rolesid},
+              $addToSet: {roles: roleid},
               lastModifiedBy: req.user._id,
               lastModified: Date.now()
             };
           } else {
             query = {
-              $pull: {roles: _rolesid},
+              $pull: {roles: roleid},
               lastModifiedBy: req.user._id,
               lastModified: Date.now()
             };
