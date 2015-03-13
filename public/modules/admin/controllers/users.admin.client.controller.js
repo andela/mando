@@ -1,9 +1,8 @@
 'use strict';
 
-angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication', 'adminBackendService', '$location', 'lodash', '$state', '$modal', 'toaster', function($scope, Authentication, adminBackendService, $location, lodash, $state, $modal, toaster) {
+angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication', 'adminBackendService', '$location', 'lodash', '$state', '$modal', 'toaster', '$timeout', function($scope, Authentication, adminBackendService, $location, lodash, $state, $modal, toaster, $timeout) {
 
   $scope.authentication = Authentication;
-  var checked = false;
   //redirects if user is not logged in
   if (!$scope.authentication.user) {
     $location.path('/');
@@ -26,16 +25,30 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       $scope.error = error;
     });
 
-    $scope.checkAll = function(allChecked) {
-      if(!allChecked) {
+    $scope.check = function() {
+      $timeout(function(){
+        var count = 0;
         for(var i=0;i<$scope.users.length;i++){
-          $scope.users[i].checked = true;
+          if($scope.users[i].checked) {
+            count++;
+          }
         }
-      } else {
-        for(var j=0; j<$scope.users.length;j++){
-          $scope.users[j].checked = false;
+        $scope.allChecked = (count === $scope.users.length);
+      }, 100);
+    };
+
+    $scope.checkAll = function() {
+      $timeout(function() {
+        if($scope.allChecked) {
+          for(var i=0;i<$scope.users.length;i++){
+            $scope.users[i].checked = true;
+          }
+        } else {
+          for(var j=0; j<$scope.users.length;j++){
+            $scope.users[j].checked = false;
+          }
         }
-      }
+      }, 100);
     };
     //activates the modal window
     $scope.openModal = function () {
