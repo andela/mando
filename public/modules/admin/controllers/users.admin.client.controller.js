@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication', 'adminBackendService', '$location', 'lodash', '$state', '$modal', function($scope, Authentication, adminBackendService, $location, lodash, $state, $modal) {
+angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication', 'adminBackendService', '$location', 'lodash', '$state', '$modal', 'toaster', function($scope, Authentication, adminBackendService, $location, lodash, $state, $modal, toaster) {
 
   $scope.authentication = Authentication;
   //redirects if user is not logged in
@@ -90,9 +90,11 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
         console.log(data.roles);
         adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
           console.log(data);
+          toaster.pop('success', 'User Roles updated successfully');
         })
         .error(function(error, status, header, config) {
           console.log(error);
+          toaster.pop('error', 'Error Occured, Please try again or contact the Admin');
           });
       });
     };
