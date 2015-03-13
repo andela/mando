@@ -3,6 +3,7 @@
 angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication', 'adminBackendService', '$location', 'lodash', '$state', '$modal', 'toaster', function($scope, Authentication, adminBackendService, $location, lodash, $state, $modal, toaster) {
 
   $scope.authentication = Authentication;
+  var checked = false;
   //redirects if user is not logged in
   if (!$scope.authentication.user) {
     $location.path('/');
@@ -24,6 +25,18 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       //do proper error handling
       $scope.error = error;
     });
+
+    $scope.checkAll = function(allChecked) {
+      if(!allChecked) {
+        for(var i=0;i<$scope.users.length;i++){
+          $scope.users[i].checked = true;
+        }
+      } else {
+        for(var j=0; j<$scope.users.length;j++){
+          $scope.users[j].checked = false;
+        }
+      }
+    };
     //activates the modal window
     $scope.openModal = function () {
       var roles = []; var count = 0, NoOfCheckedUsers = 0;
