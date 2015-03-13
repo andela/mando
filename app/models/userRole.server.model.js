@@ -9,10 +9,11 @@ var userRoleSchema = new  Schema({
     ref: 'User'
   },
 
-  roleId: {
+  roleId: [{
     type: Schema.Types.ObjectId,
     ref: 'Role'
-  },
+  }],
+
   created: {
     type: Date,
     default: Date.now
