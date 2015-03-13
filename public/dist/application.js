@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'andonation';
-	var applicationModuleVendorDependencies = ['ngResource', 'toaster', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'youtube-embed'];
+	var applicationModuleVendorDependencies = ['ngResource', 'toaster', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'youtube-embed', 'ngLodash'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
@@ -43,6 +43,11 @@ angular.element(document).ready(function() {
 });
 'use strict';
 
+// Use application configuration module to register a new module
+ApplicationConfiguration.registerModule('admin');
+
+'use strict';
+
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('campaign');
 'use strict';
@@ -53,6 +58,221 @@ ApplicationConfiguration.registerModule('core');
 
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');
+'use strict';
+
+angular.module('admin').config(['$stateProvider',function($stateProvider) {
+
+  $stateProvider.
+    state('allUsers', {
+      url: '/admin/users',
+      templateUrl: 'modules/admin/views/users.admin.client.view.html'
+    });
+}]);
+
+'use strict';
+
+angular.module('admin').controller('ModalInstanceCtrl', ['$scope', 'adminBackendService', '$modalInstance', 'roles', 'len', '$timeout', function($scope, adminBackendService, $modalInstance, roles, len, $timeout) {
+  $scope.NoOfUser = len;
+  adminBackendService.getRoles().success(function(data, status, header, config) {
+    $scope.roles = data;
+    if(len === 1) {
+    for(var i=0; i < roles.length;i++) {
+      for(var j=0; j< $scope.roles.length; j++) {
+        if(roles[i].roleType === $scope.roles[j].roleType) {
+          if(roles[i].isAdmin === true) {
+            $scope.roles[j].isAdmin = roles[i].isAdmin;
+          }
+          $scope.roles[j].count = roles[i].count;
+          $scope.roles[j].checked = true;
+        }
+      }
+    }
+  } else {
+    for(var x=0; x < roles.length;x++) {
+      for(var y=0; y< $scope.roles.length; y++) {
+        if(roles[x].roleType === $scope.roles[y].roleType) {
+          if(roles[x].isAdmin === true) {
+            $scope.roles[y].isAdmin = roles[x].isAdmin;
+          }
+          $scope.roles[y].count = roles[x].count;
+          if($scope.roles[y].count < len) {
+            $scope.roles[y].checked = 'indeterminate';
+          } else {
+            $scope.roles[y].checked = true;
+          }
+        }
+      }
+    }
+  }
+  }).error(function(error, status, header, config) {
+    //handle error
+  });
+  $scope.disableSaveButton = function(isAdmin, checkStatus) {
+    $timeout(function() {
+      if (checkStatus !== 'indeterminate') {
+        $scope.disable = (isAdmin && checkStatus);
+      }
+    }, 100);
+  };
+
+  $scope.ok = function () {
+    $modalInstance.close($scope.roles);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}]);
+'use strict';
+
+angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication', 'adminBackendService', '$location', 'lodash', '$state', '$modal', 'toaster', '$timeout', function($scope, Authentication, adminBackendService, $location, lodash, $state, $modal, toaster, $timeout) {
+
+  $scope.authentication = Authentication;
+  //redirects if user is not logged in
+  if (!$scope.authentication.user) {
+    $location.path('/');
+  }
+  //redirects user to myAndonation is user is logged in and not an admin
+  if (!lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'})) {
+    $state.go('userCampaigns');
+  }
+
+  adminBackendService.getUsers()
+    .success(function(data, status, header, config) {
+      $scope.users = data;
+
+      for(var i=0;i<$scope.users.length;i++){
+        $scope.users[i].checked = false;
+      }
+    })
+    .error(function(error, status, header, config) {
+      //do proper error handling
+      $scope.error = error;
+    });
+
+    $scope.check = function() {
+      $timeout(function(){
+        var count = 0;
+        for(var i=0;i<$scope.users.length;i++){
+          if($scope.users[i].checked) {
+            count++;
+          }
+        }
+        $scope.allChecked = (count === $scope.users.length);
+      }, 100);
+    };
+
+    $scope.checkAll = function() {
+      $timeout(function() {
+        if($scope.allChecked) {
+          for(var i=0;i<$scope.users.length;i++){
+            $scope.users[i].checked = true;
+          }
+        } else {
+          for(var j=0; j<$scope.users.length;j++){
+            $scope.users[j].checked = false;
+          }
+        }
+      }, 100);
+    };
+    //activates the modal window
+    $scope.openModal = function () {
+      var roles = []; var count = 0, NoOfCheckedUsers = 0;
+      angular.forEach($scope.users, function (user, key) {
+        if (user.checked) {
+          NoOfCheckedUsers++;
+          for (var i = 0; i < user.roles.length; i++) {
+              if (NoOfCheckedUsers > 1) {
+                if(lodash.findWhere(roles, {'roleType': user.roles[i].roleType})) {
+                  var temp = lodash.findWhere(roles, {'roleType': user.roles[i].roleType});
+                  temp.count++;
+                } else {
+                   if (user.roles[i].roleType === 'admin' && user._id === $scope.authentication.user._id) {
+                      user.roles[i].isAdmin = true;
+                    }
+                    user.roles[i].count = 1;
+                    roles.push(user.roles[i]);
+                }
+              } else {
+                if (user.roles[i].roleType === 'admin' && user._id === $scope.authentication.user._id) {
+                  user.roles[i].isAdmin = true;
+                }
+                user.roles[i].count = 1;
+                roles.push(user.roles[i]);
+              }
+          }
+        }
+      });
+
+      var modalInstance = $modal.open({
+        templateUrl: 'modules/admin/views/updateRoles.admin.modal.client.view.html',
+        controller: 'ModalInstanceCtrl',
+        size: 'sm',
+        resolve: {
+          roles: function () {
+            return roles;
+          },
+          len: function() {
+            return NoOfCheckedUsers;
+          }
+        }
+      });
+
+      modalInstance.result.then(function (roles) {
+        var data = {};
+        data.roles = [];
+        var addRoles = {addRoles: []};
+        var rmRoles = {rmRoles: []};
+        data.usersid = [];
+        angular.forEach($scope.users, function(user) {
+          if(user.checked) {
+            data.usersid.push(user._id);
+          }
+        });
+        for (var y = 0; y < roles.length; y++) {
+          if(roles[y].checked === true) {
+            addRoles.addRoles.push(roles[y]._id);
+          } else if (roles[y].checked === false) {
+            rmRoles.rmRoles.push(roles[y]._id);
+          }
+        }
+        data.roles.push(addRoles);
+        data.roles.push(rmRoles);
+        adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
+          $scope.users = data;
+          $scope.allChecked = false;
+          toaster.pop('success', 'User Roles updated successfully');
+        })
+        .error(function(error, status, header, config) {
+          toaster.pop('error', 'Error Occured, Please try again or contact the Admin');
+          });
+      });
+    };
+
+}]);
+
+'use strict';
+
+angular.module('campaign').factory('adminBackendService', ['$http', function($http) {
+
+  var getUsers = function() {
+    return $http.get('/admin/users');
+  };
+
+  var getRoles = function() {
+    return $http.get('/admin/roles');
+  };
+
+  var updateUserRoles = function(data) {
+    return $http.put('/admin/user/roles/edit', data);
+  };
+
+  return {
+    getUsers: getUsers,
+    updateUserRoles: updateUserRoles,
+    getRoles: getRoles
+  };
+}]);
 'use strict';
 
 angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDelegateProvider', function($stateProvider, datepickerConfig, $sceDelegateProvider) {
@@ -269,14 +489,16 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
 ]);
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams',
-function($scope, backendService, $location, Authentication, $stateParams) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams', 'lodash',
+function($scope, backendService, $location, Authentication, $stateParams, lodash) {
   $scope.myCampaigns    = [];
   $scope.authentication = Authentication;
 
   if (!$scope.authentication.user) {
     $location.path('/');
   }
+  //checks if user is an admin
+  $scope.isAdmin = lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'}) ? true : false;
 
   //uses the Currently signed-in id to get the user id.
   var userid = $scope.authentication.user._id;
@@ -360,8 +582,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getUserCampaigns: getUserCampaigns,
     updateCampaign: updateCampaign,
     deleteCampaign: deleteCampaign,
-    getCampaigns: getCampaigns
-   };
+    getCampaigns: getCampaigns,
+  };
 }]);
 'use strict';
 
