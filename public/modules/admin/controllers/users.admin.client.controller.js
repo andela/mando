@@ -115,6 +115,7 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
         data.roles.push(rmRoles);
         adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
           $scope.users = data;
+          $scope.allChecked = false;
           toaster.pop('success', 'User Roles updated successfully');
         })
         .error(function(error, status, header, config) {
