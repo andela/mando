@@ -7,6 +7,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
     if(!$scope.authentication.user){
         $location.path('/');
     }
+  $scope.getCampaign = function (){
     backendService.getCampaign($stateParams.campaignTimestamp + '/' + $stateParams.campaignslug)
       .success(function(data, status){
         if($scope.authentication.user._id !== data.createdBy._id){
@@ -21,7 +22,8 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
       .error(function(err){
         toaster.pop('error', 'An Error Occurred'+ err);
       });
-
+    };
+  $scope.getCampaign();
     $scope.editCampaign = function(){
       delete $scope.campaign.createdBy;
       delete $scope.campaign.created;
