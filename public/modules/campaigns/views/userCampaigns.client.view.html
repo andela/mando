@@ -1,6 +1,10 @@
+<!-- <<<<<<< HEAD -->
 <section data-ng-controller="userCampaignsCtrl">
 
   <button ng-show="isAdmin" class="btn pull-right"><a href="/#!/admin/users">Users</a></button>
+<!-- ======= -->
+<!-- <section> -->
+<!-- >>>>>>> modified the user campaigns module to effect new changes to accessing credentials also modified the edit campaign test -->
   <!-- //include authentication.user.role= banker in the ng-if -->
   <p><a ng-href="/#!/bank" >System Balance: {{balance.amount | currency : symbol : fractionSize}}</a></p>
   <div ng-hide="myCampaigns" class="jumbotron text-center">
