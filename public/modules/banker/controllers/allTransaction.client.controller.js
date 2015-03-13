@@ -1,21 +1,21 @@
 'use strict';
 /*global Subledger*/
-angular.module('banker').controller('transactionCtrl', ['$scope','Authentication','$http','$timeout','toaster','bankerConstant','$modal','bankerFactory', function($scope, Authentication, $http , $timeout,toaster,bankerConstant, $modal, bankerFactory){
+angular.module('banker').controller('transactionCtrl', ['$scope','Authentication','$http','$timeout','toaster','$modal','bankerFactory','credentials', function($scope, Authentication, $http , $timeout,toaster, $modal, bankerFactory, credentials){
   $scope.reports = [];
   $scope.withdrawal= {};
   $scope.balance = {
-    bank_id: bankerConstant.BANK_ID,
     amount: ''
   };
+  var cred = credentials.data;
+ bankerFactory.setCredentials(cred.key_id, cred.secret_id);
+ 
   $scope.authentication = Authentication;
- // $scope.query = $scope.authentication.user.firstName;
 
   //Method to Get The Bank Balance
   $scope.getBalance = function(){ 
     var date = new Date().toISOString();
-    bankerFactory.getSystemBalance($scope.balance.bank_id).balance({description: 'USD', at:date}, function(error, apiRes){
+    bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({description: 'USD', at:date}, function(error, apiRes){
       if (error){
-        console.log('im here');
         toaster.pop('error', 'An Error Occurred'+ error);
         return;
       }else{
@@ -27,8 +27,8 @@ angular.module('banker').controller('transactionCtrl', ['$scope','Authentication
   $scope.getBalance();
 
   //get All lines of transaction
- $scope.getJournals = function(){
-  bankerFactory.getJournalReports($scope.balance.bank_id).get({
+ $scope.getJournals = function(cb){
+  bankerFactory.getJournalReports(cred.org_id, cred.book_id, cred.bank_id).get({
     'description': 'USD',
     'action': 'before',
     'effective_at': new Date().toISOString()
@@ -49,11 +49,13 @@ angular.module('banker').controller('transactionCtrl', ['$scope','Authentication
       }
      $scope.journal = apiRes.posted_lines;
      $scope.$digest();
+     if(!!cb){
+      cb();
+     }
    }
  });
 };
   $scope.getJournals();
-  
 
 //Grab Some details of the Auhtenticated user and convert it to a string which will be stored in subledger the returned string is converted back into an object.
 
@@ -64,25 +66,24 @@ angular.module('banker').controller('transactionCtrl', ['$scope','Authentication
         description: 'Cash Withdrawal'
         };
       var userdetails =JSON.stringify(userToString);
-
-    bankerFactory.createAndPostTransaction().createAndPost({
+    bankerFactory.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
       'effective_at': new Date().toISOString(),
       'description': userdetails,
-      'reference': 'http://andonation-mando.herokuapp.com/bank',
+      'reference': 'http://andonation-mando.herokuapp.com',
       'lines': [
       {
-        'account': $scope.balance.bank_id,
+        'account': cred.bank_id,
         'description': userdetails,
-        'reference':  'http://andonation-mando.herokuapp.com/bank',
+        'reference':  'http://andonation-mando.herokuapp.com',
         'value': {
           'type': 'debit',
           'amount': amount
         }
       },
       {
-        'account': bankerConstant.SYSTEM_ID,
+        'account': cred.system_id,
         'description': 'Cash Deposit',
-        'reference':  'http://andonation-mando.herokuapp.com/bank',
+        'reference':  'http://andonation-mando.herokuapp.com',
         'value': {
           'type': 'credit',
           'amount': amount
@@ -107,24 +108,24 @@ $scope.depositIntoBank = function (amount){
     description: 'Cash Deposit'
   };
   var userdetails =JSON.stringify(userToString);
- bankerFactory.createAndPostTransaction().createAndPost({
+ bankerFactory.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
   'effective_at': new Date().toISOString(),
   'description': userdetails,
-  'reference': 'http://andonation-mando.herokuapp.com/bank',
+  'reference': 'http://andonation-mando.herokuapp.com',
   'lines': [
   {
-    'account': $scope.balance.bank_id,
+    'account': cred.bank_id,
     'description': userdetails,
-    'reference':  'http://andonation-mando.herokuapp.com/bank',
+    'reference':  'http://andonation-mando.herokuapp.com',
     'value': {
       'type': 'credit',
       'amount': amount
     }
   },
   {
-    'account': bankerConstant.SYSTEM_ID,
+    'account': cred.system_id,
     'description': 'cash deposit',
-    'reference':  'http://andonation-mando.herokuapp.com/bank',
+    'reference':  'http://andonation-mando.herokuapp.com',
     'value': {
       'type': 'debit',
       'amount': amount
@@ -141,7 +142,7 @@ $scope.depositIntoBank = function (amount){
     }
   });
 };
- // OPEN MODAL WINDOW
+// OPEN MODAL WINDOW
  $scope.openModalWithdraw = function(size){
   var modalInstance = $modal.open({
     templateUrl: 'modules/banker/views/withdraw.modal.view.html',
@@ -157,9 +158,9 @@ $scope.depositIntoBank = function (amount){
    $scope.withdrawFromBank(amount);
         toaster.pop('success', 'Transaction Completed');
       });
-};
+}; 
   //OPEN MODAL WINDOW
-  $scope.openModalDeposit = function(size){
+ $scope.openModalDeposit = function(size){
     var modalInstance = $modal.open({
       templateUrl: 'modules/banker/views/deposit.modal.view.html',
       controller : 'modalInstanceCtrl',
@@ -175,6 +176,6 @@ $scope.depositIntoBank = function (amount){
       toaster.pop('success', 'Transaction Completed');
       
     });
-  };
+  }; 
 
 }]);

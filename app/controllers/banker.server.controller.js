@@ -45,19 +45,20 @@ exports.getUniqueAccount = function (req, res){
       return res.json(apiRes);
   }
 });
-
-  exports.getConstants = function(req, res){
-    var datas ={
+};
+// add authentication to the route and call this method in the frontend 
+exports.getConstants = function(req, res){
+  var datas ={
     identity_id : 'PNKWmtgMsLoHzB4LhUw4qN',
     org_id : 'EpXxbhcVpxyC8BH0icuIQF',
     book_id : 'R6WkhSAmw4STDyGHbrrFJL',
     key_id: '2lzQysbyNXhPgYxx8pp2vE',
     secret_id: 'CJzZPwRw01thgquyeD6RYc',
-    Bank_id: '6HNEAjoyxWtXjVXD2TyZqE',
-    system_id: 'E8GtyKhrPjSduG8aHSUusc',
-    };
-    return res.json(datas);
+    bank_id: '6HNEAjoyxWtXjVXD2TyZqE',
+    system_id: 'E8GtyKhrPjSduG8aHSUusc'
   };
+
+  return res.json(datas);
 };
 
 
