@@ -1,33 +1,10 @@
 'use strict';
 
-angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 'roles', 'len', '$timeout', function($scope, $modalInstance, roles, len, $timeout) {
+angular.module('admin').controller('ModalInstanceCtrl', ['$scope', 'adminBackendService', '$modalInstance', 'roles', 'len', '$timeout', function($scope, adminBackendService, $modalInstance, roles, len, $timeout) {
   $scope.NoOfUser = len;
-  $scope.roles = [
-    {
-      'roleType': 'admin',
-      'checked': false,
-      'isAdmin': false
-    },
-    {
-      'roleType': 'banker',
-      'checked': false,
-      'isAdmin': false
-    },
-    {
-      'roleType': 'distributor',
-      'checked': false,
-      'isAdmin': false
-    }
-  ];
-  $scope.disableSaveButton = function(isAdmin, checkStatus) {
-    $timeout(function() {
-      if (checkStatus !== 'indeterminate') {
-        $scope.disable = (isAdmin && checkStatus);
-      }
-    }, 100);
-  };
-
-  if(len === 1) {
+  adminBackendService.getRoles().success(function(data, status, header, config) {
+    $scope.roles = data;
+    if(len === 1) {
     for(var i=0; i < roles.length;i++) {
       for(var j=0; j< $scope.roles.length; j++) {
         if(roles[i].roleType === $scope.roles[j].roleType) {
@@ -56,6 +33,17 @@ angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstan
       }
     }
   }
+  }).error(function(error, status, header, config) {
+    //handle error
+  });
+  $scope.disableSaveButton = function(isAdmin, checkStatus) {
+    $timeout(function() {
+      if (checkStatus !== 'indeterminate') {
+        $scope.disable = (isAdmin && checkStatus);
+      }
+    }, 100);
+  };
+
   $scope.ok = function () {
     $modalInstance.close($scope.roles);
   };
