@@ -4,11 +4,11 @@
  * Module dependencies
  */
 var should = require('should'),
-  mongoose = require('mongoose'),
-  request = require('supertest')('http://localhost:3000'),
-  passport = require('passport'),
-  Campaign = mongoose.model('Campaign'),
-  User = mongoose.model('User');
+    mongoose = require('mongoose'),
+    request = require('supertest')('http://localhost:3000'),
+    passport = require('passport'),
+    Campaign = mongoose.model('Campaign'),
+    User = mongoose.model('User');
 
 var agent = require('supertest').agent('http://localhost:3000');
 

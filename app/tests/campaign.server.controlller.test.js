@@ -34,18 +34,16 @@
 
       //invalid user
       user2 = new User({
-     //   _id : mongoose.Types.ObjectId('4edd40c86762e0fb12000003'),
-     firstName: 'User2',
-     lastname: 'Mando2',
-     displayName:'Manod2User2',
-     email: 'adebayo@andela.co',
-     username:'username2',
-     provider: 'google'
-   });
+      firstName: 'User2',
+      lastname: 'Mando2',
+      displayName:'Manod2User2',
+      email: 'adebayo@andela.co',
+      username:'username2',
+      provider: 'google'
+    });
 
       //MOCK CAMPAIGNS
       campaign1 = new Campaign({
-      // _id :mongoose.Types.ObjectId('4edd50c83762e0eb12002003'),
       title: 'A mock Campaign',
       description: 'This is a description campaign',
       youtubeUrl: 'https://www.youtube.com/watch?v=kC0JYp79tdo',
@@ -70,19 +68,19 @@
       });
     });
 
- // it('should edit A campaign with A valid credential', function(done){
- //    var req,
- //    param ={
- //      campaignId: campaign1._id
- //    };
- //    campaign1.title = 'A new Campaign Title';
- //    req = {user:user1, body:campaign1, params:param};
- //    controller.updateCampaign(req, res);
- //    Campaign.findById(campaign1._id).exec(function(err, campaign){
- //      campaign.title.should.equal('A new Campaign Title');
- //      done();
- //    });
- // });
+ it('should edit A campaign with A valid credential', function(done){
+    var req,
+    param ={
+      campaignId: campaign1._id
+    };
+    campaign1.title = 'A new Campaign Title';
+    req = {user:user1, body:campaign1, params:param};
+    controller.updateCampaign(req, res);
+    Campaign.findById(campaign1._id).exec(function(err, campaign){
+      campaign.title.should.equal('A new Campaign Title');
+      done();
+    });
+ });
   afterEach(function(done){
     User.remove().exec();
     done();
