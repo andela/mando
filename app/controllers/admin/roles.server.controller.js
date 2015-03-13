@@ -85,60 +85,77 @@ exports.addRolesToUser = function(adminid, userid, roleType, done) {
 
 //updates user roles
 exports.updateUserRole = function(req, res) {
-  var roles = req.body.roles;
   var usersid = req.body.usersid;
-  var allUsers = [];
-  async.eachSeries(usersid, function(userid, callb) {
-    var _roles = [];
-    async.series([
-      function(cb) {
-        async.eachSeries(roles, function(role, callback) {
-          Role
-            .findOne({roleType: role})
-            .exec(function(err, nRole) {
-              if (err) callback(err);
-              _roles.push(nRole._id);
-              callback();
-            });
-        },
-        function(err) {
-          if(err){
-            return res.status(400).send({
-              message: errorHandler.getErrorMessage(err)
-            });
-          }
-          cb();
-        });
-      },
-      function(cb) {
-        var oneUser = {};
-        oneUser.roles = _roles;
-        oneUser.lastModified = Date.now();
-        oneUser.lastModifiedBy = req.user._id;
-        User.findByIdAndUpdate(userid, oneUser, function(err, nUser) {
-          if(err){
-            return res.status(400).send({
-              message: errorHandler.getErrorMessage(err)
-            });
-          }
-          User.populate(nUser, {path: 'roles'}, function(err, populatedUser) {
-            if(err){
-              return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-              });
-            }
-            allUsers.push(populatedUser);
-            console.log(-1, allUsers);
-            callb();
+  var _rolesid;
+  var getRoles = function(role, done) {
+    Role
+      .findOne({roleType: role})
+      .exec(function(err, nRole) {
+        if (err) done(err);
+        done(err, nRole._id);
+      });
+  };
+  var updateRoles = function(isAdding, roles, userid, _callback) {
+    async.eachSeries(roles, function(role, callback) {
+      async.series([
+        function(cb) {
+          getRoles(role, function(err, roleid) {
+            if (err) cb(err);
+            _rolesid = roleid;
+            cb();
           });
+        },
+        function(cb) {
+          var query;
+          if (isAdding) {
+            query = {
+              $addToSet: {roles: _rolesid},
+              lastModifiedBy: req.user._id,
+              lastModified: Date.now()
+            };
+          } else {
+            query = {
+              $pull: {roles: _rolesid},
+              lastModifiedBy: req.user._id,
+              lastModified: Date.now()
+            };
+          }
+          User.where({_id: userid}).update(query, function(err, noOfUser, nUser) {
+            console.log(1, noOfUser);
+            console.log(2, nUser);
+            console.log(3, err);
+            callback(err);
+            cb();
+          });
+        }
+      ]);
+    },
+    function(err) {
+      if(err){
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
         });
-      }]);
+      }
+      _callback(err);
+    });
+  };
+  async.eachSeries(usersid, function(userid, callb) {
+    async.eachSeries(req.body.roles, function(roles, calbk) {
+      var query = {};
+      if(roles.addRoles) {
+        updateRoles(true, roles.addRoles, userid, function() {
+          calbk();
+        });
+      } else if (roles.rmRoles) {
+        updateRoles(false, roles.rmRoles, userid, function() {
+          calbk();
+        });
+      }
+    }, function(err){
+      callb();
+    });
   }, function(err) {
-    console.log(-1, allUsers);
-    res.json(allUsers);
+    if(err) res.status(400).send('Error Occurred');
+    res.status(200).send('Roles Updated');
   });
 };
-
-
-
-

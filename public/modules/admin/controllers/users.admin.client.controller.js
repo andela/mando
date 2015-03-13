@@ -24,15 +24,14 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       //do proper error handling
       $scope.error = error;
     });
-    var NoOfCheckedUser = 0;
     //activates the modal window
     $scope.openModal = function () {
-      var roles = []; var count = 0;
+      var roles = []; var count = 0, NoOfCheckedUsers = 0;
       angular.forEach($scope.users, function (user, key) {
         if (user.checked) {
-          NoOfCheckedUser++;
+          NoOfCheckedUsers++;
           for (var i = 0; i < user.roles.length; i++) {
-              if (NoOfCheckedUser > 1) {
+              if (NoOfCheckedUsers > 1) {
                 if(lodash.findWhere(roles, {'roleType': user.roles[i].roleType})) {
                   var temp = lodash.findWhere(roles, {'roleType': user.roles[i].roleType});
                   temp.count++;
@@ -40,6 +39,7 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
                    if (user.roles[i].roleType === 'admin' && user._id === $scope.authentication.user._id) {
                       user.roles[i].isAdmin = true;
                     }
+                    user.roles[i].count = 1;
                     roles.push(user.roles[i]);
                 }
               } else {
@@ -62,29 +62,37 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
             return roles;
           },
           len: function() {
-            return NoOfCheckedUser;
+            return NoOfCheckedUsers;
           }
         }
       });
 
       modalInstance.result.then(function (roles) {
-        var usersid = [], _roles = ['member'];
+        var data = {};
+        data.roles = [];
+        var addRoles = {addRoles: []};
+        var rmRoles = {rmRoles: []};
+        data.usersid = [];
         angular.forEach($scope.users, function(user) {
           if(user.checked) {
-            usersid.push(user._id);
+            data.usersid.push(user._id);
           }
         });
         for (var y = 0; y < roles.length; y++) {
-          if(roles[y].checked) {
-            _roles.push(roles[y].roleType);
+          if(roles[y].checked === true) {
+            addRoles.addRoles.push(roles[y].roleType);
+          } else if (roles[y].checked === false) {
+            rmRoles.rmRoles.push(roles[y].roleType);
           }
         }
-        var data = {};
-        data.roles = _roles;
-        data.usersid = usersid;
+        data.roles.push(addRoles);
+        data.roles.push(rmRoles);
+        console.log(data.roles);
         adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
+          console.log(data);
         })
         .error(function(error, status, header, config) {
+          console.log(error);
           });
       });
     };
