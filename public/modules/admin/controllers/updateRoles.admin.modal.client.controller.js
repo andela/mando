@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 'roles', 'len', function($scope, $modalInstance, roles, len) {
-
   $scope.NoOfUser = len;
   $scope.roles = [
     {
@@ -42,7 +41,7 @@ angular.module('admin').controller('ModalInstanceCtrl', ['$scope', '$modalInstan
           }
           $scope.roles[y].count = roles[x].count;
           if($scope.roles[y].count < len) {
-            $scope.roles[y].checked = false;
+            $scope.roles[y].checked = 'indeterminate';
           } else {
             $scope.roles[y].checked = true;
           }
