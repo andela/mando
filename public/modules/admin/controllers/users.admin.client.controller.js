@@ -25,6 +25,7 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       $scope.error = error;
     });
     $scope.noChecked = true;
+
     $scope.check = function() {
       $timeout(function(){
         var count = 0;
@@ -44,10 +45,12 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
           for(var i=0;i<$scope.users.length;i++){
             $scope.users[i].checked = true;
           }
+          $scope.noChecked = false;
         } else {
           for(var j=0; j<$scope.users.length;j++){
             $scope.users[j].checked = false;
           }
+          $scope.noChecked = true;
         }
       }, 100);
     };
