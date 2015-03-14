@@ -11,9 +11,6 @@ test:
     - npm run update-webdriver
   override:
     - grunt test
-    - cp xmloutput/TEST-AndonationAuthentication.xml $CIRCLE_TEST_REPORTS
-    - cp xmloutput/TEST-AndonationHomePage.xml $CIRCLE_TEST_REPORTS
-    - cp xmloutput/unit-test-results.xml $CIRCLE_TEST_REPORTS
 deployment:
   production:
     branch: dev

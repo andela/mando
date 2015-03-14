@@ -16,7 +16,7 @@ module.exports = function(config) {
 
     // Test results reporter to use
     // Possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['spec', 'junit'],
+    reporters: ['spec'],
     //reporters: ['progress','junit'],
     junitReporter: {
       outputFile: 'xmloutput/unit-test-results.xml',
