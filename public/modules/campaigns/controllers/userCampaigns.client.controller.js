@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService','toaster','$location','bankerFactory' ,'Authentication', '$stateParams','lodash',
-function($scope, backendService, toaster, $location, bankerFactory ,Authentication, $stateParams,lodash,credentials) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService','toaster','$location','bankerFactory' ,'Authentication', '$stateParams','lodash','credentials',
+function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams,lodash, credentials) {
 
-  $scope.myCampaigns    = [];
+  $scope.myCampaigns = [];
   $scope.balance = {};
   $scope.authentication = Authentication;
 
@@ -13,6 +13,7 @@ function($scope, backendService, toaster, $location, bankerFactory ,Authenticati
 
   //checks if user is an admin
   $scope.isAdmin = lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'}) ? true : false;
+  $scope.isBanker = lodash.findWhere(Authentication.user.roles, {'roleType': 'banker'}) ? true : false;
   console.log(credentials);
   var cred = credentials.data;
    bankerFactory.setCredentials(cred.key_id, cred.secret_id);
