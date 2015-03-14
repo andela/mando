@@ -22,7 +22,8 @@ module.exports = {
 				'public/lib/moment/moment.js',
 				'public/lib/angular-youtube-mb/src/angular-youtube-embed.js',
 				'public/lib/angularjs-toaster/toaster.js',
-				'public/lib/ng-lodash/build/ng-lodash.min.js'
+				'public/lib/ng-lodash/build/ng-lodash.min.js',
+				'public/lib/subledger-js-library/build/subledger.js'
 			]
 		},
 		css: 'public/dist/application.min.css',
