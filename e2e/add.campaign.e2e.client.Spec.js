@@ -11,7 +11,7 @@ var moment = require('moment');
     -3 find all table cells(td) in the row, which will includes the week no
     -4 find the cell that contains the day of the month and click
 */
-var clickDate = function (weekNo, todayNo, next) {
+var clickDate = function(weekNo, todayNo, next) {
   //converts to string, for it to have .length prototype
   todayNo = todayNo.toString();
   //date picker adds preceeding 0 to their days, and moment doesn't return such
@@ -65,8 +65,8 @@ describe('Add Campaign', function() {
       myCampaign.click();
     });
 
-    it('should not accept Title with Less Than 5 Characters or', function(){
-      var title =element(by.model('campaign.title'));
+    it('should not accept Title with Less Than 5 Characters or', function() {
+      var title = element(by.model('campaign.title'));
       title.sendKeys('TEST');
       expect(element(by.id('lessThan5')).isDisplayed()).toBe(true);
       title.clear();
@@ -75,17 +75,17 @@ describe('Add Campaign', function() {
       expect(element(by.id('campaignIsRequired')).isDisplayed()).toBe(true);
     });
 
-    it('should not accept description with Less Than 20 Characters', function(){
-        var description =element(by.model('campaign.description'));
-        description.sendKeys('These Characters');
-        expect(element(by.id('lessThan20')).isDisplayed()).toBe(true);
-        description.clear();
-        //sending an a string of empty characters
-        description.sendKeys('                                   ');
-        expect(element(by.id('descriptionErr')).isDisplayed()).toBe(true);
+    it('should not accept description with Less Than 20 Characters', function() {
+      var description = element(by.model('campaign.description'));
+      description.sendKeys('These Characters');
+      expect(element(by.id('lessThan20')).isDisplayed()).toBe(true);
+      description.clear();
+      //sending an a string of empty characters
+      description.sendKeys('                                   ');
+      expect(element(by.id('descriptionErr')).isDisplayed()).toBe(true);
     });
 
-    it('should accept only numbers', function(){
+    it('should accept only numbers', function() {
       //TYPE NUMBER FIELD NOT CLEARING PROBLEM WITH PROTRACTOR https://github.com/angular/protractor/issues/1583
       var amount = element(by.model('campaign.amount'));
       amount.sendKeys('asdfghjkl');
@@ -159,5 +159,5 @@ describe('Add Campaign', function() {
       expect(dueDate.getAttribute('value')).not.toContain(todayNo);
     });
   });
-//add more tests, not comprehensive enough
+  //add more tests, not comprehensive enough
 });

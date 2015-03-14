@@ -15,7 +15,6 @@
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right" data-ng-show="authentication.user">
-      <li><span data-ng-bind="authentication.user.gravatar"></span></li>
       <li>
         <a href="/#!/campaign/add" id="myCampaign">Add Campaign</a>
       </li>
@@ -23,6 +22,8 @@
         <a href="/#!/campaigns/myAndonation" id="myAndonation">My Andonation</a>
       </li>
        <li><a href="/auth/signout" id="signout">Signout</a></li>
+       <!-- <li><img class="img" data-ng-src="{{authentication.user.providerData.picture}}"> </img>
+      </li> -->
     </ul>
   </nav>
 </div>

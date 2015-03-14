@@ -17,6 +17,6 @@
     "moment": "~2.9.0",
     "angular-youtube-mb": "~0.1.6",
     "angularjs-toaster": "0.4.9",
-    "ng-lodash": "~0.2.0"
-  }
+    "ng-lodash": "~0.2.0",
+    "subledger-js-library": "git@github.com:subledger/js-client.git#master"
 }

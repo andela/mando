@@ -16,8 +16,8 @@ module.exports = function(config) {
 
     // Test results reporter to use
     // Possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    //reporters: ['progress'],
-    reporters: ['progress','junit'],
+    reporters: ['spec', 'junit'],
+    //reporters: ['progress','junit'],
     junitReporter: {
       outputFile: 'xmloutput/unit-test-results.xml',
       suite: ''
@@ -52,6 +52,13 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // If true, it capture browsers, run tests and exit
-    singleRun: true
+    singleRun: true,
+
+    //added a plugin
+    plugins: [
+        'karma-spec-reporter',
+        'karma-jasmine',
+        'karma-phantomjs-launcher'
+    ]
   });
 };

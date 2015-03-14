@@ -46,7 +46,11 @@
     "nodemailer": "~1.3.0",
     "passport": "~0.2.0",
     "passport-google-oauth": "~0.1.5",
-    "swig": "~1.4.1"
+    "protractor": "^1.6.1",
+    "subledger": "file:../../../../../tmp/npm-1213-d79ffca8/git-cache-f6c9d03b2bb3/730ebf922f53be80ab5919772f1d34f134ff990e",
+    "swig": "~1.4.1",
+    "xmlhttprequest": "^1.7.0",
+    "sinon": "^1.13.0"
   },
   "devDependencies": {
     "grunt-concurrent": "~1.0.0",
@@ -70,6 +74,7 @@
     "karma-jasmine": "~0.2.1",
     "karma-junit-reporter": "^0.2.2",
     "karma-phantomjs-launcher": "~0.1.2",
+    "karma-spec-reporter": "0.0.16",
     "load-grunt-tasks": "~1.0.0",
     "protractor": "^1.6.1",
     "should": "~4.1.0",

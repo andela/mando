@@ -1,17 +1,23 @@
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams', 'lodash',
-function($scope, backendService, $location, Authentication, $stateParams, lodash) {
-  $scope.myCampaigns    = [];
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService','toaster','$location','bankerFactory' ,'Authentication', '$stateParams','lodash','credentials',
+function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams,lodash, credentials) {
+
+  $scope.myCampaigns = [];
+  $scope.balance = {};
   $scope.authentication = Authentication;
 
   if (!$scope.authentication.user) {
     $location.path('/');
   }
+
   //checks if user is an admin
   $scope.isAdmin = lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'}) ? true : false;
+  $scope.isBanker = lodash.findWhere(Authentication.user.roles, {'roleType': 'banker'}) ? true : false;
+  console.log(credentials);
+  var cred = credentials.data;
+   bankerFactory.setCredentials(cred.key_id, cred.secret_id);
 
-  //uses the Currently signed-in id to get the user id.
   var userid = $scope.authentication.user._id;
 
   backendService.getUserCampaigns(userid)
@@ -25,6 +31,18 @@ function($scope, backendService, $location, Authentication, $stateParams, lodash
 
     });
 
+    //if role = banker use the banker id here else you the user's id$scope.authentication.user.account_id
+      bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({description: 'USD'}, function(error, apiRes){
+        if (error){
+           toaster.pop('error', 'An Error Occurred'+ error);
+            return;
+        }else{
+          var amount = parseInt(apiRes.balance.value.amount);
+          $scope.balance.amount = amount;
+          $scope.$digest();
+        }
+      });
+ // };
   // function to click the show more button on getMoreCampaigns page
   $scope.limit = 4;
   $scope.increment = function() {

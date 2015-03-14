@@ -49,6 +49,10 @@ ApplicationConfiguration.registerModule('admin');
 'use strict';
 
 // Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('banker');
+'use strict';
+
+// Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('campaign');
 'use strict';
 
@@ -280,6 +284,258 @@ angular.module('campaign').factory('adminBackendService', ['$http', function($ht
 }]);
 'use strict';
 
+angular.module('banker').config(['$stateProvider', function($stateProvider){
+    $stateProvider
+    .state('bank', {
+      resolve: {
+        credentials: ["$http", function ($http){
+          return  $http.get('/bank/credentials');
+        }]
+      },
+       url: '/bank',
+       controller: 'transactionCtrl',
+       templateUrl: 'modules/banker/views/bankers.client.view.html'
+    });
+  }
+]);
+
+'use strict';
+/*global Subledger*/
+angular.module('banker').controller('transactionCtrl', ['$scope', 'Authentication', '$http', '$timeout', 'toaster', '$modal', 'bankerFactory', 'lodash', 'credentials', function($scope, Authentication, $http, $timeout, toaster, $modal, bankerFactory, lodash, credentials) {
+  $scope.reports = [];
+  $scope.withdrawal = {};
+  $scope.balance = {
+    amount: ''
+  };
+  // Check if the user has a banker role.
+  $scope.isBanker = lodash.findWhere(Authentication.user.roles, {
+    'roleType': 'banker'
+  }) ? true : false;
+
+  var cred = credentials.data;
+  bankerFactory.setCredentials(cred.key_id, cred.secret_id);
+
+  $scope.authentication = Authentication;
+
+  //Method to Get The Bank Balance
+  $scope.getBalance = function() {
+    var date = new Date().toISOString();
+    bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({
+      description: 'USD',
+      at: date
+    }, function(error, apiRes) {
+      if (error) {
+        toaster.pop('error', 'An Error Occurred' + error);
+        return;
+      } else {
+        var amount = parseInt(apiRes.balance.value.amount);
+        $scope.balance.amount = amount;
+      }
+    });
+  };
+  $scope.getBalance();
+
+  //get All lines of transaction
+  $scope.getJournals = function(cb) {
+    bankerFactory.getJournalReports(cred.org_id, cred.book_id, cred.bank_id).get({
+      'description': 'USD',
+      'action': 'before',
+      'effective_at': new Date().toISOString()
+    }, function(error, apiRes) {
+      if (error) {
+        return error;
+      } else {
+        for (var i = 0; i < apiRes.posted_lines.length; i++) {
+          try {
+            var stringToObj = JSON.parse(apiRes.posted_lines[i].description);
+            apiRes.posted_lines[i].description = stringToObj;
+          } catch (e) {
+            apiRes.posted_lines[i].description = {
+              'name': 'anonymous',
+              'description': apiRes.posted_lines[i].description
+            };
+          }
+        }
+        $scope.journal = apiRes.posted_lines;
+        $scope.$digest();
+        if (!!cb) {
+          cb();
+        }
+      }
+    });
+  };
+  $scope.getJournals();
+
+  //Grab Some details of the Auhtenticated user and convert it to a string which will be stored in subledger the returned string is converted back into an object.
+
+  $scope.withdrawFromBank = function(amount) {
+    var userToString = {
+      name: $scope.authentication.user.displayName,
+      email: $scope.authentication.user.email,
+      description: 'Cash Withdrawal'
+    };
+    var userdetails = JSON.stringify(userToString);
+    bankerFactory.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
+      'effective_at': new Date().toISOString(),
+      'description': userdetails,
+      'reference': 'http://andonation-mando.herokuapp.com',
+      'lines': [{
+        'account': cred.bank_id,
+        'description': userdetails,
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': 'debit',
+          'amount': amount
+        }
+      }, {
+        'account': cred.system_id,
+        'description': 'Cash Deposit',
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': 'credit',
+          'amount': amount
+        }
+      }]
+    }, function(error, apiRes) {
+      if (error) {
+        return error;
+      } else {
+        var StringToObj = JSON.parse(apiRes.posting_journal_entry.description);
+        $scope.getBalance();
+        $scope.getJournals();
+      }
+    });
+  };
+
+  $scope.depositIntoBank = function(amount) {
+    var userToString = {
+      name: $scope.authentication.user.displayName,
+      email: $scope.authentication.user.email,
+      description: 'Cash Deposit'
+    };
+    var userdetails = JSON.stringify(userToString);
+    bankerFactory.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
+      'effective_at': new Date().toISOString(),
+      'description': userdetails,
+      'reference': 'http://andonation-mando.herokuapp.com',
+      'lines': [{
+        'account': cred.bank_id,
+        'description': userdetails,
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': 'credit',
+          'amount': amount
+        }
+      }, {
+        'account': cred.system_id,
+        'description': 'cash deposit',
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': 'debit',
+          'amount': amount
+        }
+      }]
+    }, function(error, apiRes) {
+      if (error) {
+        return error;
+      } else {
+        $scope.getBalance();
+        $scope.getJournals();
+      }
+    });
+  };
+  // OPEN MODAL WINDOW
+  $scope.openModalWithdraw = function(size) {
+    var modalInstance = $modal.open({
+      templateUrl: 'modules/banker/views/withdraw.modal.view.html',
+      controller: 'modalInstanceCtrl',
+      size: size,
+      resolve: {
+        transaction: function() {
+          return $scope.withdraw;
+        }
+      }
+    });
+    modalInstance.result.then(function(amount) {
+      $scope.withdrawFromBank(amount);
+      toaster.pop('success', 'Transaction Completed');
+    });
+  };
+  //OPEN MODAL WINDOW
+  $scope.openModalDeposit = function(size) {
+    var modalInstance = $modal.open({
+      templateUrl: 'modules/banker/views/deposit.modal.view.html',
+      controller: 'modalInstanceCtrl',
+      size: size,
+      resolve: {
+        transaction: function() {
+          return $scope.deposit;
+        }
+      }
+    });
+    modalInstance.result.then(function(amount) {
+      $scope.depositIntoBank(amount);
+      toaster.pop('success', 'Transaction Completed');
+
+    });
+  };
+
+}]);
+
+      'use strict';
+
+     //modal Controller
+  angular.module('banker').controller('modalInstanceCtrl', ['$scope', '$modalInstance', 'transaction', function($scope, $modalInstance, transaction){
+      $scope.ok = function (transaction) {
+           $modalInstance.close(transaction.amount);
+        };
+        $scope.cancel = function () {
+          $modalInstance.dismiss('cancel');
+        };
+  }]);    
+
+'use strict';
+/*global Subledger*/
+
+angular.module('banker').factory('bankerFactory', ['$http', function($http) {
+  var subledger = new Subledger();
+  var credentials = {};
+
+
+  var setCredentials = function(key_id, secret) {
+    subledger.setCredentials(key_id, secret);
+  };
+  var getSystemBalance = function(org_id, book_id, account_id) {
+    return subledger.organization(org_id).book(book_id).account(account_id);
+  };
+
+  var createAndPostTransaction = function(org_id, book_id) {
+    return subledger.organization(org_id).book(book_id).journalEntry();
+  };
+
+  var getJournalReports = function(org_id, book_id, account_id) {
+    return subledger.organization(org_id).book(book_id).account(account_id).line();
+  };
+  var getCredentials = function() {
+    return $http.get('/bank/credentials').success(function(data, error) {
+      if (error) {
+        return error;
+      } else {
+        credentials = data;
+      }
+    });
+  };
+  return {
+    getSystemBalance: getSystemBalance,
+    createAndPostTransaction: createAndPostTransaction,
+    getJournalReports: getJournalReports,
+    getCredentials: getCredentials,
+    setCredentials: setCredentials
+  };
+}]);
+
+'use strict';
+
 angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDelegateProvider', function($stateProvider, datepickerConfig, $sceDelegateProvider) {
   //ui-bootstrap config service to set starting day to 1,
   //this is done because of the disparity in week number between moment.js and ui-bootstrap
@@ -303,8 +559,14 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       templateUrl: 'modules/campaigns/views/allCampaigns.client.view.html'
     }).
     state('userCampaigns', {
+      resolve: {
+        credentials: ["$http", function ($http){
+          return  $http.get('/bank/credentials');
+        }]
+      },
       url: '/campaigns/myAndonation',
-      templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html'
+      templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html',
+      controller: 'userCampaignsCtrl'
     });
 
     //Add YouTube to resource whitelist so that we can embed YouTube videos
@@ -422,6 +684,7 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
     if(!$scope.authentication.user){
         $location.path('/');
     }
+  $scope.getCampaign = function (){
     backendService.getCampaign($stateParams.campaignTimestamp + '/' + $stateParams.campaignslug)
       .success(function(data, status){
         if($scope.authentication.user._id !== data.createdBy._id){
@@ -436,7 +699,8 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
       .error(function(err){
         toaster.pop('error', 'An Error Occurred'+ err);
       });
-
+    };
+  $scope.getCampaign();
     $scope.editCampaign = function(){
       delete $scope.campaign.createdBy;
       delete $scope.campaign.created;
@@ -494,18 +758,24 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', '
 ]);
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', '$location', 'Authentication', '$stateParams', 'lodash',
-function($scope, backendService, $location, Authentication, $stateParams, lodash) {
-  $scope.myCampaigns    = [];
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService','toaster','$location','bankerFactory' ,'Authentication', '$stateParams','lodash','credentials',
+function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams,lodash, credentials) {
+
+  $scope.myCampaigns = [];
+  $scope.balance = {};
   $scope.authentication = Authentication;
 
   if (!$scope.authentication.user) {
     $location.path('/');
   }
+
   //checks if user is an admin
   $scope.isAdmin = lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'}) ? true : false;
+  $scope.isBanker = lodash.findWhere(Authentication.user.roles, {'roleType': 'banker'}) ? true : false;
+  console.log(credentials);
+  var cred = credentials.data;
+   bankerFactory.setCredentials(cred.key_id, cred.secret_id);
 
-  //uses the Currently signed-in id to get the user id.
   var userid = $scope.authentication.user._id;
 
   backendService.getUserCampaigns(userid)
@@ -519,6 +789,18 @@ function($scope, backendService, $location, Authentication, $stateParams, lodash
 
     });
 
+    //if role = banker use the banker id here else you the user's id$scope.authentication.user.account_id
+      bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({description: 'USD'}, function(error, apiRes){
+        if (error){
+           toaster.pop('error', 'An Error Occurred'+ error);
+            return;
+        }else{
+          var amount = parseInt(apiRes.balance.value.amount);
+          $scope.balance.amount = amount;
+          $scope.$digest();
+        }
+      });
+ // };
   // function to click the show more button on getMoreCampaigns page
   $scope.limit = 4;
   $scope.increment = function() {
@@ -612,7 +894,6 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
   function($scope, Authentication) {
     $scope.authentication = Authentication;
     $scope.isCollapsed = false;
-  
     $scope.toggleCollapsibleMenu = function() {
             $scope.isCollapsed = !$scope.isCollapsed;
         };

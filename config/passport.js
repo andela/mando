@@ -28,7 +28,12 @@ module.exports = function() {
 	});
 
 	// Initialize strategies
-	config.getGlobbedFiles('./config/strategies/**/*.js').forEach(function(strategy) {
-		require(path.resolve(strategy))();
-	});
+	// config.getGlobbedFiles('./config/strategies/**/*.js').forEach(function(strategy) {
+	// 	require(path.resolve(strategy))();
+	// });
+
+	if (process.env.NODE_ENV === 'test') {
+		require('./strategies/mock')();
+	}
+	require('./strategies/google')();
 };
