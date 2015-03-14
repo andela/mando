@@ -25,7 +25,7 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
     state('userCampaigns', {
       resolve: {
         credentials: function ($http){
-          return  $http.get('/credentials');
+          return  $http.get('/bank/credentials');
         }
       },
       url: '/campaigns/myAndonation',
