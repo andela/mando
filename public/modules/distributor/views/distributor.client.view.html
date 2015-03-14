@@ -1,0 +1,20 @@
+<section ng-controller="distributorCtrl">
+  <h2>Users...</h2>
+  <div tooltip="{{noChecked ? 'No User is checked' : ''}}" tooltip-placement="left">
+    <button ng-disabled="noChecked" class="btn btn-default" ng-click="openModal()">ASSIGN MONEY</button>
+  </div>
+  <table class="table table-bordered">
+      <tt>
+        <th><input type="checkbox" ng-model="allChecked" ng-click="checkAll(allChecked)"></th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+      </tt>
+      <tr ng-repeat="user in users | orderBy: 'firstName'">
+        <td><input type="checkbox" ng-model="user.checked" ng-click="check()"></td>
+        <td>{{user.firstName}}</td>
+        <td>{{user.lastName}}</td>
+        <td>{{user.email}}</td>
+      </tr>
+    </table>
+</section>

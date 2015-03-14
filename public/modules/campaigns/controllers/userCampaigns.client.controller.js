@@ -7,7 +7,29 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.balance = {};
     $scope.authentication = Authentication;
 
-    if (!$scope.authentication.user) {
+  if (!$scope.authentication.user) {
+    $location.path('/');
+  }
+
+  //checks if user is an admin
+  $scope.isAdmin = lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'}) ? true : false;
+  $scope.isBanker = lodash.findWhere(Authentication.user.roles, {'roleType': 'banker'}) ? true : false;
+  console.log(credentials);
+  var cred = credentials.data;
+   bankerFactory.setCredentials(cred.key_id, cred.secret_id);
+
+  $scope.isDistributor = Authentication.hasRole('distributor');
+
+  //uses the Currently signed-in id to get the user id.
+  var userid = $scope.authentication.user._id;
+
+  backendService.getUserCampaigns(userid)
+    .success(function(myCampaigns) {
+      $scope.myCampaigns = myCampaigns;
+    })
+    .error(function(error, status, header, config) {
+      //not cool to redirect the user if any error occured, should be improved by
+      //checking for the exact error act base on the error
       $location.path('/');
     }
 
