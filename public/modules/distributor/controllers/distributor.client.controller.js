@@ -2,6 +2,8 @@
 
 angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication','distributorService', '$location', '$state', '$modal', 'toaster', function($scope, Authentication, distributorService, $location, $state, $modal, toaster) {
 
+  $scope.account_id = Authentication.user.account_id;
+
    $scope.authentication = Authentication;
 
   Authentication.requireLogin($state);

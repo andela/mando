@@ -3,14 +3,14 @@
   <table class="table table-bordered">
       <tt>
         <th>Credit User Account</th>
-        <th>Account number</th>
+        <th>Account Balance</th>
         <th>First Name</th>
         <th>Last Name</th>
         <th>Email</th>
       </tt>
       <tr ng-repeat="user in users | orderBy: 'firstName'">
         <td><button ng-model="user.checked" ng-click="distributorModal()">Credit</button></td>
-        <td>account number</td>
+        <td>{{user.account_id}}</td>
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
         <td>{{user.email}}</td>
