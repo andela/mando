@@ -1,5 +1,5 @@
 <section data-ng-controller="allCampaignCtrl">
-<div class="row">
+  <div class="row">
     <ul>
       <div class="pull-right">
         Sort By:
@@ -13,7 +13,8 @@
       </div>
       <h2> All Current Campaigns</h2>
       <li class="col-sm-4 home-campaigns" data-ng-repeat="campaign in Campaigns | orderBy: criteria">
-        <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a></p>
+        <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a>
+        </p>
         <p> ${{campaign.amount}}</p>
         <p>Expiry Date: "{{campaign.dueDate | date}}"</p>
         <p>{{campaign.balance}}</p>
@@ -25,8 +26,7 @@
   </div>
 
   <div class="text-center" ng-show="campaigns.length > itemsPerPage">
-    <pagination total-items="totalItems" items-per-page="itemsPerPage"
-         ng-model="currentPage" ng-change="pageChanged()">
+    <pagination total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()">
     </pagination>
     <p>
       <em> Displaying {{startItems}} - {{endItems}} out of
@@ -34,7 +34,4 @@
       </em>
     </p>
   </div>
-
-  <!-- <div ng-if="user.role === banker" ui-view="bankerComponent"> -->
-  <!-- </div> -->
 </section>

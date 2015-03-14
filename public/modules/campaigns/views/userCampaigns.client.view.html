@@ -1,19 +1,22 @@
-
 <section>
 
-  <button ng-show="isAdmin" class="btn btn-info pull-right"><a href="/#!/admin/users">Users</a></button>
-  <button ng-show="isBanker" class="btn btn-info pull-right"><a href="/#!/bank">Bank</a></button>
+  <button ng-show="isAdmin" class="btn btn-info pull-right"><a href="/#!/admin/users">Users</a>
+  </button>
+  <button ng-show="isBanker" class="btn btn-info pull-right"><a href="/#!/bank">Bank</a>
+  </button>
 
   <div ng-show="isBanker">
 
-  <p><a ng-href="/#!/bank" >System Balance: {{balance.amount | currency : symbol : fractionSize}}</a></p>
+    <p><a ng-href="/#!/bank">System Balance: {{balance.amount | currency : symbol : fractionSize}}</a>
+    </p>
   </div>
   <div ng-hide="myCampaigns" class="jumbotron text-center">
-    <h2>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h2>
-    <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
+    <h2>You do not have any campaigns</h2>
+    <button class="btn"><a href="/#!/campaign/add">Click here to create a campaign</a>
+    </button>
   </div>
   <div class="table-responsive" ng-show="myCampaigns">
-  <h2>My Campaigns</h2>
+    <h2>My Campaigns</h2>
     <table class="table table-bordered">
       <tt>
         <th>Title</th>
@@ -24,8 +27,9 @@
         <th>Deadline</th>
         <th>Backers</th>
       </tt>
-      <tr data-ng-repeat ="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
-        <td><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a></td>
+      <tr data-ng-repeat="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
+        <td><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a>
+        </td>
         <td>{{campaign.status}}</td>
         <td>{{campaign.amount}}</td>
         <td>{{campaign.raised}}</td>
@@ -34,7 +38,9 @@
         <td>{{campaign.backers}}</td>
       </tr>
     </table>
-    <button ng-show="limit===4" ng-click="increment()">SEE ALL CAMPAIGNS</button>
-    <button ng-hide="limit===4" ng-click="decrement()">BACK</button>
+    <div ng-hide="{{myCampaigns.length < 4}}">
+      <button ng-show="limit===4" ng-click="increment()">See All Campaigns</button>
+      <button ng-hide="limit===4" ng-click="decrement()">Back</button>
+    </div>
   </div>
 </section>
