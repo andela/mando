@@ -5,7 +5,7 @@ angular.module('banker').config(['$stateProvider', function($stateProvider){
     .state('bank', {
       resolve: {
         credentials: function ($http){
-          return  $http.get('/credentials');
+          return  $http.get('/bank/credentials');
         }
       },
        url: '/bank',
