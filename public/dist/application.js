@@ -149,7 +149,7 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       //do proper error handling
       $scope.error = error;
     });
-
+    $scope.noChecked = true;
     $scope.check = function() {
       $timeout(function(){
         var count = 0;
@@ -158,6 +158,7 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
             count++;
           }
         }
+        $scope.noChecked = (count === 0);
         $scope.allChecked = (count === $scope.users.length);
       }, 100);
     };
@@ -241,6 +242,7 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
         adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
           $scope.users = data;
           $scope.allChecked = false;
+          $scope.noChecked = true;
           toaster.pop('success', 'User Roles updated successfully');
         })
         .error(function(error, status, header, config) {
