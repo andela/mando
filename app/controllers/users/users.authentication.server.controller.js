@@ -9,7 +9,7 @@ var _ = require('lodash'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
 	adminRoles = require('../admin/roles.server.controller.js'),
-	User = mongoose.model('User');
+	User = mongoose.model('User'),
   subledger = require('../banker.server.controller');
 
 /**
@@ -79,30 +79,30 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 // 				if (!user) {
 // 					var possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
 
-// 					User.findUniqueUsername(possibleUsername, null, function(availableUsername) {
-// 						user = {
-// 							firstName: providerUserProfile.firstName,
-// 							lastName: providerUserProfile.lastName,
-// 							username: availableUsername,
-// 							displayName: providerUserProfile.displayName,
-// 							email: providerUserProfile.email,
-// 							provider: providerUserProfile.provider,
-// 							providerData: providerUserProfile.providerData
-// 						};
-// 						//updates the user object or create in not existing,
-// 						//doing this because of the Admin user that would be manually created
-// 						User.findOneAndUpdate({email: user.email}, user, {upsert: true}, function(err, user) {
-// 							adminRoles.addRolesToUser(user._id, user._id, 'member', function(err, user) {
-// 								return done(err, user);
-// 							});
-// 						});
-// 					});
-// 				} else {
-// 					return done(err, user);
-// 				}
-// 			}
-// 		});
-// 	} else {
+	// 				User.findUniqueUsername(possibleUsername, null, function(availableUsername) {
+	// 					user = {
+	// 						firstName: providerUserProfile.firstName,
+	// 						lastName: providerUserProfile.lastName,
+	// 						username: availableUsername,
+	// 						displayName: providerUserProfile.displayName,
+	// 						email: providerUserProfile.email,
+	// 						provider: providerUserProfile.provider,
+	// 						providerData: providerUserProfile.providerData
+	// 					};
+	// 					//updates the user object or create in not existing,
+	// 					//doing this because of the Admin user that would be manually created
+	// 					User.findOneAndUpdate({email: user.email}, user, {upsert: true}, function(err, user) {
+	// 						adminRoles.addRolesToUser(user._id, user._id, 'member', function(err, user) {
+	// 							return done(err, user);
+	// 						});
+	// 					});
+	// 				});
+	// 			} else {
+	// 				return done(err, user);
+	// 			}
+	// 		}
+	// 	});
+	// } else {
 // 		// User is already logged in, join the provider data to the existing user
 // 		var user = req.user;
 
@@ -180,12 +180,17 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
               } else {
                 user.account_id = account.active_account.id;
                 // continue with saving the user
-                user.save(function(err) {   
-                 return  done(err, user);
-                });
-              }
-            });
+                // user.save(function(err) {   
+                //  return  done(err, user);
+                // });
+             		User.findOneAndUpdate({email: user.email}, user, {upsert: true}, function(err, user) {
+								adminRoles.addRolesToUser(user._id, user._id, 'member', function(err, user) {
+								return done(err, user);
+							});
+						});
+           }
           });
+         });
         } else {
           return done(err, user);
         }
