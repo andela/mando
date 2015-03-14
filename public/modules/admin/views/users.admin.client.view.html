@@ -1,6 +1,8 @@
 <section ng-controller="adminUserCtrl">
   <h2>Users...</h2>
-  <button ng-click="openModal()">Update User Roles</button>
+  <div tooltip="{{noChecked ? 'No User is checked' : ''}}" tooltip-placement="left">
+    <button ng-disabled="noChecked" class="btn btn-default" ng-click="openModal()">Update User Roles</button>
+  </div>
   <table class="table table-bordered">
       <tt>
         <th><input type="checkbox" ng-model="allChecked" ng-click="checkAll(allChecked)"></th>
