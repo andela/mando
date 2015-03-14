@@ -1,6 +1,6 @@
 'use strict';
 
-  var users = require('../../app/controllers/users/users.authorization.server.controller'),
+var users = require('../../app/controllers/users/users.authorization.server.controller'),
     adminRoles = require('../../app/controllers/admin/roles.server.controller.js'),
     adminUsers = require('../../app/controllers/admin/users.server.controller.js');
 
