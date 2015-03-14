@@ -364,8 +364,6 @@ angular.module('banker').controller('transactionCtrl', ['$scope','Authentication
     });
 };
 
-<<<<<<< HEAD
-=======
 $scope.depositIntoBank = function (amount){
   var userToString = {
     name: $scope.authentication.user.displayName,
@@ -442,7 +440,7 @@ $scope.depositIntoBank = function (amount){
       
     });
   };
->>>>>>> refactoring the editing campaign test to work with the slug url
+
 
 }]);
 
