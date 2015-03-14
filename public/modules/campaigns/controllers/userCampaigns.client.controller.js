@@ -18,6 +18,9 @@ function($scope, backendService, toaster, $location, bankerFactory, Authenticati
   var cred = credentials.data;
    bankerFactory.setCredentials(cred.key_id, cred.secret_id);
 
+  $scope.isDistributor = Authentication.hasRole('distributor');
+
+  //uses the Currently signed-in id to get the user id.
   var userid = $scope.authentication.user._id;
 
   backendService.getUserCampaigns(userid)

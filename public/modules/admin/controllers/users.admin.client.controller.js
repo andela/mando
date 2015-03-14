@@ -3,14 +3,14 @@
 angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication', 'adminBackendService', '$location', 'lodash', '$state', '$modal', 'toaster', '$timeout', function($scope, Authentication, adminBackendService, $location, lodash, $state, $modal, toaster, $timeout) {
 
   $scope.authentication = Authentication;
-  //redirects if user is not logged in
-  if (!$scope.authentication.user) {
-    $location.path('/');
-  }
+  Authentication.requireLogin($state);
+
   //redirects user to myAndonation is user is logged in and not an admin
-  if (!lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'})) {
-    $state.go('userCampaigns');
-  }
+    // if (!lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'})) {
+    //   $state.go('userCampaigns');
+
+
+  Authentication.requireRole($state, 'admin', 'userCampaigns');
 
   adminBackendService.getUsers()
     .success(function(data, status, header, config) {
