@@ -33,17 +33,26 @@ beforeEach(function(){
           ;}
       };
     },
-    setCredentials : function(){}
+    setCredentials : function(){},
+    isBanker : function(){}
   };
 
   module(function ($provide) {
     $provide.value('bankerFactory', mockBankerService);
   });
 });
-beforeEach(inject(function($controller, $rootScope, _$httpBackend_){
+beforeEach(inject(function($controller, $rootScope, _$httpBackend_, _Authentication_) {
   $scope = $rootScope.$new();
     $httpBackend = _$httpBackend_;
-    transactionCtrl = $controller('transactionCtrl', {$scope: $scope, credentials:{data:{key_id: 'vluae22323', secret_id: 'a mock secret'}}});
+    _Authentication_.user = {
+      roles: 'banker'
+    };
+
+    transactionCtrl = $controller('transactionCtrl', {
+      $scope: $scope,
+      credentials:{data:{key_id: 'value22323', secret_id: 'a mock secret'}},
+      Authentication: _Authentication_
+    });
 }));
   it('should show the current balance in the system', function(){
       $scope.getBalance();

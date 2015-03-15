@@ -23,7 +23,7 @@
 //         '_id' : '54e4b7eba241567dbbec7122',
 //         'lastModifiedBy' : '54da2257568f9cfd6d2dba2f',
 //       }]);
-//     $httpBackend.whenGET('modules/core/views/home.client.view.html').respond(200, 'home page');
+//     // $httpBackend.whenGET('modules/core/views/home.client.view.html').respond(200, 'home page');
 //     adminUserCtrl = $controller('adminUserCtrl', {
 //       $scope: scope
 //     });

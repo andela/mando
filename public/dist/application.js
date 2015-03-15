@@ -310,7 +310,7 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
   // Check if the user has a banker role.
   $scope.isBanker = lodash.findWhere(Authentication.user.roles, {
     'roleType': 'banker'
-  }) ? true : false;
+  });
 
   var cred = credentials.data;
   bankerFactory.setCredentials(cred.key_id, cred.secret_id);
