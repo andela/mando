@@ -29,7 +29,7 @@ $scope.getUsers();
       at: date
     }, function(error, apiRes) {
       if (error) {
-        toaster.pop('error', 'An Error Occurred' + error);
+        toaster.pop('error', 'An Error Occurred'+ error);
         return;
       } else {
         var amount = apiRes.balance.value.amount;
@@ -41,8 +41,6 @@ $scope.getUsers();
 
   //method to credit each account
   $scope.depositIntoUser = function(amount, user) {
-    console.log(user);
-    console.log(amount);
 
     var userToString = {
       name: user.displayName,
@@ -81,8 +79,6 @@ $scope.getUsers();
   };
 
   $scope.distributorModal = function(user) {
-    // console.log(user);
-    // console.log(user.firstName);
     var modalInstance = $modal.open({
       templateUrl: 'modules/distributor/views/distributor.modal.client.view.html',
       controller: 'disModalInstanceCtrl',
