@@ -60,6 +60,11 @@ ApplicationConfiguration.registerModule('campaign');
 ApplicationConfiguration.registerModule('core');
 'use strict';
 
+
+// Use application configuration module to register a new module
+ApplicationConfiguration.registerModule('distributor');
+'use strict';
+
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');
 'use strict';
@@ -132,20 +137,20 @@ angular.module('admin').controller('ModalInstanceCtrl', ['$scope', 'adminBackend
 angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication', 'adminBackendService', '$location', 'lodash', '$state', '$modal', 'toaster', '$timeout', function($scope, Authentication, adminBackendService, $location, lodash, $state, $modal, toaster, $timeout) {
 
   $scope.authentication = Authentication;
-  //redirects if user is not logged in
-  if (!$scope.authentication.user) {
-    $location.path('/');
-  }
+  Authentication.requireLogin($state);
+
   //redirects user to myAndonation is user is logged in and not an admin
-  if (!lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'})) {
-    $state.go('userCampaigns');
-  }
+  // if (!lodash.findWhere(Authentication.user.roles, {'roleType': 'admin'})) {
+  //   $state.go('userCampaigns');
+
+
+  Authentication.requireRole($state, 'admin', 'userCampaigns');
 
   adminBackendService.getUsers()
     .success(function(data, status, header, config) {
       $scope.users = data;
 
-      for(var i=0;i<$scope.users.length;i++){
+      for (var i = 0; i < $scope.users.length; i++) {
         $scope.users[i].checked = false;
       }
     })
@@ -153,100 +158,110 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       //do proper error handling
       $scope.error = error;
     });
-    $scope.noChecked = true;
+  $scope.noChecked = true;
 
-    $scope.check = function() {
-      $timeout(function(){
-        var count = 0;
-        for(var i=0;i<$scope.users.length;i++){
-          if($scope.users[i].checked) {
-            count++;
-          }
+  $scope.check = function() {
+    $timeout(function() {
+      var count = 0;
+      for (var i = 0; i < $scope.users.length; i++) {
+        if ($scope.users[i].checked) {
+          count++;
         }
-        $scope.noChecked = (count === 0);
-        $scope.allChecked = (count === $scope.users.length);
-      }, 100);
-    };
+      }
+      $scope.noChecked = (count === 0);
+      $scope.allChecked = (count === $scope.users.length);
+    }, 100);
+  };
 
-    $scope.checkAll = function() {
-      $timeout(function() {
-        if($scope.allChecked) {
-          for(var i=0;i<$scope.users.length;i++){
-            $scope.users[i].checked = true;
-          }
-          $scope.noChecked = false;
-        } else {
-          for(var j=0; j<$scope.users.length;j++){
-            $scope.users[j].checked = false;
-          }
-          $scope.noChecked = true;
+  $scope.checkAll = function() {
+    $timeout(function() {
+      if ($scope.allChecked) {
+        for (var i = 0; i < $scope.users.length; i++) {
+          $scope.users[i].checked = true;
         }
-      }, 100);
-    };
-    //activates the modal window
-    $scope.openModal = function () {
-      var roles = []; var count = 0, NoOfCheckedUsers = 0;
-      angular.forEach($scope.users, function (user, key) {
-        if (user.checked) {
-          NoOfCheckedUsers++;
-          for (var i = 0; i < user.roles.length; i++) {
-              if (NoOfCheckedUsers > 1) {
-                if(lodash.findWhere(roles, {'roleType': user.roles[i].roleType})) {
-                  var temp = lodash.findWhere(roles, {'roleType': user.roles[i].roleType});
-                  temp.count++;
-                } else {
-                   if (user.roles[i].roleType === 'admin' && user._id === $scope.authentication.user._id) {
-                      user.roles[i].isAdmin = true;
-                    }
-                    user.roles[i].count = 1;
-                    roles.push(user.roles[i]);
-                }
-              } else {
-                if (user.roles[i].roleType === 'admin' && user._id === $scope.authentication.user._id) {
-                  user.roles[i].isAdmin = true;
-                }
-                user.roles[i].count = 1;
-                roles.push(user.roles[i]);
+        $scope.noChecked = false;
+      } else {
+        for (var j = 0; j < $scope.users.length; j++) {
+          $scope.users[j].checked = false;
+        }
+        $scope.noChecked = true;
+      }
+    }, 100);
+  };
+  //activates the modal window
+  $scope.openModal = function() {
+    var roles = [];
+    var count = 0,
+      NoOfCheckedUsers = 0;
+    angular.forEach($scope.users, function(user, key) {
+      if (user.checked) {
+        NoOfCheckedUsers++;
+        for (var i = 0; i < user.roles.length; i++) {
+          if (NoOfCheckedUsers > 1) {
+            if (lodash.findWhere(roles, {
+                'roleType': user.roles[i].roleType
+              })) {
+              var temp = lodash.findWhere(roles, {
+                'roleType': user.roles[i].roleType
+              });
+              temp.count++;
+            } else {
+              if (user.roles[i].roleType === 'admin' && user._id === $scope.authentication.user._id) {
+                user.roles[i].isAdmin = true;
               }
+              user.roles[i].count = 1;
+              roles.push(user.roles[i]);
+            }
+          } else {
+            if (user.roles[i].roleType === 'admin' && user._id === $scope.authentication.user._id) {
+              user.roles[i].isAdmin = true;
+            }
+            user.roles[i].count = 1;
+            roles.push(user.roles[i]);
           }
+        }
+      }
+    });
+
+    var modalInstance = $modal.open({
+      templateUrl: 'modules/admin/views/updateRoles.admin.modal.client.view.html',
+      controller: 'ModalInstanceCtrl',
+      size: 'sm',
+      resolve: {
+        roles: function() {
+          return roles;
+        },
+        len: function() {
+          return NoOfCheckedUsers;
+        }
+      }
+    });
+
+    modalInstance.result.then(function(roles) {
+      var data = {};
+      data.roles = [];
+      var addRoles = {
+        addRoles: []
+      };
+      var rmRoles = {
+        rmRoles: []
+      };
+      data.usersid = [];
+      angular.forEach($scope.users, function(user) {
+        if (user.checked) {
+          data.usersid.push(user._id);
         }
       });
-
-      var modalInstance = $modal.open({
-        templateUrl: 'modules/admin/views/updateRoles.admin.modal.client.view.html',
-        controller: 'ModalInstanceCtrl',
-        size: 'sm',
-        resolve: {
-          roles: function () {
-            return roles;
-          },
-          len: function() {
-            return NoOfCheckedUsers;
-          }
+      for (var y = 0; y < roles.length; y++) {
+        if (roles[y].checked === true) {
+          addRoles.addRoles.push(roles[y]._id);
+        } else if (roles[y].checked === false) {
+          rmRoles.rmRoles.push(roles[y]._id);
         }
-      });
-
-      modalInstance.result.then(function (roles) {
-        var data = {};
-        data.roles = [];
-        var addRoles = {addRoles: []};
-        var rmRoles = {rmRoles: []};
-        data.usersid = [];
-        angular.forEach($scope.users, function(user) {
-          if(user.checked) {
-            data.usersid.push(user._id);
-          }
-        });
-        for (var y = 0; y < roles.length; y++) {
-          if(roles[y].checked === true) {
-            addRoles.addRoles.push(roles[y]._id);
-          } else if (roles[y].checked === false) {
-            rmRoles.rmRoles.push(roles[y]._id);
-          }
-        }
-        data.roles.push(addRoles);
-        data.roles.push(rmRoles);
-        adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
+      }
+      data.roles.push(addRoles);
+      data.roles.push(rmRoles);
+      adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
           $scope.users = data;
           $scope.allChecked = false;
           $scope.noChecked = true;
@@ -254,9 +269,9 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
         })
         .error(function(error, status, header, config) {
           toaster.pop('error', 'Error Occured, Please try again or contact the Admin');
-          });
-      });
-    };
+        });
+    });
+  };
 
 }]);
 
@@ -966,6 +981,171 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 ]);
 'use strict';
 
+angular.module('distributor').config(['$stateProvider',function($stateProvider) {
+
+  $stateProvider.
+    state('distributorOverview', {
+       resolve: {
+        credentials: ["$http", function ($http){
+          return  $http.get('/bank/credentials');
+        }]
+      },
+      controller: 'distributorCtrl',
+      url: '/distributor/users',
+      templateUrl: 'modules/distributor/views/distributor.client.view.html'
+    });
+}]);
+
+'use strict';
+
+angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'distributorService', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, distributorService, $location, $state, $modal, toaster, credentials) {
+
+  var cred = credentials.data;
+  distributorService.setCredentials(cred.key_id, cred.secret_id);
+  $scope.authentication = Authentication;
+  Authentication.requireLogin($state);
+  Authentication.requireRole($state, 'distributor', 'userCampaigns');
+
+  //Get All The Users Inn the System ANd populates it with their System Balance...
+  $scope.getUsers = function () {
+  distributorService.getAllUsers().success(function(data) {
+    $scope.users = data;
+    for (var i = 0; i < $scope.users.length; i++) {
+      var accountNo = data[i].account_id;
+      $scope.getUserAccountBalance(accountNo, $scope.users[i]);
+    }
+  }).error(function(error) {
+    $scope.error = error;
+  });
+};
+$scope.getUsers();
+  //Method to populate each user's account with dir system balance
+  $scope.getUserAccountBalance = function(account_id, user) {
+    var date = new Date().toISOString();
+    distributorService.getAccountBalance(cred.org_id, cred.book_id, account_id).balance({
+      description: 'USD',
+      at: date
+    }, function(error, apiRes) {
+      if (error) {
+        toaster.pop('error', 'An Error Occurred' + error);
+        return;
+      } else {
+        var amount = apiRes.balance.value.amount;
+        user.currentBalance = amount;
+        $scope.$digest();
+      }
+    });
+  };
+
+  //method to credit each account
+  $scope.depositIntoUser = function(amount, user) {
+    console.log(user);
+    console.log(amount);
+
+    var userToString = {
+      name: user.displayName,
+      email: user.email,
+      description: 'Cash Deposit'
+    };
+    var userdetails = JSON.stringify(userToString);
+    distributorService.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
+      'effective_at': new Date().toISOString(),
+      'description': userdetails,
+      'reference': 'http://andonation-mando.herokuapp.com',
+      'lines': [{
+        'account': user.account_id,
+        'description': 'Credit Transaction',
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': 'credit',
+          'amount': amount
+        }
+      }, {
+        'account': cred.bank_id,
+        'description': 'cash deposit',
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': 'debit',
+          'amount': amount
+        }
+      }]
+    }, function(error, apiRes) {
+      if (error) {
+        return error;
+      } else {
+        $scope.getUsers();
+      }
+    });
+  };
+
+  $scope.distributorModal = function(user) {
+    // console.log(user);
+    // console.log(user.firstName);
+    var modalInstance = $modal.open({
+      templateUrl: 'modules/distributor/views/distributor.modal.client.view.html',
+      controller: 'disModalInstanceCtrl',
+      size: 'sm',
+      resolve: {
+        transaction: function() {
+          return $scope.deposit;
+        }
+      }
+    });
+    modalInstance.result.then(function(amount) {
+      $scope.depositIntoUser(amount, user);
+    });
+  };
+}]);
+
+'use strict';
+
+angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$modalInstance','transaction', function($scope, $modalInstance, transaction) {
+
+  $scope.ok = function (transaction) {
+    $modalInstance.close(transaction.amount);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}]);
+'use strict';
+/*global Subledger*/
+
+//This is just a repetition of the apis made in banker
+
+angular.module('distributor').factory('distributorService', ['$http', function($http) {
+  var subledger = new Subledger();
+  var credentials = {};
+
+
+  var setCredentials = function(key_id, secret) {
+    subledger.setCredentials(key_id, secret);
+  };
+  var getAccountBalance = function(org_id, book_id, account_id) {
+    return subledger.organization(org_id).book(book_id).account(account_id);
+  };
+
+  var createAndPostTransaction = function(org_id, book_id) {
+    return subledger.organization(org_id).book(book_id).journalEntry();
+  };
+
+  var getJournalReports = function(org_id, book_id, account_id) {
+    return subledger.organization(org_id).book(book_id).account(account_id).line();
+  };
+  var getAllUsers = function() {
+    return $http.get('/distributor/users');
+  };
+  return {
+    getAccountBalance: getAccountBalance,
+    createAndPostTransaction: createAndPostTransaction,
+    getJournalReports: getJournalReports,
+    getAllUsers: getAllUsers,
+    setCredentials: setCredentials
+  };
+}]);
+'use strict';
+
 // Config HTTP Error Handling
 angular.module('users').config(['$httpProvider',
 	function($httpProvider) {
@@ -997,12 +1177,28 @@ angular.module('users').config(['$httpProvider',
 'use strict';
 
 // Authentication service for user variables
-angular.module('users').factory('Authentication', [
-	function() {
+angular.module('users').factory('Authentication', ['lodash',
+	function(lodash) {
 		var _this = this;
+    var user = window.user;
 
 		_this._data = {
-			user: window.user
+			user: user,
+      requireLogin: function($state, stateName) {
+        if (!user) {
+          $state.go(stateName || 'home');
+        }
+      },
+
+      hasRole: function(role) {
+        return lodash.findWhere(user.roles, {'roleType': role}) ? true : false;
+      },
+      requireRole: function($state, role, stateName) {
+        //redirects user to myAndonation is user is logged in and not an admin
+        if (!lodash.findWhere(user.roles, {'roleType': role})) {
+          $state.go(stateName);
+        }
+      }
 		};
 
 		return _this._data;
