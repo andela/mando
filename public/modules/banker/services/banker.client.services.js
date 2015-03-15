@@ -18,7 +18,10 @@ angular.module('banker').factory('bankerFactory', ['$http', function($http) {
   };
 
   var getJournalReports = function(org_id, book_id, account_id) {
-    return subledger.organization(org_id).book(book_id).account(account_id).line();
+      var org = subledger.organization(org_id);
+      var book = org.book(book_id);
+      var account = book.account(account_id);
+      return account.line();
   };
   var getCredentials = function() {
     return $http.get('/bank/credentials').success(function(data, error) {
