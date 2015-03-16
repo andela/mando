@@ -89,42 +89,38 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       }
     });
 
-    var modalInstance = $modal.open({
-      templateUrl: 'modules/admin/views/updateRoles.admin.modal.client.view.html',
-      controller: 'ModalInstanceCtrl',
-      size: 'sm',
-      resolve: {
-        roles: function() {
-          return roles;
-        },
-        len: function() {
-          return NoOfCheckedUsers;
-        }
-      }
-    });
-
-    modalInstance.result.then(function(roles) {
-      var data = {};
-      data.roles = [];
-      var addRoles = {
-        addRoles: []
-      };
-      var rmRoles = {
-        rmRoles: []
-      };
-      data.usersid = [];
-      angular.forEach($scope.users, function(user) {
-        if (user.checked) {
-          data.usersid.push(user._id);
+      $scope.modalInstance = $modal.open({
+        templateUrl: 'modules/admin/views/updateRoles.admin.modal.client.view.html',
+        controller: 'ModalInstanceCtrl',
+        size: 'sm',
+        resolve: {
+          roles: function () {
+            return roles;
+          },
+          len: function() {
+            return NoOfCheckedUsers;
+          }
         }
       });
-      for (var y = 0; y < roles.length; y++) {
-        if (roles[y].checked === true) {
-          addRoles.addRoles.push(roles[y]._id);
-        } else if (roles[y].checked === false) {
-          rmRoles.rmRoles.push(roles[y]._id);
+
+      $scope.modalInstance.result.then(function (roles) {
+        var data = {};
+        data.roles = [];
+        var addRoles = {addRoles: []};
+        var rmRoles = {rmRoles: []};
+        data.usersid = [];
+        angular.forEach($scope.users, function(user) {
+          if(user.checked) {
+            data.usersid.push(user._id);
+          }
+        });
+        for (var y = 0; y < roles.length; y++) {
+          if(roles[y].checked === true) {
+            addRoles.addRoles.push(roles[y]._id);
+          } else if (roles[y].checked === false) {
+            rmRoles.rmRoles.push(roles[y]._id);
+          }
         }
-      }
       data.roles.push(addRoles);
       data.roles.push(rmRoles);
       adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {

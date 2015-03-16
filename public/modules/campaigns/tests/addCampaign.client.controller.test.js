@@ -11,17 +11,21 @@ describe('addCampaignCtrl', function() {
     //Loading the main Application module
 beforeEach(module(ApplicationConfiguration.applicationModuleName));
 
-  beforeEach(inject(function($controller, $rootScope, _$location_, _$stateParams_, _$httpBackend_) {
+  beforeEach(inject(function($controller, $rootScope, _$location_, _$stateParams_, _$httpBackend_, Authentication) {
     scope = $rootScope.$new();
 
     $stateParams = _$stateParams_;
     $httpBackend = _$httpBackend_;
     $location =  _$location_;
+    Authentication.requireLogin = function($state, stateName) {};
 
     addCampaignCtrl= $controller('addCampaignCtrl', {
       $scope: scope,
       $location: $location
     });
+    $httpBackend.whenGET('modules/campaigns/views/viewCampaign.client.view.html').respond(200);
+    $httpBackend.whenGET('modules/core/views/home.client.view.html').respond(200);
+    $httpBackend.whenGET('modules/core/views/home.client.view.html').respond(200);
 
   }));
 //Authenticated user should be able to create a new campaign
