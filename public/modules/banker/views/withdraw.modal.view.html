@@ -1,12 +1,16 @@
 <div class="modal-header text-center">
-    <h5 class="modal-title">WITHDRAW FROM ACCOUNT</h5>
-    <h6>Your Current Balance is {{systemBalance}}</h6>
+  <h5 class="modal-title">WITHDRAW FROM ACCOUNT</h5>
+  <h6>Your Current Balance is {{systemBalance}}</h6>
 </div>
-<div class="modal-body text-center">
-<p ng-show="message" class="error text-muted">You cannot withdraw beyond your current balance</p>
- <input type="number" data-ng-model="withdraw" ng-change="checkBalance()" Placeholder="Amount to Withdraw"></div>
-</div>
-<div class="modal-footer text-center">
-    <button class="btn btn-primary" ng-click="ok(withdraw)" ng-disabled="accountIsLower">Withdraw</button>
+<form name="withdrawForm" class="text-center" novalidate>
+ 
+  <div class="modal-body text-center">
+    <p ng-show="message" class="error text-muted red">You cannot withdraw beyond your current balance</p>
+    <p ng-show="withdrawForm.$invalid &amp;&amp; withdrawForm.$dirty" class="error text-muted red">Please Enter A Valid Amount</p>
+    <input type="number" name="withdraw'" data-ng-model="withdraw" ng-change="checkBalance()" Placeholder="Amount to Withdraw" required>
+  </div>
+  <div class="modal-footer footer-center">
+    <button class="btn btn-primary" ng-click="ok(withdraw)" ng-disabled="accountIsLower || withdrawForm.$invalid">Withdraw</button>
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-</div>
+  </div>
+</form>

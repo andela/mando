@@ -1,3 +1,9 @@
   .withdraw {
     margin-right: 3px;
   }
+  .red {
+    color: tomato;
+  }
+  .footer-center {
+    text-align: center;
+  }
