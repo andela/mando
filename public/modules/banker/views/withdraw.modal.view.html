@@ -3,7 +3,7 @@
     <h6>Your Current Balance is {{systemBalance}}</h6>
 </div>
 <div class="modal-body text-center">
-<p ng-show="message" class="error text-muted">You cannot withdraw beyond your current balance</p>
+<p ng-show="message" class="error text-muted red">You cannot withdraw beyond your current balance</p>
  <input type="number" data-ng-model="withdraw" ng-change="checkBalance()" Placeholder="Amount to Withdraw"></div>
 </div>
 <div class="modal-footer text-center">

@@ -148,7 +148,7 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
   $scope.openModalWithdraw = function(size) {
     var modalInstance = $modal.open({
       templateUrl: 'modules/banker/views/withdraw.modal.view.html',
-      controller: 'modalInstanceCtrl',
+      controller: 'withdrawalModalInstanceCtrl',
       size: size,
       resolve: {
         transaction: function() {
@@ -165,13 +165,8 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
   $scope.openModalDeposit = function(size) {
     var modalInstance = $modal.open({
       templateUrl: 'modules/banker/views/deposit.modal.view.html',
-      controller: 'modalInstanceCtrl',
-      size: size,
-      resolve: {
-        transaction: function() {
-          return $scope.deposit;
-        }
-      }
+      controller: 'depositModalInstanceCtrl',
+      size: size
     });
     modalInstance.result.then(function(amount) {
       $scope.depositIntoBank(amount);

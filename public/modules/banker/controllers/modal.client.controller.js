@@ -1,10 +1,8 @@
       'use strict';
 
      //modal Controller
-  angular.module('banker').controller('modalInstanceCtrl', ['$scope', '$modalInstance', 'transaction', function($scope, $modalInstance, transaction){
-    
+  angular.module('banker').controller('withdrawalModalInstanceCtrl', ['$scope', '$modalInstance', 'transaction', function($scope, $modalInstance, transaction){
     $scope.systemBalance = transaction;
-    //$scope.withdraw = $scope.systemBalance;
     $scope.checkBalance = function () {
        if($scope.systemBalance < $scope.withdraw) {
            $scope.accountIsLower = true;
@@ -15,7 +13,15 @@
           }      
     };
 
-    // $scope.withdraw = $scope.systemBalance;
+      $scope.ok = function (amount) {
+           $modalInstance.close(amount);
+        };
+        $scope.cancel = function () {
+          $modalInstance.dismiss('cancel');
+        };
+  }]);    
+
+angular.module('banker').controller('depositModalInstanceCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance ){
       $scope.ok = function (amount) {
            $modalInstance.close(amount);
         };

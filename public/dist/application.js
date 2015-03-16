@@ -464,11 +464,11 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
   $scope.openModalWithdraw = function(size) {
     var modalInstance = $modal.open({
       templateUrl: 'modules/banker/views/withdraw.modal.view.html',
-      controller: 'modalInstanceCtrl',
+      controller: 'withdrawalModalInstanceCtrl',
       size: size,
       resolve: {
         transaction: function() {
-          return $scope.withdraw;
+          return $scope.balance.amount;
         }
       }
     });
@@ -481,13 +481,8 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
   $scope.openModalDeposit = function(size) {
     var modalInstance = $modal.open({
       templateUrl: 'modules/banker/views/deposit.modal.view.html',
-      controller: 'modalInstanceCtrl',
-      size: size,
-      resolve: {
-        transaction: function() {
-          return $scope.deposit;
-        }
-      }
+      controller: 'depositModalInstanceCtrl',
+      size: size
     });
     modalInstance.result.then(function(amount) {
       $scope.depositIntoBank(amount);
@@ -501,12 +496,29 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
       'use strict';
 
      //modal Controller
-  angular.module('banker').controller('modalInstanceCtrl', ['$scope', '$modalInstance', 'transaction', function($scope, $modalInstance, transaction){
-    console.log(transaction);
+  angular.module('banker').controller('withdrawalModalInstanceCtrl', ['$scope', '$modalInstance', 'transaction', function($scope, $modalInstance, transaction){
     $scope.systemBalance = transaction;
-    $scope.withdraw = $scope.systemBalance;
-      $scope.ok = function (withdraw) {
-           $modalInstance.close(withdraw);
+    $scope.checkBalance = function () {
+       if($scope.systemBalance < $scope.withdraw) {
+           $scope.accountIsLower = true;
+           $scope.message= true;
+          }else {
+            $scope.accountIsLower =false;
+            $scope.message = false;
+          }      
+    };
+
+      $scope.ok = function (amount) {
+           $modalInstance.close(amount);
+        };
+        $scope.cancel = function () {
+          $modalInstance.dismiss('cancel');
+        };
+  }]);    
+
+angular.module('banker').controller('depositModalInstanceCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance ){
+      $scope.ok = function (amount) {
+           $modalInstance.close(amount);
         };
         $scope.cancel = function () {
           $modalInstance.dismiss('cancel');
