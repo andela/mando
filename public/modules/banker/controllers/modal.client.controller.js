@@ -8,13 +8,16 @@
     $scope.checkBalance = function () {
        if($scope.systemBalance < $scope.withdraw) {
            $scope.accountIsLower = true;
-           $scope.message= 'You cannot withdraw beyond your current balance';
+           $scope.message= true;
+          }else {
+            $scope.accountIsLower =false;
+            $scope.message = false;
           }      
     };
 
     // $scope.withdraw = $scope.systemBalance;
-      $scope.ok = function (withdraw) {
-           $modalInstance.close(withdraw);
+      $scope.ok = function (amount) {
+           $modalInstance.close(amount);
         };
         $scope.cancel = function () {
           $modalInstance.dismiss('cancel');
