@@ -152,7 +152,7 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
       size: size,
       resolve: {
         transaction: function() {
-          return $scope.withdraw;
+          return $scope.balance.amount;
         }
       }
     });
