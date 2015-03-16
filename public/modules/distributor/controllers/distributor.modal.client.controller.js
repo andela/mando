@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$modalInstance','transaction', function($scope, $modalInstance, transaction) {
+angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
-  $scope.ok = function (transaction) {
-    $modalInstance.close(transaction.amount);
+  $scope.ok = function (amount) {
+    $modalInstance.close(amount);
   };
 
   $scope.cancel = function () {

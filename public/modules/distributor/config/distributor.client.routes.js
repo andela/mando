@@ -4,7 +4,7 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
 
   $stateProvider.
     state('distributorOverview', {
-       resolve: {
+      resolve: {
         credentials: function ($http){
           return  $http.get('/bank/credentials');
         }
