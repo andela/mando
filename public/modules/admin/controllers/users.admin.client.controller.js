@@ -104,7 +104,6 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       });
 
       $scope.modalInstance.result.then(function (roles) {
-        $scope.roes = roles;
         var data = {};
         data.roles = [];
         var addRoles = {addRoles: []};
