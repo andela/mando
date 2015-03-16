@@ -316,16 +316,17 @@ angular.module('banker').config(['$stateProvider', function($stateProvider){
 
 'use strict';
 /*global Subledger*/
-angular.module('banker').controller('transactionCtrl', ['$scope', 'Authentication', '$http', '$timeout', 'toaster', '$modal', 'bankerFactory', 'lodash', 'credentials', function($scope, Authentication, $http, $timeout, toaster, $modal, bankerFactory, lodash, credentials) {
+angular.module('banker').controller('transactionCtrl', ['$scope', 'Authentication', '$http', '$timeout', 'toaster', '$modal', 'bankerFactory', 'lodash', 'credentials', '$state', function($scope, Authentication, $http, $timeout, toaster, $modal, bankerFactory, lodash, credentials, $state) {
+
+  Authentication.requireLogin($state);
+  Authentication.requireRole($state, 'admin', 'userCampaigns');
   $scope.reports = [];
   $scope.withdrawal = {};
   $scope.balance = {
     amount: ''
   };
   // Check if the user has a banker role.
-  $scope.isBanker = lodash.findWhere(Authentication.user.roles, {
-    'roleType': 'banker'
-  });
+  $scope.isBanker = Authentication.hasRole('banker');
 
   var cred = credentials.data;
   bankerFactory.setCredentials(cred.key_id, cred.secret_id);
@@ -501,8 +502,11 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
 
      //modal Controller
   angular.module('banker').controller('modalInstanceCtrl', ['$scope', '$modalInstance', 'transaction', function($scope, $modalInstance, transaction){
-      $scope.ok = function (transaction) {
-           $modalInstance.close(transaction.amount);
+    console.log(transaction);
+    $scope.systemBalance = transaction;
+    $scope.withdraw = $scope.systemBalance;
+      $scope.ok = function (withdraw) {
+           $modalInstance.close(withdraw);
         };
         $scope.cancel = function () {
           $modalInstance.dismiss('cancel');
@@ -595,8 +599,8 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
 
 /*global moment */
 
-angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
-  function($scope, toaster, backendService, $location, Authentication, youtubeEmbedUtils) {
+angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', 'backendService', '$location', 'Authentication', 'youtubeEmbedUtils', '$state',
+  function($scope, toaster, backendService, $location, Authentication, youtubeEmbedUtils, $state) {
     //provides the authentication object
     $scope.authentication = Authentication;
     $scope.campaign = {};
@@ -605,17 +609,15 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'b
     $scope.minDate = moment().add(1, 'days');
     $scope.maxDate = moment().add(30, 'days');
 
-   //if unauthenticated, go to home
-    if (!$scope.authentication.user) {
-      $location.path('/');
-    }
+    //if unauthenticated, go to home
+    Authentication.requireLogin($state);
 
     $scope.addCampaign = function() {
       $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
-        backendService.addCampaign($scope.campaign)
+      backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
           toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
-          $location.path('/campaign/'+ data.slug);
+          $location.path('/campaign/' + data.slug);
         })
         .error(function(error, status, header, config) {
           //no $scope.error on the view, need to work on the error
@@ -623,25 +625,25 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'b
         });
     };
 
-    $scope.validateYoutubeUrl = function (url, isValid) {
+    $scope.validateYoutubeUrl = function(url, isValid) {
       //checks if input is a valid url
-      if(!isValid) {
+      if (!isValid) {
         $scope.youtubeError = 'Please enter a valid youtube Url';
         return;
       }
       //get the youtube id from the url
       var youtubeId = youtubeEmbedUtils.getIdFromURL(url);
       //if the youtubeid is the same as url, then the user entered a wrong youtube url/id
-      if(youtubeId === url) {
+      if (youtubeId === url) {
         $scope.youtubeError = 'Please enter a valid youtube URL';
         return;
       }
       backendService.checkYouTubeUrl(youtubeId)
-        .success(function (result) {
+        .success(function(result) {
           $scope.youtubeError = '';
           // Add campaign in youtube url is valid
         })
-        .error(function (error){
+        .error(function(error) {
           $scope.youtubeError = error;
         });
     };
@@ -655,9 +657,10 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'b
     };
   }
 ]);
+
 'use strict';
 
-angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location','backendService', function ($scope, $location, backendService) {
+angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location', 'backendService', function($scope, $location, backendService) {
   $scope.Campaigns = [];
   $scope.criteria = 'created';
   $scope.currentPage = 1;
@@ -666,23 +669,23 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location',
 
   $scope.init = function() {
     backendService.getCampaigns()
-    .success(function (data, status, header, config){
-      $scope.campaigns = data;
-      $scope.totalItems = data.length;
-      $scope.filterCampaigns();
-    })
-    .error(function (error, status, header, config){
-      return error;
-    });
+      .success(function(data, status, header, config) {
+        $scope.campaigns = data;
+        $scope.totalItems = data.length;
+        $scope.filterCampaigns();
+      })
+      .error(function(error, status, header, config) {
+        return error;
+      });
   };
 
-  $scope.filterCampaigns = function () {
+  $scope.filterCampaigns = function() {
     var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
     var end = begin + $scope.itemsPerPage;
-    $scope.startItems = begin+1;
-    if(end < $scope.totalItems){
+    $scope.startItems = begin + 1;
+    if (end < $scope.totalItems) {
       $scope.endItems = end;
-    }else{
+    } else {
       $scope.endItems = $scope.totalItems;
     }
     $scope.Campaigns = $scope.campaigns.slice(begin, end);
@@ -693,111 +696,105 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location',
   };
   $scope.init();
 }]);
+
 'use strict';
 
 /*global moment */
-angular.module('campaign').controller('editCampaignCtrl', ['$scope','toaster', 'backendService', '$location', 'Authentication','$stateParams','youtubeEmbedUtils', function ($scope,toaster, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils) {
-    $scope.authentication = Authentication;
+angular.module('campaign').controller('editCampaignCtrl', ['$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', 'youtubeEmbedUtils', '$state', function($scope, toaster, backendService, $location, Authentication, $stateParams, youtubeEmbedUtils, $state) {
+  $scope.authentication = Authentication;
+  Authentication.requireLogin($state);
 
-    if(!$scope.authentication.user){
-        $location.path('/');
-    }
-  $scope.getCampaign = function (){
+  $scope.getCampaign = function() {
     backendService.getCampaign($stateParams.campaignTimestamp + '/' + $stateParams.campaignslug)
-      .success(function(data, status){
-        if($scope.authentication.user._id !== data.createdBy._id){
-          $location.path('/campaign/'+ data.slug);
+      .success(function(data, status) {
+        if ($scope.authentication.user._id !== data.createdBy._id) {
+          $location.path('/campaign/' + data.slug);
         }
         //The Date of Campaign cannot exceed 30 days of the date it was created
         $scope.minDate = moment(data.created);
         $scope.maxDate = moment(data.created).add(30, 'days');
         $scope.campaign = data;
-        $scope.campaign.youtubeUrl = 'https://www.youtube.com/watch?v='+data.youtubeUrl;
+        $scope.campaign.youtubeUrl = 'https://www.youtube.com/watch?v=' + data.youtubeUrl;
       })
-      .error(function(err){
-        toaster.pop('error', 'An Error Occurred'+ err);
+      .error(function(err) {
+        toaster.pop('error', 'An Error Occurred' + err);
       });
-    };
+  };
   $scope.getCampaign();
-    $scope.editCampaign = function(){
-      delete $scope.campaign.createdBy;
-      delete $scope.campaign.created;
-      $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
-      backendService.updateCampaign($scope.campaign)
-        .success(function(data, status, header, config){
-          toaster.pop('success', 'Campaign Edited Successfully');
-          $location.path('/campaign/' + data.slug);
-        })
-        .error(function(err,status, header, config){
-          $scope.error = err;
-          toaster.pop('error','An Error Occurred:'+ err);
-        });
-    };
-
-    $scope.validateYoutubeUrl = function (url) {
-      var youtubeId = youtubeEmbedUtils.getIdFromURL(url);
-      //if the youtubeid is the same as url, then the user entered a wrong youtube url/id
-      if(youtubeId === url) {
-        $scope.youtubeError = 'Please enter a valid youtube URL';
-        return;
-      }
-
-      backendService.checkYouTubeUrl(youtubeId)
-        .success(function (result) {
-          $scope.youtubeError = '';
-          // Add campaign in youtube url is valid
-        })
-        .error(function (error){
-          $scope.youtubeError = error;
+  $scope.editCampaign = function() {
+    delete $scope.campaign.createdBy;
+    delete $scope.campaign.created;
+    $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
+    backendService.updateCampaign($scope.campaign)
+      .success(function(data, status, header, config) {
+        toaster.pop('success', 'Campaign Edited Successfully');
+        $location.path('/campaign/' + data.slug);
+      })
+      .error(function(err, status, header, config) {
+        $scope.error = err;
+        toaster.pop('error', 'An Error Occurred:' + err);
       });
-    };
+  };
 
-    $scope.deleteCampaign = function(data, toastr) {
-       var confirmMsg = confirm('Do you want to delete this Campaign?');
-      if(confirmMsg) {
-          backendService.deleteCampaign($scope.campaign._id).success(function(text) {
-          toaster.pop('success', $scope.campaign.title, 'Campaign deleted successfully');
-          $location.path('/campaigns/myAndonation');
-          }).error(function(error) {
-            //do a more comprehensive error checking
-        });
-      }
+  $scope.validateYoutubeUrl = function(url) {
+    var youtubeId = youtubeEmbedUtils.getIdFromURL(url);
+    //if the youtubeid is the same as url, then the user entered a wrong youtube url/id
+    if (youtubeId === url) {
+      $scope.youtubeError = 'Please enter a valid youtube URL';
+      return;
+    }
+
+    backendService.checkYouTubeUrl(youtubeId)
+      .success(function(result) {
+        $scope.youtubeError = '';
+        // Add campaign in youtube url is valid
+      })
+      .error(function(error) {
+        $scope.youtubeError = error;
+      });
+  };
+
+  $scope.deleteCampaign = function(data, toastr) {
+    var confirmMsg = confirm('Do you want to delete this Campaign?');
+    if (confirmMsg) {
+      backendService.deleteCampaign($scope.campaign._id).success(function(text) {
+        toaster.pop('success', $scope.campaign.title, 'Campaign deleted successfully');
+        $location.path('/campaigns/myAndonation');
+      }).error(function(error) {
+        //do a more comprehensive error checking
+      });
+    }
 
   };
 
-    //Open the Calendar
-    $scope.open = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
+  //Open the Calendar
+  $scope.open = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
 
-      $scope.opened = true;
-    };
-  }
-]);
+    $scope.opened = true;
+  };
+}]);
+
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'bankerFactory', 'Authentication', '$stateParams', 'lodash', 'credentials',
-  function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams, lodash, credentials) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'bankerFactory', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state',
+  function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams, lodash, credentials, $state) {
 
     $scope.myCampaigns = [];
     $scope.balance = {};
     $scope.authentication = Authentication;
 
-    if (!$scope.authentication.user) {
-      $location.path('/');
-    }
-
+    Authentication.requireLogin($state);
     //checks if user is an admin
-    $scope.isAdmin = lodash.findWhere(Authentication.user.roles, {
-      'roleType': 'admin'
-    }) ? true : false;
-    $scope.isBanker = lodash.findWhere(Authentication.user.roles, {
-      'roleType': 'banker'
-    }) ? true : false;
-    console.log(credentials);
+    $scope.isAdmin = Authentication.hasRole('admin');
+    $scope.isBanker = Authentication.hasRole('banker');
     var cred = credentials.data;
     bankerFactory.setCredentials(cred.key_id, cred.secret_id);
 
+    $scope.isDistributor = Authentication.hasRole('distributor');
+
+    //uses the Currently signed-in id to get the user id.
     var userid = $scope.authentication.user._id;
 
     backendService.getUserCampaigns(userid)
@@ -812,20 +809,23 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
       });
 
     //if role = banker use the banker id here else you the user's id$scope.authentication.user.cred.bank_id
-    bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({
-      description: 'USD'
-    }, function(error, apiRes) {
-      if (error) {
-        toaster.pop('error', 'An Error Occurred' + error);
-        return;
-      } else {
-        var amount = parseInt(apiRes.balance.value.amount);
-        $scope.balance.amount = amount;
-        $scope.$digest();
-      }
-    });
-    // };
-    // function to click the show more button on getMoreCampaigns page
+    $scope.getBalance = function() {
+        bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({
+          description: 'USD'
+        }, function(error, apiRes) {
+          if (error) {
+            toaster.pop('error', 'An Error Occurred' + error);
+            return;
+          } else {
+            var amount = parseInt(apiRes.balance.value.amount);
+            $scope.balance.amount = amount;
+            $scope.$digest();
+          }
+        });
+      };
+    $scope.getBalance();
+      // };
+      // function to click the show more button on getMoreCampaigns page
     $scope.limit = 4;
     $scope.increment = function() {
       var campaignLength = $scope.myCampaigns.length;
@@ -838,34 +838,34 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 
     //Getting all transactions in the system for a particular banker.
     $scope.getJournals = function(cb) {
-   bankerFactory.getJournalReports(cred.org_id, cred.book_id, cred.bank_id).get({
-     'description': 'USD',
-     'action': 'before',
-     'effective_at': new Date().toISOString()
-   }, function(error, apiRes) {
-     if (error) {
-       return error;
-     } else {
-       for (var i = 0; i < apiRes.posted_lines.length; i++) {
-         try {
-           var stringToObj = JSON.parse(apiRes.posted_lines[i].description);
-           apiRes.posted_lines[i].description = stringToObj;
-         } catch (e) {
-           apiRes.posted_lines[i].description = {
-             'name': 'anonymous',
-             'description': apiRes.posted_lines[i].description
-           };
-         }
-       }
-       $scope.journal = apiRes.posted_lines;
-       $scope.$digest();
-       if (!!cb) {
-         cb();
-       }
-     }
-   });
- };
- $scope.getJournals();
+      bankerFactory.getJournalReports(cred.org_id, cred.book_id, cred.bank_id).get({
+        'description': 'USD',
+        'action': 'before',
+        'effective_at': new Date().toISOString()
+      }, function(error, apiRes) {
+        if (error) {
+          return error;
+        } else {
+          for (var i = 0; i < apiRes.posted_lines.length; i++) {
+            try {
+              var stringToObj = JSON.parse(apiRes.posted_lines[i].description);
+              apiRes.posted_lines[i].description = stringToObj;
+            } catch (e) {
+              apiRes.posted_lines[i].description = {
+                'name': 'anonymous',
+                'description': apiRes.posted_lines[i].description
+              };
+            }
+          }
+          $scope.journal = apiRes.posted_lines;
+          $scope.$digest();
+          if (!!cb) {
+            cb();
+          }
+        }
+      });
+    };
+    $scope.getJournals();
   }
 ]);
 
@@ -1027,7 +1027,7 @@ $scope.getUsers();
       at: date
     }, function(error, apiRes) {
       if (error) {
-        toaster.pop('error', 'An Error Occurred' + error);
+        toaster.pop('error', 'An Error Occurred'+ error);
         return;
       } else {
         var amount = apiRes.balance.value.amount;
@@ -1039,8 +1039,6 @@ $scope.getUsers();
 
   //method to credit each account
   $scope.depositIntoUser = function(amount, user) {
-    console.log(user);
-    console.log(amount);
 
     var userToString = {
       name: user.displayName,
@@ -1079,8 +1077,6 @@ $scope.getUsers();
   };
 
   $scope.distributorModal = function(user) {
-    // console.log(user);
-    // console.log(user.firstName);
     var modalInstance = $modal.open({
       templateUrl: 'modules/distributor/views/distributor.modal.client.view.html',
       controller: 'disModalInstanceCtrl',
@@ -1096,7 +1092,6 @@ $scope.getUsers();
     });
   };
 }]);
-
 'use strict';
 
 angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$modalInstance','transaction', function($scope, $modalInstance, transaction) {
