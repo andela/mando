@@ -12,7 +12,7 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.isAdmin = Authentication.hasRole('admin');
     $scope.isBanker = Authentication.hasRole('banker');
     var cred = credentials.data;
-    bankerFactory.setCredentials(cred.key_id, cred.secret_id);
+    bankerFactory.setCredentials(cred);
 
     $scope.isDistributor = Authentication.hasRole('distributor');
 
@@ -32,22 +32,22 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 
     //if role = banker use the banker id here else you the user's id$scope.authentication.user.cred.bank_id
     $scope.getBalance = function() {
-        bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({
-          description: 'USD'
-        }, function(error, apiRes) {
-          if (error) {
-            toaster.pop('error', 'An Error Occurred' + error);
-            return;
-          } else {
-            var amount = parseInt(apiRes.balance.value.amount);
-            $scope.balance.amount = amount;
-            $scope.$digest();
-          }
-        });
-      };
+      bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({
+        description: 'USD'
+      }, function(error, apiRes) {
+        if (error) {
+          toaster.pop('error', 'An Error Occurred' + error);
+          return;
+        } else {
+          var amount = parseInt(apiRes.balance.value.amount);
+          $scope.balance.amount = amount;
+          $scope.$digest();
+        }
+      });
+    };
     $scope.getBalance();
-      // };
-      // function to click the show more button on getMoreCampaigns page
+    // };
+    // function to click the show more button on getMoreCampaigns page
     $scope.limit = 4;
     $scope.increment = function() {
       var campaignLength = $scope.myCampaigns.length;

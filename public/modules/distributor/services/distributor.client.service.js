@@ -33,7 +33,7 @@ angular.module('distributor').factory('distributorService', ['$http', function($
   //method to credit each account
  var depositorAction = function(action, amount, user, adminUser, cb) {
     var otherAction = action === 'debit' ? 'credit' : 'debit';
-    var description = (action === 'debit') ? 'Cash Widrawal From Bank' : 'Cash Deposit To Bank';
+    var description = (action === 'debit') ? 'Cash Deposit To Bank' : 'Cash Widrawal From Bank';
 
     var adminUserString = JSON.stringify({
       name: adminUser.displayName,
@@ -72,7 +72,8 @@ angular.module('distributor').factory('distributorService', ['$http', function($
       if (error) {
         return error;
       } else {
-        cb();
+        cb()
+;
       }
     });
   };

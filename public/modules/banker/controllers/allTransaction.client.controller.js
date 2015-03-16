@@ -11,10 +11,8 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
   };
   // Check if the user has a banker role.
   $scope.isBanker = Authentication.hasRole('banker');
-
   var cred = credentials.data;
-  bankerFactory.setCredentials(cred.key_id, cred.secret_id);
-
+  bankerFactory.setCredentials(cred);
   $scope.authentication = Authentication;
 
   //Method to Get The Bank Balance
@@ -68,80 +66,17 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
 
   //Grab Some details of the Auhtenticated user and convert it to a string which will be stored in subledger the returned string is converted back into an object.
 
-  $scope.withdrawFromBank = function(amount) {
-    var userToString = {
-      name: $scope.authentication.user.displayName,
-      email: $scope.authentication.user.email,
-      description: 'Cash Withdrawal'
-    };
-    var userdetails = JSON.stringify(userToString);
-    bankerFactory.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
-      'effective_at': new Date().toISOString(),
-      'description': userdetails,
-      'reference': 'http://andonation-mando.herokuapp.com',
-      'lines': [{
-        'account': cred.bank_id,
-        'description': userdetails,
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'debit',
-          'amount': amount
-        }
-      }, {
-        'account': cred.system_id,
-        'description': 'Cash Deposit',
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'credit',
-          'amount': amount
-        }
-      }]
-    }, function(error, apiRes) {
-      if (error) {
-        return error;
-      } else {
-        var StringToObj = JSON.parse(apiRes.posting_journal_entry.description);
-        $scope.getBalance();
-        $scope.getJournals();
-      }
+  $scope.withdrawFromBank = function (amount, user) {
+    bankerFactory.bankerAction('debit', amount, $scope.authentication.user, function() {
+      $scope.getBalance();
+      $scope.getJournals();
     });
   };
 
-  $scope.depositIntoBank = function(amount) {
-    var userToString = {
-      name: $scope.authentication.user.displayName,
-      email: $scope.authentication.user.email,
-      description: 'Cash Deposit'
-    };
-    var userdetails = JSON.stringify(userToString);
-    bankerFactory.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
-      'effective_at': new Date().toISOString(),
-      'description': userdetails,
-      'reference': 'http://andonation-mando.herokuapp.com',
-      'lines': [{
-        'account': cred.bank_id,
-        'description': userdetails,
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'credit',
-          'amount': amount
-        }
-      }, {
-        'account': cred.system_id,
-        'description': 'cash deposit',
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'debit',
-          'amount': amount
-        }
-      }]
-    }, function(error, apiRes) {
-      if (error) {
-        return error;
-      } else {
-        $scope.getBalance();
-        $scope.getJournals();
-      }
+  $scope.depositIntoBank = function (amount, user) {
+    bankerFactory.bankerAction('credit', amount, $scope.authentication.user, function () {
+      $scope.getBalance();
+      $scope.getJournals();
     });
   };
   // OPEN MODAL WINDOW
