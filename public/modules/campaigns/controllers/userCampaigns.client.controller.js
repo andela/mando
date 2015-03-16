@@ -80,6 +80,7 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
             }
           }
           $scope.journal = apiRes.posted_lines;
+          $scope.query = $scope.authentication.user.email;
           $scope.$digest();
           if (!!cb) {
             cb();
