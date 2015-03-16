@@ -1,23 +1,16 @@
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'bankerFactory', 'Authentication', '$stateParams', 'lodash', 'credentials',
-  function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams, lodash, credentials) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'bankerFactory', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state',
+  function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams, lodash, credentials, $state) {
 
     $scope.myCampaigns = [];
     $scope.balance = {};
     $scope.authentication = Authentication;
 
-    if (!$scope.authentication.user) {
-      $location.path('/');
-    }
-
+    Authentication.requireLogin($state);
     //checks if user is an admin
-    $scope.isAdmin = lodash.findWhere(Authentication.user.roles, {
-      'roleType': 'admin'
-    });
-    $scope.isBanker = lodash.findWhere(Authentication.user.roles, {
-      'roleType': 'banker'
-    });
+    $scope.isAdmin = Authentication.hasRole('admin');
+    $scope.isBanker = Authentication.hasRole('banker');
     var cred = credentials.data;
     bankerFactory.setCredentials(cred.key_id, cred.secret_id);
 

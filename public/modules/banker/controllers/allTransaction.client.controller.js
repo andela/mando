@@ -1,15 +1,16 @@
 'use strict';
 /*global Subledger*/
-angular.module('banker').controller('transactionCtrl', ['$scope', 'Authentication', '$http', '$timeout', 'toaster', '$modal', 'bankerFactory', 'lodash', 'credentials', function($scope, Authentication, $http, $timeout, toaster, $modal, bankerFactory, lodash, credentials) {
+angular.module('banker').controller('transactionCtrl', ['$scope', 'Authentication', '$http', '$timeout', 'toaster', '$modal', 'bankerFactory', 'lodash', 'credentials', '$state', function($scope, Authentication, $http, $timeout, toaster, $modal, bankerFactory, lodash, credentials, $state) {
+
+  Authentication.requireLogin($state);
+  Authentication.requireRole($state, 'admin', 'userCampaigns');
   $scope.reports = [];
   $scope.withdrawal = {};
   $scope.balance = {
     amount: ''
   };
   // Check if the user has a banker role.
-  $scope.isBanker = lodash.findWhere(Authentication.user.roles, {
-    'roleType': 'banker'
-  });
+  $scope.isBanker = Authentication.hasRole('banker');
 
   var cred = credentials.data;
   bankerFactory.setCredentials(cred.key_id, cred.secret_id);
