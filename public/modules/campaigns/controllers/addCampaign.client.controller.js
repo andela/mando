@@ -2,8 +2,8 @@
 
 /*global moment */
 
-angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'backendService',  '$location','Authentication', 'youtubeEmbedUtils',
-  function($scope, toaster, backendService, $location, Authentication, youtubeEmbedUtils) {
+angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', 'backendService', '$location', 'Authentication', 'youtubeEmbedUtils', '$state',
+  function($scope, toaster, backendService, $location, Authentication, youtubeEmbedUtils, $state) {
     //provides the authentication object
     $scope.authentication = Authentication;
     $scope.campaign = {};
@@ -12,17 +12,15 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'b
     $scope.minDate = moment().add(1, 'days');
     $scope.maxDate = moment().add(30, 'days');
 
-   //if unauthenticated, go to home
-    if (!$scope.authentication.user) {
-      $location.path('/');
-    }
+    //if unauthenticated, go to home
+    Authentication.requireLogin($state);
 
     $scope.addCampaign = function() {
       $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
-        backendService.addCampaign($scope.campaign)
+      backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
           toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
-          $location.path('/campaign/'+ data.slug);
+          $location.path('/campaign/' + data.slug);
         })
         .error(function(error, status, header, config) {
           //no $scope.error on the view, need to work on the error
@@ -30,25 +28,25 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope','toaster', 'b
         });
     };
 
-    $scope.validateYoutubeUrl = function (url, isValid) {
+    $scope.validateYoutubeUrl = function(url, isValid) {
       //checks if input is a valid url
-      if(!isValid) {
+      if (!isValid) {
         $scope.youtubeError = 'Please enter a valid youtube Url';
         return;
       }
       //get the youtube id from the url
       var youtubeId = youtubeEmbedUtils.getIdFromURL(url);
       //if the youtubeid is the same as url, then the user entered a wrong youtube url/id
-      if(youtubeId === url) {
+      if (youtubeId === url) {
         $scope.youtubeError = 'Please enter a valid youtube URL';
         return;
       }
       backendService.checkYouTubeUrl(youtubeId)
-        .success(function (result) {
+        .success(function(result) {
           $scope.youtubeError = '';
           // Add campaign in youtube url is valid
         })
-        .error(function (error){
+        .error(function(error) {
           $scope.youtubeError = error;
         });
     };

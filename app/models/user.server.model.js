@@ -69,11 +69,6 @@ var UserSchema = new Schema({
 	account_id: {
 		type: String
 	},
-	balance: {
-		type: Number,
-		default: 0
-	},
-
 	roles: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Role'

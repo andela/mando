@@ -1,0 +1,21 @@
+<section>
+  <h2>DISTRIBUTE MONEY</h2>
+  <table class="table table-bordered">
+      <tt>
+        <th>Credit User Account</th>
+        <th>Account Balance</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+      </tt>
+      <tr ng-repeat="user in users | orderBy: 'firstName'">
+        <td><button ng-model="user.checked" ng-click="distributorModal(user)">Credit</button></td>
+        <td>{{user.currentBalance | currency : symbol : fractionSize}}</td>
+        <td>{{user.firstName}}</td>
+        <td>{{user.lastName}}</td>
+        <td>{{user.email}}</td>
+      </tr>
+    </table>
+
+    <!-- <h2>{{balance}}</h2> -->
+</section>
