@@ -223,42 +223,38 @@ angular.module('admin').controller('adminUserCtrl', ['$scope', 'Authentication',
       }
     });
 
-    var modalInstance = $modal.open({
-      templateUrl: 'modules/admin/views/updateRoles.admin.modal.client.view.html',
-      controller: 'ModalInstanceCtrl',
-      size: 'sm',
-      resolve: {
-        roles: function() {
-          return roles;
-        },
-        len: function() {
-          return NoOfCheckedUsers;
-        }
-      }
-    });
-
-    modalInstance.result.then(function(roles) {
-      var data = {};
-      data.roles = [];
-      var addRoles = {
-        addRoles: []
-      };
-      var rmRoles = {
-        rmRoles: []
-      };
-      data.usersid = [];
-      angular.forEach($scope.users, function(user) {
-        if (user.checked) {
-          data.usersid.push(user._id);
+      $scope.modalInstance = $modal.open({
+        templateUrl: 'modules/admin/views/updateRoles.admin.modal.client.view.html',
+        controller: 'ModalInstanceCtrl',
+        size: 'sm',
+        resolve: {
+          roles: function () {
+            return roles;
+          },
+          len: function() {
+            return NoOfCheckedUsers;
+          }
         }
       });
-      for (var y = 0; y < roles.length; y++) {
-        if (roles[y].checked === true) {
-          addRoles.addRoles.push(roles[y]._id);
-        } else if (roles[y].checked === false) {
-          rmRoles.rmRoles.push(roles[y]._id);
+
+      $scope.modalInstance.result.then(function (roles) {
+        var data = {};
+        data.roles = [];
+        var addRoles = {addRoles: []};
+        var rmRoles = {rmRoles: []};
+        data.usersid = [];
+        angular.forEach($scope.users, function(user) {
+          if(user.checked) {
+            data.usersid.push(user._id);
+          }
+        });
+        for (var y = 0; y < roles.length; y++) {
+          if(roles[y].checked === true) {
+            addRoles.addRoles.push(roles[y]._id);
+          } else if (roles[y].checked === false) {
+            rmRoles.rmRoles.push(roles[y]._id);
+          }
         }
-      }
       data.roles.push(addRoles);
       data.roles.push(rmRoles);
       adminBackendService.updateUserRoles(data).success(function(data, status, header, config) {
@@ -871,6 +867,7 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
             }
           }
           $scope.journal = apiRes.posted_lines;
+          $scope.query = $scope.authentication.user.email;
           $scope.$digest();
           if (!!cb) {
             cb();
@@ -998,7 +995,7 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
 
   $stateProvider.
     state('distributorOverview', {
-       resolve: {
+      resolve: {
         credentials: ["$http", function ($http){
           return  $http.get('/bank/credentials');
         }]
@@ -1014,7 +1011,8 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
 angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'distributorService', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, distributorService, $location, $state, $modal, toaster, credentials) {
 
   var cred = credentials.data;
-  distributorService.setCredentials(cred.key_id, cred.secret_id);
+  distributorService.setCredentials(cred);
+
   $scope.authentication = Authentication;
   Authentication.requireLogin($state);
   Authentication.requireRole($state, 'distributor', 'userCampaigns');
@@ -1042,75 +1040,52 @@ $scope.getUsers();
       if (error) {
         toaster.pop('error', 'An Error Occurred'+ error);
         return;
-      } else {
-        var amount = apiRes.balance.value.amount;
-        user.currentBalance = amount;
-        $scope.$digest();
       }
+
+      var amount = apiRes.balance.value.amount;
+      user.currentBalance = amount;
+      $scope.$digest();
     });
   };
 
   //method to credit each account
   $scope.depositIntoUser = function(amount, user) {
-
-    var userToString = {
-      name: user.displayName,
-      email: user.email,
-      description: 'Cash Deposit'
-    };
-    var userdetails = JSON.stringify(userToString);
-    distributorService.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
-      'effective_at': new Date().toISOString(),
-      'description': userdetails,
-      'reference': 'http://andonation-mando.herokuapp.com',
-      'lines': [{
-        'account': user.account_id,
-        'description': 'Credit Transaction',
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'credit',
-          'amount': amount
-        }
-      }, {
-        'account': cred.bank_id,
-        'description': 'cash deposit',
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'debit',
-          'amount': amount
-        }
-      }]
-    }, function(error, apiRes) {
-      if (error) {
-        return error;
-      } else {
-        $scope.getUsers();
-      }
+    distributorService.depositorAction('credit', amount, user, $scope.authentication.user, function() {
+      $scope.getUsers();
     });
   };
 
-  $scope.distributorModal = function(user) {
+
+  //method to debit each user account
+  $scope.withdrawFromUser = function(amount, user) {
+    // Compare with user balance
+    if(amount > user.currentBalance) {
+      toaster.pop('error', 'Balance is insufficient');
+      return;
+    }
+
+    distributorService.depositorAction('debit', amount, user, $scope.authentication.user, function() {
+      $scope.getUsers();
+    });
+  };
+
+  $scope.distributorModal = function(user, cb) {
     var modalInstance = $modal.open({
       templateUrl: 'modules/distributor/views/distributor.modal.client.view.html',
       controller: 'disModalInstanceCtrl',
-      size: 'sm',
-      resolve: {
-        transaction: function() {
-          return $scope.deposit;
-        }
-      }
+      size: 'sm'
     });
     modalInstance.result.then(function(amount) {
-      $scope.depositIntoUser(amount, user);
+      cb(amount, user);
     });
   };
 }]);
 'use strict';
 
-angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$modalInstance','transaction', function($scope, $modalInstance, transaction) {
+angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
-  $scope.ok = function (transaction) {
-    $modalInstance.close(transaction.amount);
+  $scope.ok = function (amount) {
+    $modalInstance.close(amount);
   };
 
   $scope.cancel = function () {
@@ -1124,12 +1099,16 @@ angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$mo
 
 angular.module('distributor').factory('distributorService', ['$http', function($http) {
   var subledger = new Subledger();
-  var credentials = {};
+  var cred = {};
 
 
-  var setCredentials = function(key_id, secret) {
-    subledger.setCredentials(key_id, secret);
+  var setCredentials = function(data) {
+    console.log(data);
+    subledger.setCredentials(data.key_id, data.secret_id);
+    cred = data;
+    //subledger.setCredentials(key_id, secret);
   };
+
   var getAccountBalance = function(org_id, book_id, account_id) {
     return subledger.organization(org_id).book(book_id).account(account_id);
   };
@@ -1144,12 +1123,61 @@ angular.module('distributor').factory('distributorService', ['$http', function($
   var getAllUsers = function() {
     return $http.get('/distributor/users');
   };
+
+  //method to credit each account
+ var depositorAction = function(action, amount, user, adminUser, cb) {
+    var otherAction = action === 'debit' ? 'credit' : 'debit';
+    var description = (action === 'debit') ? 'Cash Widrawal From Bank' : 'Cash Deposit To Bank';
+
+    var adminUserString = JSON.stringify({
+      name: adminUser.displayName,
+      email: adminUser.email,
+      description: description
+    });
+
+    var userString = JSON.stringify({
+      name: user.displayName,
+      email: user.email,
+      description: description
+    });
+
+    createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
+      'effective_at': new Date().toISOString(),
+      'description': userString,
+      'reference': 'http://andonation-mando.herokuapp.com',
+      'lines': [{
+        'account': user.account_id,
+        'description': userString,
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': action,
+          'amount': amount
+        }
+      }, {
+        'account': cred.bank_id,
+        'description': adminUserString,
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': otherAction,
+          'amount': amount
+        }
+      }]
+    }, function(error, apiRes) {
+      if (error) {
+        return error;
+      } else {
+        cb();
+      }
+    });
+  };
+
   return {
     getAccountBalance: getAccountBalance,
     createAndPostTransaction: createAndPostTransaction,
     getJournalReports: getJournalReports,
     getAllUsers: getAllUsers,
-    setCredentials: setCredentials
+    setCredentials: setCredentials,
+    depositorAction: depositorAction
   };
 }]);
 'use strict';
