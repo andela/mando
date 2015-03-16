@@ -40,8 +40,10 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
       slug: '060151/latest-campaign',
       createdBy: {
         _id: 'user2'
-      }   
+      }
     });
+    $httpBackend.whenGET('modules/campaigns/views/viewCampaign.client.view.html').respond(200);
+    $httpBackend.whenGET('modules/core/views/home.client.view.html').respond(200);
   });
 
     it('should be able to edit a campaign successfully', function(){

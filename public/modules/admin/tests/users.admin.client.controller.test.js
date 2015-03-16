@@ -56,17 +56,8 @@ describe('adminUserCtrl', function() {
         roleType: 'admin'
       }]
     };
-    Authentication.requireRole = function($state, role, stateName) {
-      //redirects user to myAndonation is user is logged in and not an admin
-      // if (!lodash.findWhere(user.roles, {'roleType': role})) {
-      //   $state.go(stateName);
-      // }
-    };
-    Authentication.requireLogin = function($state, stateName) {
-      // if (!user) {
-      //   $state.go(stateName || 'home');
-      // }
-    };
+    Authentication.requireRole = function($state, role, stateName) {};
+    Authentication.requireLogin = function($state, stateName) {};
     $httpBackend = _$httpBackend_;
     $httpBackend.whenGET('/admin/users').respond(200, users);
     $httpBackend.whenPUT('/admin/user/roles/edit').respond(users);
