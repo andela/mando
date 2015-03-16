@@ -1,6 +1,6 @@
 'use strict';
 /*global Subledger*/
-angular.module('banker').controller('transactionCtrl', ['$scope', 'Authentication', '$http', '$timeout', 'toaster', '$modal', 'bankerFactory', 'lodash', 'credentials', '$state', function($scope, Authentication, $http, $timeout, toaster, $modal, bankerFactory, lodash, credentials, $state) {
+angular.module('banker').controller('transactionCtrl', ['$scope', 'Authentication', '$http', '$timeout', 'toaster', '$modal', 'bankerFactory', 'lodash', 'credentials', '$state', function ($scope, Authentication, $http, $timeout, toaster, $modal, bankerFactory, lodash, credentials, $state) {
 
   Authentication.requireLogin($state);
   Authentication.requireRole($state, 'admin', 'userCampaigns');
