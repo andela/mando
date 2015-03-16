@@ -6,7 +6,7 @@
 
   <div ng-show="isBanker">
 
-  <p><a ng-href="/#!/bank" >System Balance: {{balance.amount | currency : symbol : fractionSize}}</a></p>
+  <p><a ng-href="/#!/bank" >System Balance: $  {{balance.amount}}</a></p>
   </div>
 
   <div ng-hide="myCampaigns" class="jumbotron text-center">
@@ -35,8 +35,10 @@
         <td>{{campaign.backers}}</td>
       </tr>
     </table>
-    <button ng-show="limit===4" ng-click="increment()">SEE ALL CAMPAIGNS</button>
-    <button ng-hide="limit===4" ng-click="decrement()">BACK</button>
+    <div ng-hide="myCampaigns.length < 4">
+      <a href="#" ng-show="limit===4" ng-click="increment()">See All Campaigns</a>
+      <a href="#" ng-hide="limit===4" ng-click="decrement()">Back</a>
+    </div>
   </div>
 
   <div>
@@ -59,8 +61,9 @@
           <td>{{transaction.value.amount}}</td>
         </tr>
       </table>
-
-      <a href="/#!/bank">SEE ALL TRANSACTIONS</a>
+      <div ng-hide="journal.length > 3">
+        <a href="/#!/bank">See All Transaction</a>
+      </div>
     </div>
   </div>
 </section>
