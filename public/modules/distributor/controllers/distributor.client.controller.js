@@ -3,7 +3,8 @@
 angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'distributorService', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, distributorService, $location, $state, $modal, toaster, credentials) {
 
   var cred = credentials.data;
-  distributorService.setCredentials(cred.key_id, cred.secret_id);
+  distributorService.setCredentials(cred);
+
   $scope.authentication = Authentication;
   Authentication.requireLogin($state);
   Authentication.requireRole($state, 'distributor', 'userCampaigns');
@@ -31,66 +32,43 @@ $scope.getUsers();
       if (error) {
         toaster.pop('error', 'An Error Occurred'+ error);
         return;
-      } else {
-        var amount = apiRes.balance.value.amount;
-        user.currentBalance = amount;
-        $scope.$digest();
       }
+
+      var amount = apiRes.balance.value.amount;
+      user.currentBalance = amount;
+      $scope.$digest();
     });
   };
 
   //method to credit each account
   $scope.depositIntoUser = function(amount, user) {
-
-    var userToString = {
-      name: user.displayName,
-      email: user.email,
-      description: 'Cash Deposit'
-    };
-    var userdetails = JSON.stringify(userToString);
-    distributorService.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
-      'effective_at': new Date().toISOString(),
-      'description': userdetails,
-      'reference': 'http://andonation-mando.herokuapp.com',
-      'lines': [{
-        'account': user.account_id,
-        'description': 'Credit Transaction',
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'credit',
-          'amount': amount
-        }
-      }, {
-        'account': cred.bank_id,
-        'description': 'cash deposit',
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'debit',
-          'amount': amount
-        }
-      }]
-    }, function(error, apiRes) {
-      if (error) {
-        return error;
-      } else {
-        $scope.getUsers();
-      }
+    distributorService.depositorAction('credit', amount, user, $scope.authentication.user, function() {
+      $scope.getUsers();
     });
   };
 
-  $scope.distributorModal = function(user) {
+
+  //method to debit each user account
+  $scope.withdrawFromUser = function(amount, user) {
+    // Compare with user balance
+    if(amount > user.currentBalance) {
+      toaster.pop('error', 'Balance is insufficient');
+      return;
+    }
+
+    distributorService.depositorAction('debit', amount, user, $scope.authentication.user, function() {
+      $scope.getUsers();
+    });
+  };
+
+  $scope.distributorModal = function(user, cb) {
     var modalInstance = $modal.open({
       templateUrl: 'modules/distributor/views/distributor.modal.client.view.html',
       controller: 'disModalInstanceCtrl',
-      size: 'sm',
-      resolve: {
-        transaction: function() {
-          return $scope.deposit;
-        }
-      }
+      size: 'sm'
     });
     modalInstance.result.then(function(amount) {
-      $scope.depositIntoUser(amount, user);
+      cb(amount, user);
     });
   };
 }]);

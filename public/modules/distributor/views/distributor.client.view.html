@@ -9,13 +9,14 @@
         <th>Email</th>
       </tt>
       <tr ng-repeat="user in users | orderBy: 'firstName'">
-        <td><button ng-model="user.checked" ng-click="distributorModal(user)">Credit</button></td>
+        <td>
+          <button ng-click="distributorModal(user, depositIntoUser)">Credit</button>
+          <button ng-click="distributorModal(user, withdrawFromUser)">Withdraw</button>
+        </td>
         <td>{{user.currentBalance | currency : symbol : fractionSize}}</td>
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
         <td>{{user.email}}</td>
       </tr>
     </table>
-
-    <!-- <h2>{{balance}}</h2> -->
 </section>
