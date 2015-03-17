@@ -42,6 +42,7 @@
 .supportbtn {
   width:50%;
 }
+<<<<<<< HEAD
 
 .tb-head {
  background-color: #00a4d4 !important;
@@ -51,6 +52,11 @@
   border-radius: 80%;
 }
 
+=======
+.tb-head {
+ background-color: #00a4d4 !important;
+}
+>>>>>>> user can see their transaction history on myTransaction page
 iframe {
   width: 100%;
   border-radius: 10px;
