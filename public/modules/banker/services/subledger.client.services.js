@@ -7,7 +7,6 @@ angular.module('banker').factory('subledgerServices', ['$http', 'toaster', funct
   var cred = {};
 
   var setCredentials = function(data) {
-    //  console.log(data);
     subledger.setCredentials(data.key_id, data.secret_id);
     cred = data;
 
@@ -49,21 +48,28 @@ angular.module('banker').factory('subledgerServices', ['$http', 'toaster', funct
         return error;
       } else {
         var amount = parseInt(apiRes.balance.value.amount);
-        // console.log(amount);
-        console.log(amount);
         cb(amount);
       }
     });
   };
 
-  //WITHDRAW and DEPOSIT in and Out of the Syetem
-  var bankerAction = function(action, amount, initiatorAccount, recipientAccount, initiator, cb) {
-    var otherAction = action === 'debit' ? 'credit' : 'debit';
-    var description = (action === 'debit') ? 'Cash Widrawal From Bank' : 'Cash Deposit To Bank';
-console.log(1, description);
-console.log(2, otherAction);
-console.log(3, 'action'+ action);
+  // WITHDRAW and DEPOSIT in and Out of the Syetem.
+  // Performs Crediting and Debiting of Accounts  
+  // Action == credit or Debit
+  // transaction = {
+  //  amount: Amount to Credit/Debit
+  //  reason : Reason for Debiting or Crediting If Its from a Distributor to a User other transactions do not have reasons
+  //    
+  //}
+  // inititorAccount ="Account that initiated the transaction which can be a banker"
+  //recipientAccoutn = "Accoutn that accepts the transation"
+  //initiatorl: this is the logged in user that authorises the transaction.
+  //cb : callback
 
+  var bankerAction = function(action, transaction, initiatorAccount, recipientAccount, initiator, cb) {
+    var otherAction = action === 'debit' ? 'credit' : 'debit';
+
+    var description = (action === 'debit') ? transaction.reason ||'Cash Withrawal from Bank' : transaction.reason || 'Cash Deposit To Bank';
     var initiatorToString = JSON.stringify({
       name: initiator.displayName,
       email: initiator.email,
@@ -80,7 +86,7 @@ console.log(3, 'action'+ action);
         'reference': 'http://andonation-mando.herokuapp.com',
         'value': {
           'type': action,
-          'amount': amount
+          'amount': transaction.amount
         }
       }, {
         'account': initiatorAccount,
@@ -88,7 +94,7 @@ console.log(3, 'action'+ action);
         'reference': 'http://andonation-mando.herokuapp.com',
         'value': {
           'type': otherAction,
-          'amount': amount
+          'amount': transaction.amount
         }
       }]
     }, function(error, apiRes) {
@@ -101,8 +107,8 @@ console.log(3, 'action'+ action);
   };
 
   //Get Journal Reports for any Transaction.
+  // PARAMs  account to get the journal and a callback
   var getJournals = function(account, cb) {
-    console.log(account);
     getJournalReports(cred.org_id, cred.book_id, account).get({
       'description': 'USD',
       'action': 'before',
@@ -122,7 +128,6 @@ console.log(3, 'action'+ action);
             };
           }
         }
-        console.log(apiRes);
         cb(apiRes);
       }
     });

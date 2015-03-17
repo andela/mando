@@ -7,7 +7,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.systemBalance = {};
     $scope.balance = {};
     $scope.authentication = Authentication;
-//console.log(Authentication);
     Authentication.requireLogin($state);
     //checks if user is an admin
     $scope.isAdmin = Authentication.hasRole('admin');
@@ -44,7 +43,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
   $scope.getJournals = function(account) {
     subledgerServices.getJournals(account, function(response) {
       $scope.journal = response.posted_lines;
-    //  console.log(2, response);
       $scope.$digest();
     });
   };
@@ -60,37 +58,5 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.decrement = function() {
       $scope.limit = 4;
     };
-
-    //Getting all transactions in the system for a particular banker.
-    // $scope.getJournals = function(cb) {
-    //   subledgerServices.getJournalReports(cred.org_id, cred.book_id, cred.bank_id).get({
-    //     'description': 'USD',
-    //     'action': 'before',
-    //     'effective_at': new Date().toISOString()
-    //   }, function(error, apiRes) {
-    //     if (error) {
-    //       return error;
-    //     } else {
-    //       for (var i = 0; i < apiRes.posted_lines.length; i++) {
-    //         try {
-    //           var stringToObj = JSON.parse(apiRes.posted_lines[i].description);
-    //           apiRes.posted_lines[i].description = stringToObj;
-    //         } catch (e) {
-    //           apiRes.posted_lines[i].description = {
-    //             'name': 'anonymous',
-    //             'description': apiRes.posted_lines[i].description
-    //           };
-    //         }
-    //       }
-    //       $scope.journal = apiRes.posted_lines;
-    //       $scope.query = $scope.authentication.user.email;
-    //       $scope.$digest();
-    //       if (!!cb) {
-    //         cb();
-    //       }
-    //     }
-    //   });
-    // };
-    // $scope.getJournals();
   }
 ]);

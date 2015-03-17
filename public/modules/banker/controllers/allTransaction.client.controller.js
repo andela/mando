@@ -34,7 +34,6 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
   $scope.getJournals = function(account) {
     subledgerServices.getJournals(account, function(response) {
       $scope.journal = response.posted_lines;
-      console.log(2, response);
       $scope.$digest();
     });
   };

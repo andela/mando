@@ -52,33 +52,41 @@ $scope.getUsers();
   };
 
   //method to credit each account
-  $scope.depositIntoUser = function(amount, user) {
-    subledgerServices.bankerAction('credit', amount, cred.bank_id, user.account_id ,$scope.authentication.user, function() {
+  $scope.depositIntoUser = function(transaction, user) {
+    subledgerServices.bankerAction('credit', transaction, cred.bank_id, user.account_id ,$scope.authentication.user, function() {
       $scope.getUsers();
     });
   };
 
   //method to debit each user account
-  $scope.withdrawFromUser = function(amount, user) {
+  $scope.withdrawFromUser = function(transaction, user) {
+    console.log(4, transaction);
+    console.log('called');
+    console.log(user);
     // Compare with user balance
-    if(amount > user.currentBalance) {
+    console.log(transaction.amount);
+    if(transaction.amount > user.currentBalance) {
+      console.log('here');
       toaster.pop('error', 'Balance is insufficient');
       return;
     }
 
-    subledgerServices.bankerAction('debit', amount, user.account_id,cred.bank_id, $scope.authentication.user, function() {
+    subledgerServices.bankerAction('debit', transaction, cred.bank_id, user.account_id,$scope.authentication.user, function() {
       $scope.getUsers();
     });
   };
 
   $scope.distributorModal = function(user, cb) {
+      console.log(user);
     var modalInstance = $modal.open({
       templateUrl: 'modules/distributor/views/distributor.modal.client.view.html',
       controller: 'disModalInstanceCtrl',
       size: 'sm'
     });
-    modalInstance.result.then(function(amount) {
-      cb(amount, user);
+    modalInstance.result.then(function(transaction) {
+      console.log(3, transaction);
+      console.log(user);
+      cb(transaction, user);
     });
   };
 }]);
