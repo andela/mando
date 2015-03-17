@@ -9,8 +9,7 @@
   <p><a ng-href="/#!/bank" >System Balance: $  {{systemBalance.amount}}</a></p>
   </div>
 
-  <p>USER BALANCE : {{balance.amount}}</p>
-
+  <p><a ng-href="{{url}}" class"btn btn-hover">USER BALANCE : {{balance.amount}}</p>
   <div ng-hide="myCampaigns" class="jumbotron text-center">
     <h2>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h2>
     <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
@@ -66,4 +65,5 @@
         <a href="/#!/bank">See All Bank Transactions</a>
     </div>
   </div>
+  <!-- <a name="here"></a>  this will be the d tag that will house the table if transaction is less than one-->
 </section>

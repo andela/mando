@@ -22,6 +22,16 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       url: '/campaigns',
       templateUrl: 'modules/campaigns/views/allCampaigns.client.view.html'
     }).
+    state('allTransactions', {
+      resolve: {
+        credentials: function ($http){
+          return  $http.get('/bank/credentials');
+        }
+      },
+      controller:'userTransactionCtrl',
+      url: '/myTransactions',
+      templateUrl: 'modules/campaigns/views/userTransaction.client.view.html',
+    }).
     state('userCampaigns', {
       resolve: {
         credentials: function ($http){

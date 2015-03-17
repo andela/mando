@@ -44,7 +44,9 @@ body {
 .supportbtn {
   width:50%;
 }
-
+.tb-head {
+ background-color: #00a4d4 !important;
+}
 iframe {
   width: 100%;
   border-radius: 10px;
