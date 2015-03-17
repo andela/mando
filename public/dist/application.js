@@ -312,148 +312,59 @@ angular.module('banker').config(['$stateProvider', function($stateProvider){
 
 'use strict';
 /*global Subledger*/
-angular.module('banker').controller('transactionCtrl', ['$scope', 'Authentication', '$http', '$timeout', 'toaster', '$modal', 'bankerFactory', 'lodash', 'credentials', '$state', function ($scope, Authentication, $http, $timeout, toaster, $modal, bankerFactory, lodash, credentials, $state) {
+angular.module('banker').controller('transactionCtrl', ['$scope', 'Authentication', '$http', '$timeout', 'toaster', '$modal', 'subledgerServices', 'lodash', 'credentials', '$state', function($scope, Authentication, $http, $timeout, toaster, $modal, subledgerServices, lodash, credentials, $state) {
 
   Authentication.requireLogin($state);
-  Authentication.requireRole($state, 'admin', 'userCampaigns');
+  Authentication.requireRole($state, 'banker', 'userCampaigns');
   $scope.reports = [];
+  $scope.journal = [];
   $scope.withdrawal = {};
   $scope.balance = {
     amount: ''
   };
+
   // Check if the user has a banker role.
   $scope.isBanker = Authentication.hasRole('banker');
 
   var cred = credentials.data;
-  bankerFactory.setCredentials(cred.key_id, cred.secret_id);
+  subledgerServices.setCredentials(cred);
 
+  subledgerServices.setCredentials(cred);
   $scope.authentication = Authentication;
 
   //Method to Get The Bank Balance
-  $scope.getBalance = function() {
-    var date = new Date().toISOString();
-    bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({
-      description: 'USD',
-      at: date
-    }, function(error, apiRes) {
-      if (error) {
-        toaster.pop('error', 'An Error Occurred' + error);
-        return;
-      } else {
-        var amount = parseInt(apiRes.balance.value.amount);
-        $scope.balance.amount = amount;
-      }
+
+  $scope.getBankBalance = function(account) {
+    subledgerServices.getBalance(account, function(response) {
+      $scope.balance.amount = response;
+      $scope.$digest();
     });
   };
-  $scope.getBalance();
+  $scope.getBankBalance(cred.bank_id);
 
   //get All lines of transaction
-  $scope.getJournals = function(cb) {
-    bankerFactory.getJournalReports(cred.org_id, cred.book_id, cred.bank_id).get({
-      'description': 'USD',
-      'action': 'before',
-      'effective_at': new Date().toISOString()
-    }, function(error, apiRes) {
-      if (error) {
-        return error;
-      } else {
-        for (var i = 0; i < apiRes.posted_lines.length; i++) {
-          try {
-            var stringToObj = JSON.parse(apiRes.posted_lines[i].description);
-            apiRes.posted_lines[i].description = stringToObj;
-          } catch (e) {
-            apiRes.posted_lines[i].description = {
-              'name': 'anonymous',
-              'description': apiRes.posted_lines[i].description
-            };
-          }
-        }
-        $scope.journal = apiRes.posted_lines;
-        $scope.$digest();
-        if (!!cb) {
-          cb();
-        }
-      }
+  $scope.getJournals = function(account) {
+    subledgerServices.getJournals(account, function(response) {
+      $scope.journal = response.posted_lines;
+      $scope.$digest();
     });
   };
-  $scope.getJournals();
+  $scope.getJournals(cred.bank_id);
+
 
   //Grab Some details of the Auhtenticated user and convert it to a string which will be stored in subledger the returned string is converted back into an object.
 
-  $scope.withdrawFromBank = function(amount) {
-    var userToString = {
-      name: $scope.authentication.user.displayName,
-      email: $scope.authentication.user.email,
-      description: 'Cash Withdrawal'
-    };
-    var userdetails = JSON.stringify(userToString);
-    bankerFactory.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
-      'effective_at': new Date().toISOString(),
-      'description': userdetails,
-      'reference': 'http://andonation-mando.herokuapp.com',
-      'lines': [{
-        'account': cred.bank_id,
-        'description': userdetails,
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'debit',
-          'amount': amount
-        }
-      }, {
-        'account': cred.system_id,
-        'description': 'Cash Deposit',
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'credit',
-          'amount': amount
-        }
-      }]
-    }, function(error, apiRes) {
-      if (error) {
-        return error;
-      } else {
-        var StringToObj = JSON.parse(apiRes.posting_journal_entry.description);
-        $scope.getBalance();
-        $scope.getJournals();
-      }
+  $scope.withdrawFromBank = function(amount, user) {
+    subledgerServices.bankerAction('debit', amount, cred.system_id, cred.bank_id, $scope.authentication.user, function() {
+      $scope.getBankBalance(cred.bank_id);
+      $scope.getJournals(cred.bank_id);
     });
   };
 
-  $scope.depositIntoBank = function(amount) {
-    var userToString = {
-      name: $scope.authentication.user.displayName,
-      email: $scope.authentication.user.email,
-      description: 'Cash Deposit'
-    };
-    var userdetails = JSON.stringify(userToString);
-    bankerFactory.createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
-      'effective_at': new Date().toISOString(),
-      'description': userdetails,
-      'reference': 'http://andonation-mando.herokuapp.com',
-      'lines': [{
-        'account': cred.bank_id,
-        'description': userdetails,
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'credit',
-          'amount': amount
-        }
-      }, {
-        'account': cred.system_id,
-        'description': 'cash deposit',
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': 'debit',
-          'amount': amount
-        }
-      }]
-    }, function(error, apiRes) {
-      if (error) {
-        return error;
-      } else {
-        $scope.getBalance();
-        $scope.getJournals();
-      }
+  $scope.depositIntoBank = function(amount, user) {
+    subledgerServices.bankerAction('credit', amount, cred.system_id, cred.bank_id, $scope.authentication.user, function() {
+      $scope.getBankBalance(cred.bank_id);
+      $scope.getJournals(cred.bank_id);
     });
   };
   // OPEN MODAL WINDOW
@@ -486,7 +397,6 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
 
     });
   };
-
 }]);
 
 'use strict';
@@ -504,8 +414,8 @@ angular.module('banker').controller('withdrawalModalInstanceCtrl', ['$scope', '$
       $scope.message = false;
     }
   };
-  $scope.ok = function(amount) {
-    $modalInstance.close(amount);
+  $scope.ok = function(withdraw) {
+    $modalInstance.close(withdraw);
   };
   $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
@@ -514,8 +424,8 @@ angular.module('banker').controller('withdrawalModalInstanceCtrl', ['$scope', '$
 
 angular.module('banker').controller('depositModalInstanceCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance) {
   $scope.deposit = 0;
-  $scope.ok = function(amount) {
-    $modalInstance.close(amount);
+  $scope.ok = function(deposit) {
+    $modalInstance.close(deposit);
   };
   $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
@@ -525,14 +435,17 @@ angular.module('banker').controller('depositModalInstanceCtrl', ['$scope', '$mod
 'use strict';
 /*global Subledger*/
 
-angular.module('banker').factory('bankerFactory', ['$http', function($http) {
+angular.module('banker').factory('subledgerServices', ['$http', 'toaster', function($http, toaster) {
   var subledger = new Subledger();
   var credentials = {};
+  var cred = {};
 
+  var setCredentials = function(data) {
+    subledger.setCredentials(data.key_id, data.secret_id);
+    cred = data;
 
-  var setCredentials = function(key_id, secret) {
-    subledger.setCredentials(key_id, secret);
   };
+
   var getSystemBalance = function(org_id, book_id, account_id) {
     return subledger.organization(org_id).book(book_id).account(account_id);
   };
@@ -542,26 +455,125 @@ angular.module('banker').factory('bankerFactory', ['$http', function($http) {
   };
 
   var getJournalReports = function(org_id, book_id, account_id) {
-      var org = subledger.organization(org_id);
-      var book = org.book(book_id);
-      var account = book.account(account_id);
-      return account.line();
+    var org = subledger.organization(org_id);
+    var book = org.book(book_id);
+    var account = book.account(account_id);
+    return account.line();
   };
   var getCredentials = function() {
-    return $http.get('/bank/credentials').success(function(data, error) {
+    return $http.get('/bank/credentials').success(function(data, status, header, config) {
+      credentials = data;
+    });
+  };
+
+
+  //Get SystemBalance
+  var getBalance = function(account, cb) {
+    var date = new Date().toISOString();
+    getSystemBalance(cred.org_id, cred.book_id, account).balance({
+      description: 'USD',
+      at: date
+    }, function(error, apiRes) {
       if (error) {
+        // toaster.pop('error', 'An Error Occurred' + error);
         return error;
       } else {
-        credentials = data;
+        var amount = parseInt(apiRes.balance.value.amount);
+        cb(amount);
       }
     });
   };
+
+  /*  WITHDRAW and DEPOSIT in and Out of the Syetem.
+    Performs Crediting and Debiting of Accounts  
+    Action == credit or Debit
+    transaction = {
+     amount: Amount to Credit/Debit
+     reason : Reason for Debiting or Crediting If Its from a Distributor to a User other transactions do not have reasons
+       
+    }
+    inititorAccount ="Account that initiated the transaction which can be a banker"
+    recipientAccoutn = "Accoutn that accepts the transation"
+    initiatorl: this is the logged in user that authorises the transaction.
+    cb : callback
+  */
+  var bankerAction = function(action, transaction, initiatorAccount, recipientAccount, initiator, cb) {
+    var otherAction = action === 'debit' ? 'credit' : 'debit';
+
+    var description = (action === 'debit') ? transaction.reason || 'Cash Withrawal from Bank' : transaction.reason || 'Cash Deposit To Bank';
+    var initiatorToString = JSON.stringify({
+      name: initiator.displayName,
+      email: initiator.email,
+      description: description
+    });
+
+    createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
+      'effective_at': new Date().toISOString(),
+      'description': initiatorToString,
+      'reference': 'http://andonation-mando.herokuapp.com',
+      'lines': [{
+        'account': recipientAccount,
+        'description': initiatorToString,
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': action,
+          'amount': transaction.amount
+        }
+      }, {
+        'account': initiatorAccount,
+        'description': initiatorToString,
+        'reference': 'http://andonation-mando.herokuapp.com',
+        'value': {
+          'type': otherAction,
+          'amount': transaction.amount
+        }
+      }]
+    }, function(error, apiRes) {
+      if (error) {
+        return error;
+      } else {
+        cb(apiRes);
+      }
+    });
+  };
+
+  //Get Journal Reports for any Transaction.
+  // PARAMs  account to get the journal and a callback
+  var getJournals = function(account, cb) {
+    getJournalReports(cred.org_id, cred.book_id, account).get({
+      'description': 'USD',
+      'action': 'before',
+      'effective_at': new Date().toISOString()
+    }, function(error, apiRes) {
+      if (error) {
+        return error;
+      } else {
+        for (var i = 0; i < apiRes.posted_lines.length; i++) {
+          try {
+            var stringToObj = JSON.parse(apiRes.posted_lines[i].description);
+            apiRes.posted_lines[i].description = stringToObj;
+          } catch (e) {
+            apiRes.posted_lines[i].description = {
+              'name': 'anonymous',
+              'description': apiRes.posted_lines[i].description
+            };
+          }
+        }
+        cb(apiRes);
+      }
+    });
+  };
+
+
   return {
     getSystemBalance: getSystemBalance,
     createAndPostTransaction: createAndPostTransaction,
     getJournalReports: getJournalReports,
     getCredentials: getCredentials,
-    setCredentials: setCredentials
+    setCredentials: setCredentials,
+    getBalance: getBalance,
+    bankerAction: bankerAction,
+    getJournals: getJournals
   };
 }]);
 
@@ -787,19 +799,19 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope', 'toaster', 
 
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'bankerFactory', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state',
-  function($scope, backendService, toaster, $location, bankerFactory, Authentication, $stateParams, lodash, credentials, $state) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location','subledgerServices', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state',
+  function($scope, backendService, toaster, $location, subledgerServices, Authentication, $stateParams, lodash, credentials, $state) {
 
     $scope.myCampaigns = [];
+    $scope.systemBalance = {};
     $scope.balance = {};
     $scope.authentication = Authentication;
-
     Authentication.requireLogin($state);
     //checks if user is an admin
     $scope.isAdmin = Authentication.hasRole('admin');
     $scope.isBanker = Authentication.hasRole('banker');
     var cred = credentials.data;
-    bankerFactory.setCredentials(cred.key_id, cred.secret_id);
+    subledgerServices.setCredentials(cred);
 
     $scope.isDistributor = Authentication.hasRole('distributor');
 
@@ -817,24 +829,25 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 
       });
 
-    //if role = banker use the banker id here else you the user's id$scope.authentication.user.cred.bank_id
-    $scope.getBalance = function() {
-        bankerFactory.getSystemBalance(cred.org_id, cred.book_id, cred.bank_id).balance({
-          description: 'USD'
-        }, function(error, apiRes) {
-          if (error) {
-            toaster.pop('error', 'An Error Occurred' + error);
-            return;
-          } else {
-            var amount = parseInt(apiRes.balance.value.amount);
-            $scope.balance.amount = amount;
-            $scope.$digest();
-          }
-        });
-      };
-    $scope.getBalance();
-      // };
-      // function to click the show more button on getMoreCampaigns page
+    $scope.getCurrentBalance = function(account, destination) {
+    subledgerServices.getBalance(account, function(response) {
+      destination.amount = response;
+      $scope.$digest();
+    });
+  };
+  $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
+  $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
+
+  //GET UNIQUE USER JOURNAL REPORTS
+  $scope.getJournals = function(account) {
+    subledgerServices.getJournals(account, function(response) {
+      $scope.journal = response.posted_lines;
+      $scope.$digest();
+    });
+  };
+  $scope.getJournals($scope.authentication.user.account_id);
+    
+    // function to click the show more button on getMoreCampaigns page
     $scope.limit = 4;
     $scope.increment = function() {
       var campaignLength = $scope.myCampaigns.length;
@@ -844,38 +857,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.decrement = function() {
       $scope.limit = 4;
     };
-
-    //Getting all transactions in the system for a particular banker.
-    $scope.getJournals = function(cb) {
-      bankerFactory.getJournalReports(cred.org_id, cred.book_id, cred.bank_id).get({
-        'description': 'USD',
-        'action': 'before',
-        'effective_at': new Date().toISOString()
-      }, function(error, apiRes) {
-        if (error) {
-          return error;
-        } else {
-          for (var i = 0; i < apiRes.posted_lines.length; i++) {
-            try {
-              var stringToObj = JSON.parse(apiRes.posted_lines[i].description);
-              apiRes.posted_lines[i].description = stringToObj;
-            } catch (e) {
-              apiRes.posted_lines[i].description = {
-                'name': 'anonymous',
-                'description': apiRes.posted_lines[i].description
-              };
-            }
-          }
-          $scope.journal = apiRes.posted_lines;
-          $scope.query = $scope.authentication.user.email;
-          $scope.$digest();
-          if (!!cb) {
-            cb();
-          }
-        }
-      });
-    };
-    $scope.getJournals();
   }
 ]);
 
@@ -887,11 +868,9 @@ function($scope, toaster, backendService,$location, Authentication, $stateParams
 
   backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
   .success(function(data, status, header, config) {
-    console.log(data);
     $scope.campaign = data;
   })
   .error(function(error, status, header, config) {
-    console.log(error);
     $location.path('/');
   });
 }]);
@@ -1008,37 +987,48 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
 
 'use strict';
 
-angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'distributorService', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, distributorService, $location, $state, $modal, toaster, credentials) {
+angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices', 'distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices, $location, $state, $modal, toaster, credentials) {
 
   var cred = credentials.data;
-  distributorService.setCredentials(cred);
+  subledgerServices.setCredentials(cred);
 
   $scope.authentication = Authentication;
   Authentication.requireLogin($state);
   Authentication.requireRole($state, 'distributor', 'userCampaigns');
 
   //Get All The Users Inn the System ANd populates it with their System Balance...
-  $scope.getUsers = function () {
-  distributorService.getAllUsers().success(function(data) {
-    $scope.users = data;
-    for (var i = 0; i < $scope.users.length; i++) {
-      var accountNo = data[i].account_id;
-      $scope.getUserAccountBalance(accountNo, $scope.users[i]);
-    }
-  }).error(function(error) {
-    $scope.error = error;
-  });
-};
-$scope.getUsers();
-  //Method to populate each user's account with dir system balance
+  $scope.getUsers = function() {
+    distributorServices.getAllUsers().success(function(data) {
+      $scope.users = data;
+      for (var i = 0; i < $scope.users.length; i++) {
+        var accountNo = data[i].account_id;
+        $scope.getCurrentBalance(accountNo, $scope.users[i]);
+      }
+    }).error(function(error) {
+      $scope.error = error;
+    });
+  };
+  $scope.getUsers();
+  //Method to populate each user's account with their system balance
+
+  $scope.getCurrentBalance = function(account, destination) {
+    subledgerServices.getBalance(account, function(response) {
+      destination.amount = response;
+      $scope.$digest();
+    });
+  };
+  // $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
+  // $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
+
+
   $scope.getUserAccountBalance = function(account_id, user) {
     var date = new Date().toISOString();
-    distributorService.getAccountBalance(cred.org_id, cred.book_id, account_id).balance({
+    subledgerServices.getAccountBalance(cred.org_id, cred.book_id, account_id).balance({
       description: 'USD',
       at: date
     }, function(error, apiRes) {
       if (error) {
-        toaster.pop('error', 'An Error Occurred'+ error);
+        toaster.pop('error', 'An Error Occurred' + error);
         return;
       }
 
@@ -1049,22 +1039,21 @@ $scope.getUsers();
   };
 
   //method to credit each account
-  $scope.depositIntoUser = function(amount, user) {
-    distributorService.depositorAction('credit', amount, user, $scope.authentication.user, function() {
+  $scope.depositIntoUser = function(transaction, user) {
+    subledgerServices.bankerAction('credit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
       $scope.getUsers();
     });
   };
 
-
   //method to debit each user account
-  $scope.withdrawFromUser = function(amount, user) {
+  $scope.withdrawFromUser = function(transaction, user) {
     // Compare with user balance
-    if(amount > user.currentBalance) {
+    if (transaction.amount > user.amount) {
       toaster.pop('error', 'Balance is insufficient');
       return;
     }
 
-    distributorService.depositorAction('debit', amount, user, $scope.authentication.user, function() {
+    subledgerServices.bankerAction('debit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
       $scope.getUsers();
     });
   };
@@ -1075,111 +1064,51 @@ $scope.getUsers();
       controller: 'disModalInstanceCtrl',
       size: 'sm'
     });
-    modalInstance.result.then(function(amount) {
-      cb(amount, user);
+    modalInstance.result.then(function(transaction) {
+      cb(transaction, user);
     });
   };
 }]);
+
 'use strict';
 
 angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
-  $scope.ok = function (amount) {
-    $modalInstance.close(amount);
+  $scope.ok = function(transaction) {
+    $modalInstance.close(transaction);
   };
 
-  $scope.cancel = function () {
+  $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
   };
 }]);
+
 'use strict';
 /*global Subledger*/
 
 //This is just a repetition of the apis made in banker
 
-angular.module('distributor').factory('distributorService', ['$http', function($http) {
+angular.module('distributor').factory('distributorServices', ['$http', function($http) {
   var subledger = new Subledger();
   var cred = {};
 
-
   var setCredentials = function(data) {
-    console.log(data);
+
     subledger.setCredentials(data.key_id, data.secret_id);
     cred = data;
     //subledger.setCredentials(key_id, secret);
   };
 
-  var getAccountBalance = function(org_id, book_id, account_id) {
-    return subledger.organization(org_id).book(book_id).account(account_id);
-  };
-
-  var createAndPostTransaction = function(org_id, book_id) {
-    return subledger.organization(org_id).book(book_id).journalEntry();
-  };
-
-  var getJournalReports = function(org_id, book_id, account_id) {
-    return subledger.organization(org_id).book(book_id).account(account_id).line();
-  };
   var getAllUsers = function() {
     return $http.get('/distributor/users');
   };
 
-  //method to credit each account
- var depositorAction = function(action, amount, user, adminUser, cb) {
-    var otherAction = action === 'debit' ? 'credit' : 'debit';
-    var description = (action === 'debit') ? 'Cash Widrawal From Bank' : 'Cash Deposit To Bank';
-
-    var adminUserString = JSON.stringify({
-      name: adminUser.displayName,
-      email: adminUser.email,
-      description: description
-    });
-
-    var userString = JSON.stringify({
-      name: user.displayName,
-      email: user.email,
-      description: description
-    });
-
-    createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
-      'effective_at': new Date().toISOString(),
-      'description': userString,
-      'reference': 'http://andonation-mando.herokuapp.com',
-      'lines': [{
-        'account': user.account_id,
-        'description': userString,
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': action,
-          'amount': amount
-        }
-      }, {
-        'account': cred.bank_id,
-        'description': adminUserString,
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': otherAction,
-          'amount': amount
-        }
-      }]
-    }, function(error, apiRes) {
-      if (error) {
-        return error;
-      } else {
-        cb();
-      }
-    });
-  };
-
   return {
-    getAccountBalance: getAccountBalance,
-    createAndPostTransaction: createAndPostTransaction,
-    getJournalReports: getJournalReports,
     getAllUsers: getAllUsers,
-    setCredentials: setCredentials,
-    depositorAction: depositorAction
+    setCredentials: setCredentials
   };
 }]);
+
 'use strict';
 
 // Config HTTP Error Handling
