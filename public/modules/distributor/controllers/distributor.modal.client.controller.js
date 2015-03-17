@@ -2,11 +2,11 @@
 
 angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
-  $scope.ok = function (amount) {
-    $modalInstance.close(amount);
+  $scope.ok = function(transaction) {
+    $modalInstance.close(transaction);
   };
 
-  $scope.cancel = function () {
+  $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
   };
 }]);

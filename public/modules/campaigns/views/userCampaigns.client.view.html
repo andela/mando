@@ -6,8 +6,10 @@
 
   <div ng-show="isBanker">
 
-  <p><a ng-href="/#!/bank" >System Balance: $  {{balance.amount}}</a></p>
+  <p><a ng-href="/#!/bank" >System Balance: $  {{systemBalance.amount}}</a></p>
   </div>
+
+  <p>USER BALANCE : {{balance.amount}}</p>
 
   <div ng-hide="myCampaigns" class="jumbotron text-center">
     <h2>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h2>

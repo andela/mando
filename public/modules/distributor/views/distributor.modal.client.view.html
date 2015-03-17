@@ -1,14 +1,17 @@
-<section>
-  <div class="modal-header">
-    <h3 class="modal-title">
-    Amount
-    </h3>
-  </div>
+<div class="modal-header">
+  <h3 class="modal-title"></h3>
+</div>
+<form name="distributorForm" class="text-center" novalidate>
   <div class="modal-body">
-    <input type="number" data-ng-model="amount">
+    <label for="amount">Amount</label>
+    <p class="error text-muted red" ng-if="distributorForm.amount.$dirty &amp;&amp; distributorForm.amount.$invalid">Input a valid Number</p>
+    <input class="col-xs-12" type="number" name="amount" data-ng-model="transaction.amount" required>
+    <label class="col-xs-12" for="reason">Reason For Transaction</label>
+    <p ng-if="distributorForm.reason.$invalid &amp;&amp; distributorForm.reason.$dirty" class="error text-muted red">Reasons must be between 5 and 140 characters</p>
+    <textarea class="col-xs-12" type="text" data-ng-minlength="5" ng-maxlength="140" name="reason" data-ng-model="transaction.reason" required></textarea>
   </div>
-  <div class="modal-footer">
-    <button ng-click="cancel()">Cancel</button>
-    <button ng-click="ok(amount)" ng-disabled="disable">Save</button>
+  <div class="modal-footer footer-center">
+    <button ng-click="cancel()" class="btn btn-warning">Cancel</button>
+    <button ng-click="ok(transaction)" class="btn btn-primary" ng-disabled="distributorForm.$invalid">Submit</button>
   </div>
-</section>
+</form>

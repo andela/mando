@@ -13,8 +13,8 @@ angular.module('banker').controller('withdrawalModalInstanceCtrl', ['$scope', '$
       $scope.message = false;
     }
   };
-  $scope.ok = function(amount) {
-    $modalInstance.close(amount);
+  $scope.ok = function(withdraw) {
+    $modalInstance.close(withdraw);
   };
   $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
@@ -23,8 +23,8 @@ angular.module('banker').controller('withdrawalModalInstanceCtrl', ['$scope', '$
 
 angular.module('banker').controller('depositModalInstanceCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance) {
   $scope.deposit = 0;
-  $scope.ok = function(amount) {
-    $modalInstance.close(amount);
+  $scope.ok = function(deposit) {
+    $modalInstance.close(deposit);
   };
   $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
