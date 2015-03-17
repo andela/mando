@@ -50,7 +50,7 @@ angular.module('banker').controller('transactionCtrl', ['$scope', 'Authenticatio
   };
 
   $scope.depositIntoBank = function(amount, user) {
-    subledgerServices.bankerAction('credit', amount,cred.system_id ,cred.bank_id, $scope.authentication.user, function() {
+    subledgerServices.bankerAction('credit', amount, cred.system_id, cred.bank_id, $scope.authentication.user, function() {
       $scope.getBankBalance(cred.bank_id);
       $scope.getJournals(cred.bank_id);
     });

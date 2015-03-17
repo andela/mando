@@ -6,7 +6,7 @@
 angular.module('distributor').factory('distributorServices', ['$http', function($http) {
   var subledger = new Subledger();
   var cred = {};
-  
+
   var setCredentials = function(data) {
 
     subledger.setCredentials(data.key_id, data.secret_id);

@@ -6,11 +6,9 @@ function($scope, toaster, backendService,$location, Authentication, $stateParams
 
   backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
   .success(function(data, status, header, config) {
-    console.log(data);
     $scope.campaign = data;
   })
   .error(function(error, status, header, config) {
-    console.log(error);
     $location.path('/');
   });
 }]);

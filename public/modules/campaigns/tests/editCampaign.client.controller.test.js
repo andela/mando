@@ -68,8 +68,6 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
         scope.editCampaign();
        
        $httpBackend.flush();
-
-       console.log($location.path());
       expect($location.path()).toEqual('/campaign/060151/latest-campaign'); 
     });
 

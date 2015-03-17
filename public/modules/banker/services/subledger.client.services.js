@@ -12,9 +12,6 @@ angular.module('banker').factory('subledgerServices', ['$http', 'toaster', funct
 
   };
 
-  // var setCredentials = function(key_id, secret) {
-  //   subledger.setCredentials(key_id, secret);
-  // };
   var getSystemBalance = function(org_id, book_id, account_id) {
     return subledger.organization(org_id).book(book_id).account(account_id);
   };
@@ -53,23 +50,23 @@ angular.module('banker').factory('subledgerServices', ['$http', 'toaster', funct
     });
   };
 
-  // WITHDRAW and DEPOSIT in and Out of the Syetem.
-  // Performs Crediting and Debiting of Accounts  
-  // Action == credit or Debit
-  // transaction = {
-  //  amount: Amount to Credit/Debit
-  //  reason : Reason for Debiting or Crediting If Its from a Distributor to a User other transactions do not have reasons
-  //    
-  //}
-  // inititorAccount ="Account that initiated the transaction which can be a banker"
-  //recipientAccoutn = "Accoutn that accepts the transation"
-  //initiatorl: this is the logged in user that authorises the transaction.
-  //cb : callback
-
+  /*  WITHDRAW and DEPOSIT in and Out of the Syetem.
+    Performs Crediting and Debiting of Accounts  
+    Action == credit or Debit
+    transaction = {
+     amount: Amount to Credit/Debit
+     reason : Reason for Debiting or Crediting If Its from a Distributor to a User other transactions do not have reasons
+       
+    }
+    inititorAccount ="Account that initiated the transaction which can be a banker"
+    recipientAccoutn = "Accoutn that accepts the transation"
+    initiatorl: this is the logged in user that authorises the transaction.
+    cb : callback
+  */
   var bankerAction = function(action, transaction, initiatorAccount, recipientAccount, initiator, cb) {
     var otherAction = action === 'debit' ? 'credit' : 'debit';
 
-    var description = (action === 'debit') ? transaction.reason ||'Cash Withrawal from Bank' : transaction.reason || 'Cash Deposit To Bank';
+    var description = (action === 'debit') ? transaction.reason || 'Cash Withrawal from Bank' : transaction.reason || 'Cash Deposit To Bank';
     var initiatorToString = JSON.stringify({
       name: initiator.displayName,
       email: initiator.email,
