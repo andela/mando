@@ -3,7 +3,7 @@
 
 //This is just a repetition of the apis made in banker
 
-angular.module('distributor').factory('distributorService', ['$http', function($http) {
+angular.module('distributor').factory('distributorServices', ['$http', function($http) {
   var subledger = new Subledger();
   var cred = {};
 
@@ -30,60 +30,12 @@ angular.module('distributor').factory('distributorService', ['$http', function($
     return $http.get('/distributor/users');
   };
 
-  //method to credit each account
- var depositorAction = function(action, amount, user, adminUser, cb) {
-    var otherAction = action === 'debit' ? 'credit' : 'debit';
-    var description = (action === 'debit') ? 'Cash Deposit To Bank' : 'Cash Widrawal From Bank';
-
-    var adminUserString = JSON.stringify({
-      name: adminUser.displayName,
-      email: adminUser.email,
-      description: description
-    });
-
-    var userString = JSON.stringify({
-      name: user.displayName,
-      email: user.email,
-      description: description
-    });
-
-    createAndPostTransaction(cred.org_id, cred.book_id).createAndPost({
-      'effective_at': new Date().toISOString(),
-      'description': userString,
-      'reference': 'http://andonation-mando.herokuapp.com',
-      'lines': [{
-        'account': user.account_id,
-        'description': userString,
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': action,
-          'amount': amount
-        }
-      }, {
-        'account': cred.bank_id,
-        'description': adminUserString,
-        'reference': 'http://andonation-mando.herokuapp.com',
-        'value': {
-          'type': otherAction,
-          'amount': amount
-        }
-      }]
-    }, function(error, apiRes) {
-      if (error) {
-        return error;
-      } else {
-        cb()
-;
-      }
-    });
-  };
-
   return {
     getAccountBalance: getAccountBalance,
     createAndPostTransaction: createAndPostTransaction,
     getJournalReports: getJournalReports,
     getAllUsers: getAllUsers,
-    setCredentials: setCredentials,
-    depositorAction: depositorAction
+    // depositorAction: depositorAction,
+    setCredentials: setCredentials
   };
 }]);

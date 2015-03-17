@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'distributorService', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, distributorService, $location, $state, $modal, toaster, credentials) {
+angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices','distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices ,$location, $state, $modal, toaster, credentials) {
 
   var cred = credentials.data;
-  distributorService.setCredentials(cred);
+  subledgerServices.setCredentials(cred);
 
   $scope.authentication = Authentication;
   Authentication.requireLogin($state);
@@ -11,21 +11,32 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
 
   //Get All The Users Inn the System ANd populates it with their System Balance...
   $scope.getUsers = function () {
-  distributorService.getAllUsers().success(function(data) {
+  distributorServices.getAllUsers().success(function(data) {
     $scope.users = data;
     for (var i = 0; i < $scope.users.length; i++) {
       var accountNo = data[i].account_id;
-      $scope.getUserAccountBalance(accountNo, $scope.users[i]);
+      $scope.getCurrentBalance(accountNo, $scope.users[i]);
     }
   }).error(function(error) {
     $scope.error = error;
   });
 };
 $scope.getUsers();
-  //Method to populate each user's account with dir system balance
+  //Method to populate each user's account with their system balance
+
+  $scope.getCurrentBalance = function(account, destination) {
+    subledgerServices.getBalance(account, function(response) {
+      destination.amount = response;
+      $scope.$digest();
+    });
+  };
+  // $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
+  // $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
+
+
   $scope.getUserAccountBalance = function(account_id, user) {
     var date = new Date().toISOString();
-    distributorService.getAccountBalance(cred.org_id, cred.book_id, account_id).balance({
+    subledgerServices.getAccountBalance(cred.org_id, cred.book_id, account_id).balance({
       description: 'USD',
       at: date
     }, function(error, apiRes) {
@@ -42,11 +53,10 @@ $scope.getUsers();
 
   //method to credit each account
   $scope.depositIntoUser = function(amount, user) {
-    distributorService.depositorAction('credit', amount, user, $scope.authentication.user, function() {
+    subledgerServices.bankerAction('credit', amount, cred.bank_id, user.account_id ,$scope.authentication.user, function() {
       $scope.getUsers();
     });
   };
-
 
   //method to debit each user account
   $scope.withdrawFromUser = function(amount, user) {
@@ -56,7 +66,7 @@ $scope.getUsers();
       return;
     }
 
-    distributorService.depositorAction('debit', amount, user, $scope.authentication.user, function() {
+    subledgerServices.bankerAction('debit', amount, user.account_id,cred.bank_id, $scope.authentication.user, function() {
       $scope.getUsers();
     });
   };
