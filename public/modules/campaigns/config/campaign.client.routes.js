@@ -48,6 +48,7 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
     templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html',
     controller: 'userCampaignsCtrl'
   });
+
   //Add YouTube to resource whitelist so that we can embed YouTube videos
   $sceDelegateProvider.resourceUrlWhitelist(['**']);
 }]);
