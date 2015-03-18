@@ -1,10 +1,7 @@
 <section>
   <div>
-    <p>MY TRANSACTION PAGE</p>
-  </div>
-  <div>
     <div>
-      <h2>My Bank Transactions</h2>
+      <h2>My Account History</h2>
       <p>Current Balance is {{balance.amount}} </p>
       <table class="table table-striped tb-head">
         <tt class="">
@@ -12,12 +9,14 @@
           <th>Description</th>
           <th>Transaction Type</th>
           <th>Amount</th>
+          <th>Balance</th>
         </tt>
         <tr data-ng-repeat="transaction in journal" >
           <td>{{transaction.posted_at | date }}</td>
           <td>{{transaction.description.description}}</td>
           <td>{{transaction.value.type}}</td>
           <td>{{transaction.value.amount}}</td>
+          <td>{{transaction.balance.value.amount}}</td>
         </tr>
       </table>
     </div>

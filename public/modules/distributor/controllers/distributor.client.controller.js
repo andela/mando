@@ -13,6 +13,7 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
   $scope.getUsers = function() {
     distributorServices.getAllUsers().success(function(data) {
       $scope.users = data;
+      console.log(data);
       for (var i = 0; i < $scope.users.length; i++) {
         var accountNo = data[i].account_id;
         $scope.getCurrentBalance(accountNo, $scope.users[i]);

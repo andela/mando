@@ -130,7 +130,6 @@ angular.module('banker').factory('subledgerServices', ['$http', 'toaster', funct
     });
   };
 
-
   return {
     getSystemBalance: getSystemBalance,
     createAndPostTransaction: createAndPostTransaction,
