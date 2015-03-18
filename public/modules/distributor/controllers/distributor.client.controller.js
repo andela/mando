@@ -31,6 +31,7 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
     });
   };
 
+
   //method to credit each account
   $scope.depositIntoUser = function(transaction, user) {
     var confirmMsg = confirm('Are you sure you want to credit ' + user.displayName);
