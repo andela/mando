@@ -15,9 +15,15 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       templateUrl: 'modules/campaigns/views/editCampaign.client.view.html'
     }).
     state('viewCampaign', {
-      url: '/campaign/:campaignTimeStamp/:campaignslug',
-      templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
-    }).
+    url: '/campaign/:campaignTimeStamp/:campaignslug',
+    resolve: {
+      credentials: function($http) {
+        return $http.get('/bank/credentials');
+      }
+    },
+    templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html',
+    controller: 'viewCampaignCtrl'
+  }).
     state('allCampaigns', {
       url: '/campaigns',
       templateUrl: 'modules/campaigns/views/allCampaigns.client.view.html'
@@ -42,7 +48,6 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html',
       controller: 'userCampaignsCtrl'
     });
-
-    //Add YouTube to resource whitelist so that we can embed YouTube videos
-    $sceDelegateProvider.resourceUrlWhitelist(['**']);
+  //Add YouTube to resource whitelist so that we can embed YouTube videos
+  $sceDelegateProvider.resourceUrlWhitelist(['**']);
 }]);

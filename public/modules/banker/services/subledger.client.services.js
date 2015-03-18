@@ -41,6 +41,7 @@ angular.module('banker').factory('subledgerServices', ['$http', 'toaster', funct
       at: date
     }, function(error, apiRes) {
       if (error) {
+        console.log(error);
         // toaster.pop('error', 'An Error Occurred' + error);
         return error;
       } else {
