@@ -60,16 +60,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
             $scope.myJournal = response;
             $scope.$digest();
         });
-
-        //this function set the url of the user balance according to the number of transaction in the url
-        // var url = function() {
-        //     if ($scope.journal.length < 3) {
-        //         $scope.url = '#here';
-        //     } else {
-        //         $scope.url = '/#!/myTransactions';
-        //         return $scope.url;
-        //     }
-        // };
         // function to click the show more button on getMoreCampaigns page
         $scope.limit = 4;
         $scope.increment = function() {
