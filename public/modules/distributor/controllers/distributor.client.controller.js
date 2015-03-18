@@ -33,24 +33,6 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
   // $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
   // $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
 
-
-  $scope.getUserAccountBalance = function(account_id, user) {
-    var date = new Date().toISOString();
-    subledgerServices.getAccountBalance(cred.org_id, cred.book_id, account_id).balance({
-      description: 'USD',
-      at: date
-    }, function(error, apiRes) {
-      if (error) {
-        toaster.pop('error', 'An Error Occurred' + error);
-        return;
-      }
-
-      var amount = apiRes.balance.value.amount;
-      user.currentBalance = amount;
-      $scope.$digest();
-    });
-  };
-
   //method to credit each account
   $scope.depositIntoUser = function(transaction, user) {
     subledgerServices.bankerAction('credit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
