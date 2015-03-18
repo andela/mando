@@ -44,6 +44,21 @@
   width: 10%;
   /*height: 5%;*/
 }
+
+.change-nav{ 
+    background-color: #051153;
+    height: 12%;
+}
+
+.change-nav li:hover {
+  background: #a7c8db;
+}
+
+.top-pic {
+  /*background: #a7c8db;*/
+}
+
+
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 @media screen and (min-width: 1000px) {
   .home-campaigns {

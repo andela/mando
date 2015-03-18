@@ -14,5 +14,17 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
       .error(function(error, status, header, config) {
         $scope.error = error;
       });
+
+ //    $scope.myInterval = 5000;
+ //    var slides = $scope.slides = [];
+ //    $scope.addSlide = function() {
+ //      slides.push({
+ //        image: 'https://pbs.twimg.com/media/BrMIOefCYAAj8ez.jpg:large',
+ //        text: 'Happy'
+ //      });
+ //    };
+ //    for (var i=0; i<4; i++) {
+ //    $scope.addSlide();
+ //    }
 	}
 ]);
