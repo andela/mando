@@ -1,4 +1,3 @@
-
 'use strict';
 
 angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices', 'distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices, $location, $state, $modal, toaster, credentials) {
@@ -10,7 +9,7 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
   Authentication.requireLogin($state);
   Authentication.requireRole($state, 'distributor', 'userCampaigns');
 
-  //Get All The Users Inn the System ANd populates it with their System Balance...
+  //Get All The Users In the System and populates it with their System Balance...
   $scope.getUsers = function() {
     distributorServices.getAllUsers().success(function(data) {
       $scope.users = data;
@@ -23,37 +22,37 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
     });
   };
   $scope.getUsers();
-  //Method to populate each user's account with their system balance
 
+  //Method to populate each user's account with their system balance
   $scope.getCurrentBalance = function(account, destination) {
     subledgerServices.getBalance(account, function(response) {
       destination.amount = response;
       $scope.$digest();
     });
   };
+
   //method to credit each account
   $scope.depositIntoUser = function(transaction, user) {
-    var confirmMsg = confirm('Are you sure you want to credit '+ user.displayName);
-    if(confirmMsg) {
+    var confirmMsg = confirm('Are you sure you want to credit ' + user.displayName);
+    if (confirmMsg) {
       subledgerServices.bankerAction('credit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
         toaster.pop('success', 'credited successfully');
-        $scope.getUsers();
-        });
+        $scope.getCurrentBalance(user.account_id, user);
+      });
     }
   };
 
   //method to debit each user account
   $scope.withdrawFromUser = function(transaction, user) {
-    var confirmMsg = confirm('Are you sure you want to credit '+ user.displayName);
+    var confirmMsg = confirm('Are you sure you want to credit ' + user.displayName);
     // Compare with user balance
     if (transaction.amount > user.amount) {
       toaster.pop('error', 'Balance is insufficient');
       return;
-      }
-      if(confirmMsg) {
-    subledgerServices.bankerAction('debit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
-      toaster.pop('success', 'Withdrawal successful');
-      $scope.getUsers();
+    } else if (confirmMsg) {
+      subledgerServices.bankerAction('debit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
+        toaster.pop('success', 'Transaction Completed');
+        $scope.getCurrentBalance(user.account_id, user);
       });
     }
   };
