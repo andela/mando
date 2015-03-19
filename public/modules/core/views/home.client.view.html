@@ -1,37 +1,20 @@
 <section data-ng-controller="HomeController">
-
-  <!-- <div>
-    <div style="height: none">
-      <carousel>
-        <slide ng-repeat="slide in slides" active="slide.active">
-          <img ng-src="{{slide.image}}" style="margin:auto;">
-          <div class="carousel-caption">
-            <h4>Slide {{$index}}</h4>
-            <p>{{slide.text}}</p>
-          </div>
-        </slide>
-      </carousel>
+    <!-- home-page image -->
+  <div class="carousel-inner">
+    <div class="item active">
+      <img src="modules/core/img/app-images/caros3.jpg" class="home-pic">
+    <div class="carousel-caption">
+      <h3>Donate and make a dream come true</h3>
+    </div>
     </div>
   </div>
- -->
- <!--  <div class="row">
-    <div class="col-md-6">
-      <button type="button" class="btn btn-info" ng-click="addSlide()">Add Slide</button>
-    </div>
-  </div>
-
-  <div>hello</div> -->
-  <div width="305px" class="top-pic jumbotron">
-
-  </div>
-
-
+  <div class="second-div"></div>
   <div class=" row">
     <ul>
       <li class="col-sm-4 home-campaigns" ng-repeat="campaign in campaigns | orderBy: 'created'.descending | limitTo:3">
-        <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title"> {{campaign.title }}</a></p> 
+        <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title"> {{campaign.title }}</a></p>
         <p> ${{campaign.amount}}</p>
-        <p>DueDate: {{campaign.dueDate | date}}</p> 
+        <p>DueDate: {{campaign.dueDate | date}}</p>
         <p>{{campaign.balance}}</p>
         <!-- {{campaign.created}} -->
         <span class="text-muted">Description</span>

@@ -1,12 +1,13 @@
 <div class="container" data-ng-controller="HeaderController">
-  <nav class=" nav collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
+  <nav id="nav-bar" class=" nav navbar-inverse collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
   <div class="">
-    <!-- <button class="navbar-toggle" type="button" data-ng-click="toggleCollapsibleMenu()">
+    <button class="navbar-toggle" type="button" data-ng-click="toggleCollapsibleMenu()">
       <span class="sr-only">Toggle navigation</span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
-    </button> -->
+    </button>
+    <a href="/#!/"><img class="img navbar-brand logo-image" src="modules/core/img/app-images/andela.png"></img></a>
     <a href="/#!/" class="navbar-brand">Andonation</a>
   </div>
     <ul class="nav navbar-right" data-ng-hide="authentication.user">
@@ -22,8 +23,8 @@
         <a href="/#!/campaigns/myAndonation" id="myAndonation">My Andonation</a>
       </li>
        <li><a href="/auth/signout" id="signout">Signout</a></li>
-       <!-- <li><img class="img" data-ng-src="{{authentication.user.providerData.picture}}"> </img>
-      </li> -->
+       <li><img class="img auth-img" data-ng-src="{{authentication.user.providerData.picture}}"> </img>
+      </li>
     </ul>
   </nav>
 </div>
