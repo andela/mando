@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices', 'distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices, $location, $state, $modal, toaster, credentials ) {
+angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices', 'distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices, $location, $state, $modal, toaster, credentials) {
 
   var cred = credentials.data;
   subledgerServices.setCredentials(cred);
@@ -30,7 +30,6 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
       $scope.$digest();
     });
   };
-
 
   //method to credit each account
   $scope.depositIntoUser = function(transaction, user) {

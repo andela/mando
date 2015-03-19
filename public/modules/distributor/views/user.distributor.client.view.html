@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> distributor can view users transaction history.
 <section ng-show="isDistributor">
   <div>
     <p>ALL DISTRIBUTION DETAILS</p>
@@ -14,18 +17,25 @@
       <tr ng-repeat="transaction in journal">
         <td>{{transaction.effective_at | date}}</td>
         <td>{{transaction.description.description}}</td>
+<<<<<<< HEAD
         <td>{{transaction.value.type}}</td>d
+=======
+        <td>{{transaction.value.type}}</td>
+>>>>>>> distributor can view users transaction history.
         <td>{{transaction.value.amount}}</td>
         <td>{{transaction.description.name}}</td>
         <td>{{transaction.balance.value.amount}}</td>
       </tr>
     </table>
   </div>
+<<<<<<< HEAD
 </section>
 =======
 <section>
     <div>
       USER
     </div>
+=======
+>>>>>>> distributor can view users transaction history.
 </section>
 >>>>>>> wrote route for unique user disribution
