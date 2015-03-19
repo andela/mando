@@ -44,23 +44,23 @@ body {
   line-height: 1.5em;
 }
 
-#nav-bar{
+.nav-bar{
   background-color: #31698a;
   background-size: 13px, 29px, 37px, 53px;
   /*height: 10%;*/
 }
 
-#nav-bar a {
-  color: #fff;
+.nav-bar a {
+  color: #fff !important;
 }
 
-#nav-bar a:hover {
-  background: #003366;
+.nav-bar a:hover {
+  background: #fff;
   border-radius: 80%;
   margin-top: 5px;
 }
 
-#nav-bar a:active {
+.nav-bar a:active {
   background: #003366;
   border-radius: 80%;
 }
