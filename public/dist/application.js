@@ -564,7 +564,6 @@ angular.module('banker').factory('subledgerServices', ['$http', 'toaster', funct
     });
   };
 
-
   return {
     getSystemBalance: getSystemBalance,
     createAndPostTransaction: createAndPostTransaction,
@@ -600,6 +599,16 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
     state('allCampaigns', {
       url: '/campaigns',
       templateUrl: 'modules/campaigns/views/allCampaigns.client.view.html'
+    }).
+    state('allTransactions', {
+      resolve: {
+        credentials: ["$http", function ($http){
+          return  $http.get('/bank/credentials');
+        }]
+      },
+      controller:'userTransactionCtrl',
+      url: '/myTransactions',
+      templateUrl: 'modules/campaigns/views/userTransaction.client.view.html',
     }).
     state('userCampaigns', {
       resolve: {
@@ -799,66 +808,109 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope', 'toaster', 
 
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location','subledgerServices', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state',
-  function($scope, backendService, toaster, $location, subledgerServices, Authentication, $stateParams, lodash, credentials, $state) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'subledgerServices', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state',
+    function($scope, backendService, toaster, $location, subledgerServices, Authentication, $stateParams, lodash, credentials, $state) {
 
-    $scope.myCampaigns = [];
-    $scope.systemBalance = {};
-    $scope.balance = {};
-    $scope.authentication = Authentication;
-    Authentication.requireLogin($state);
-    //checks if user is an admin
-    $scope.isAdmin = Authentication.hasRole('admin');
-    $scope.isBanker = Authentication.hasRole('banker');
-    var cred = credentials.data;
-    subledgerServices.setCredentials(cred);
+        $scope.myCampaigns = [];
+        $scope.systemBalance = {};
+        $scope.balance = {};
+        $scope.journal = [];
+        $scope.myJournal = [];
+        $scope.authentication = Authentication;
+        Authentication.requireLogin($state);
+        //checks if user is an admin
+        $scope.isAdmin = Authentication.hasRole('admin');
+        $scope.isBanker = Authentication.hasRole('banker');
+        $scope.query = $scope.authentication.user.displayName;
+        var cred = credentials.data;
+        subledgerServices.setCredentials(cred);
 
-    $scope.isDistributor = Authentication.hasRole('distributor');
+        $scope.isDistributor = Authentication.hasRole('distributor');
 
-    //uses the Currently signed-in id to get the user id.
-    var userid = $scope.authentication.user._id;
+        //uses the Currently signed-in id to get the user id.
+        var userid = $scope.authentication.user._id;
 
-    backendService.getUserCampaigns(userid)
-      .success(function(myCampaigns) {
-        $scope.myCampaigns = myCampaigns;
-      })
-      .error(function(error, status, header, config) {
-        //not cool to redirect the user if any error occured, should be improved by
-        //checking for the exact error act base on the error
-        $location.path('/');
+        backendService.getUserCampaigns(userid)
+            .success(function(myCampaigns) {
+                $scope.myCampaigns = myCampaigns;
+            })
+            .error(function(error, status, header, config) {
+                //not cool to redirect the user if any error occured, should be improved by
+                //checking for the exact error act base on the error
+                $location.path('/');
+            });
 
-      });
+        $scope.getCurrentBalance = function(account, destination) {
+            subledgerServices.getBalance(account, function(response) {
+                destination.amount = response;
+                $scope.$digest();
+            });
+        };
+        $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
+        $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
 
-    $scope.getCurrentBalance = function(account, destination) {
+        //GET UNIQUE USER JOURNAL REPORTS  
+        //this methods should only load the bank and  another method will load the user and filter it by 
+        //query seems to be undefined here 
+        $scope.getJournals = function(account, cb) {
+            subledgerServices.getJournals(account, function(response) {
+                response = response.posted_lines;
+                cb(response);
+            //    url();
+
+            });
+        };
+        $scope.getJournals(cred.bank_id, function(response) {
+            $scope.journal = response;
+            $scope.$digest();
+        });
+        $scope.getJournals($scope.authentication.user.account_id, function(response) {
+            $scope.myJournal = response;
+            $scope.$digest();
+        });
+        // function to click the show more button on getMoreCampaigns page
+        $scope.limit = 4;
+        $scope.increment = function() {
+            var campaignLength = $scope.myCampaigns.length;
+            $scope.limit = campaignLength;
+        };
+
+        $scope.decrement = function() {
+            $scope.limit = 4;
+        };
+    }
+]);
+
+'use strict';
+angular.module('campaign').controller('userTransactionCtrl', ['$scope', '$http', '$state', 'subledgerServices', 'Authentication', 'credentials', function($scope, $http, $state, subledgerServices, Authentication, credentials) {
+  $scope.authentication = Authentication;
+  $scope.journal = {};
+  $scope.balance = {};
+
+  Authentication.requireLogin($state);
+  var cred = credentials.data;
+  subledgerServices.setCredentials(cred);
+  $scope.authentication = Authentication;
+
+  //Get the User Transaction Details from Subledger
+  var getCurrentBalance = function(account, destination) {
     subledgerServices.getBalance(account, function(response) {
       destination.amount = response;
       $scope.$digest();
     });
   };
-  $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
-  $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
+  getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
 
-  //GET UNIQUE USER JOURNAL REPORTS
-  $scope.getJournals = function(account) {
+  var getJournals = function(account) {
     subledgerServices.getJournals(account, function(response) {
       $scope.journal = response.posted_lines;
-      $scope.$digest();
+       $scope.$digest();
     });
   };
-  $scope.getJournals($scope.authentication.user.account_id);
-    
-    // function to click the show more button on getMoreCampaigns page
-    $scope.limit = 4;
-    $scope.increment = function() {
-      var campaignLength = $scope.myCampaigns.length;
-      $scope.limit = campaignLength;
-    };
+  getJournals($scope.authentication.user.account_id);
+}]);
 
-    $scope.decrement = function() {
-      $scope.limit = 4;
-    };
-  }
-]);
+
 
 'use strict';
 
@@ -966,8 +1018,36 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
       .error(function(error, status, header, config) {
         $scope.error = error;
       });
+
+    $scope.myInterval = 2000;
+    var slides = $scope.slides = [];
+    $scope.addSlide = function() {
+      slides.push({
+        image: 'modules/core/img/app-images/caros1.jpg' + 'modules/core/img/app-images/andela.png' + 'modules/core/img/app-images/andela.png',
+        text: ['Happy','Laugh','Honesty']
+      });
+    };
+    for (var i=0; i<4; i++) {
+    $scope.addSlide();
+    }
+
 	}
 ]);
+
+// $scope.myInterval = 5000;
+//   var slides = $scope.slides = [];
+//   $scope.addSlide = function() {
+//     var newWidth = 600 + slides.length + 1;
+//     slides.push({
+//       image: 'http://placekitten.com/' + newWidth + '/300',
+//       text: ['More','Extra','Lots of','Surplus'][slides.length % 4] + ' ' +
+//         ['Cats', 'Kittys', 'Felines', 'Cutes'][slides.length % 4]
+//     });
+//   };
+//   for (var i=0; i<4; i++) {
+//     $scope.addSlide();
+//   }
+// });
 'use strict';
 
 angular.module('distributor').config(['$stateProvider',function($stateProvider) {
@@ -1019,24 +1099,6 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
   };
   // $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
   // $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
-
-
-  $scope.getUserAccountBalance = function(account_id, user) {
-    var date = new Date().toISOString();
-    subledgerServices.getAccountBalance(cred.org_id, cred.book_id, account_id).balance({
-      description: 'USD',
-      at: date
-    }, function(error, apiRes) {
-      if (error) {
-        toaster.pop('error', 'An Error Occurred' + error);
-        return;
-      }
-
-      var amount = apiRes.balance.value.amount;
-      user.currentBalance = amount;
-      $scope.$digest();
-    });
-  };
 
   //method to credit each account
   $scope.depositIntoUser = function(transaction, user) {
@@ -1123,7 +1185,6 @@ angular.module('users').config(['$httpProvider',
 							case 401:
 								// Deauthenticate the global user
 								Authentication.user = null;
-
 								// Redirect to signin page
 								$location.path('/');
 								break;
@@ -1131,7 +1192,6 @@ angular.module('users').config(['$httpProvider',
 								// Add unauthorized behaviour
 								break;
 						}
-
 						return $q.reject(rejection);
 					}
 				};
