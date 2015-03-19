@@ -17,9 +17,14 @@ angular.module('distributor').factory('distributorServices', ['$http', function(
   var getAllUsers = function() {
     return $http.get('/distributor/users');
   };
+  var getByUsername = function (username) {
+    return $http.get('/distributor/getByUsername/'+username);
+  };
+  
 
   return {
     getAllUsers: getAllUsers,
-    setCredentials: setCredentials
+    setCredentials: setCredentials,
+    getByUsername: getByUsername
   };
 }]);

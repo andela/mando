@@ -16,7 +16,7 @@
       <td>{{user.amount | currency}}</td>
       <td>{{user.firstName}}</td>
       <td>{{user.lastName}}</td>
-      <td>{{user.email}}</td>
+      <td><a ng-href="/#!/distributor/{{user.username}}">{{user.email}}</a></td>
     </tr>
   </table>
 </section>
