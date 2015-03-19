@@ -584,45 +584,51 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
   datepickerConfig.startingDay = '1';
 
   $stateProvider.
-    state('addCampaign', {
-      url: '/campaign/add',
-      templateUrl: 'modules/campaigns/views/addCampaign.client.view.html'
-    }).
-    state('editCampaign', {
-      url: '/campaign/:campaignTimestamp/:campaignslug/edit',
-      templateUrl: 'modules/campaigns/views/editCampaign.client.view.html'
-    }).
-    state('viewCampaign', {
-      url: '/campaign/:campaignTimeStamp/:campaignslug',
-      templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html'
-    }).
-    state('allCampaigns', {
-      url: '/campaigns',
-      templateUrl: 'modules/campaigns/views/allCampaigns.client.view.html'
-    }).
-    state('allTransactions', {
-      resolve: {
-        credentials: ["$http", function ($http){
-          return  $http.get('/bank/credentials');
-        }]
-      },
-      controller:'userTransactionCtrl',
-      url: '/myTransactions',
-      templateUrl: 'modules/campaigns/views/userTransaction.client.view.html',
-    }).
-    state('userCampaigns', {
-      resolve: {
-        credentials: ["$http", function ($http){
-          return  $http.get('/bank/credentials');
-        }]
-      },
-      url: '/campaigns/myAndonation',
-      templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html',
-      controller: 'userCampaignsCtrl'
-    });
+  state('addCampaign', {
+    url: '/campaign/add',
+    templateUrl: 'modules/campaigns/views/addCampaign.client.view.html'
+  }).
+  state('editCampaign', {
+    url: '/campaign/:campaignTimestamp/:campaignslug/edit',
+    templateUrl: 'modules/campaigns/views/editCampaign.client.view.html'
+  }).
+  state('viewCampaign', {
+    url: '/campaign/:campaignTimeStamp/:campaignslug',
+    resolve: {
+      credentials: ["$http", function($http) {
+        return $http.get('/bank/credentials');
+      }]
+    },
+    templateUrl: 'modules/campaigns/views/viewCampaign.client.view.html',
+    controller: 'viewCampaignCtrl'
+  }).
+  state('allCampaigns', {
+    url: '/campaigns',
+    templateUrl: 'modules/campaigns/views/allCampaigns.client.view.html'
+  }).
+  state('allTransactions', {
+    resolve: {
+      credentials: ["$http", function($http) {
+        return $http.get('/bank/credentials');
+      }]
+    },
+    controller: 'userTransactionCtrl',
+    url: '/myTransactions',
+    templateUrl: 'modules/campaigns/views/userTransaction.client.view.html',
+  }).
+  state('userCampaigns', {
+    resolve: {
+      credentials: ["$http", function($http) {
+        return $http.get('/bank/credentials');
+      }]
+    },
+    url: '/campaigns/myAndonation',
+    templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html',
+    controller: 'userCampaignsCtrl'
+  });
 
-    //Add YouTube to resource whitelist so that we can embed YouTube videos
-    $sceDelegateProvider.resourceUrlWhitelist(['**']);
+  //Add YouTube to resource whitelist so that we can embed YouTube videos
+  $sceDelegateProvider.resourceUrlWhitelist(['**']);
 }]);
 
 'use strict';
@@ -808,6 +814,34 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope', 'toaster', 
 
 'use strict';
 
+angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaignAccountId', 'amountNeeded', 'subledgerServices', 'Authentication', '$modalInstance', function($scope, campaignAccountId, amountNeeded, subledgerServices, Authentication, $modalInstance) {
+
+  subledgerServices.getBalance(Authentication.user.account_id, function(response) {
+    $scope.userAccountBalance = response;
+    $scope.$digest();
+  });
+  subledgerServices.getBalance(campaignAccountId, function(response) {
+    $scope.campaignBalance = response;
+    $scope.$digest();
+  });
+  $scope.amountNeeded = amountNeeded;
+
+  $scope.ok = function() {
+    var transaction = {
+      amount: $scope.amount,
+      reason: 'Support campaign'
+    };
+    subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaignAccountId, Authentication.user, function() {
+      $modalInstance.close(true);
+    });
+  };
+  $scope.cancel = function() {
+    $modalInstance.dismiss('cancelled');
+  };
+}]);
+
+'use strict';
+
 angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'subledgerServices', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state',
     function($scope, backendService, toaster, $location, subledgerServices, Authentication, $stateParams, lodash, credentials, $state) {
 
@@ -914,18 +948,59 @@ angular.module('campaign').controller('userTransactionCtrl', ['$scope', '$http',
 
 'use strict';
 
-angular.module('campaign').controller('viewCampaignCtrl', ['$scope','toaster' , 'backendService','$location', 'Authentication', '$stateParams',
-function($scope, toaster, backendService,$location, Authentication, $stateParams) {
-  $scope.authentication = Authentication;
+angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices',
+  function(credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices) {
+    var campaignBalance, userAccountBalance;
+    $scope.authentication = Authentication;
+    var cred = credentials.data;
+    subledgerServices.setCredentials(cred);
+    backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
+      .success(function(data, status, header, config) {
+        $scope.campaign = data;
+        getCampaignBalance($scope.campaign.account_id);
+        getUserAccountBalance(Authentication.user.account_id);
+      })
+      .error(function(error, status, header, config) {
+        $location.path('/');
+      });
 
-  backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
-  .success(function(data, status, header, config) {
-    $scope.campaign = data;
-  })
-  .error(function(error, status, header, config) {
-    $location.path('/');
-  });
-}]);
+    var getUserAccountBalance = function(userAccountid) {
+      subledgerServices.getBalance(userAccountid, function(response) {
+        userAccountBalance = response;
+      });
+    };
+    var getCampaignBalance = function(campaignAccountid) {
+      subledgerServices.getBalance(campaignAccountid, function(response) {
+        $scope.campaignBalance = response;
+      });
+    };
+    $scope.openModal = function() {
+      $scope.modalInstance = $modal.open({
+        templateUrl: 'modules/campaigns/views/supportCampaign.modal.client.view.html',
+        controller: 'supportCampaignCtrl',
+        size: 'sm',
+        resolve: {
+          campaignAccountId: function() {
+            return $scope.campaign.account_id;
+          },
+          amountNeeded: function() {
+            return $scope.campaign.amount;
+          },
+        }
+      });
+      $scope.modalInstance.result.then(function(status) {
+        backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
+          .success(function(data, status, header, config) {
+            toaster.pop('success', 'Success! - Thanks for supporting this campaign');
+            $scope.campaign = data;
+            getCampaignBalance($scope.campaign.account_id);
+            getUserAccountBalance(Authentication.user.account_id);
+          });
+      });
+    };
+  }
+]);
+
 'use strict';
 
 angular.module('campaign').factory('backendService', ['$http', function($http) {
