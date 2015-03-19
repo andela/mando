@@ -24,7 +24,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     var getCampaignBalance = function(campaignAccountid) {
       subledgerServices.getBalance(campaignAccountid, function(response) {
         $scope.campaignBalance = response;
-        $scope.$digest();
       });
     };
     $scope.openModal = function() {
