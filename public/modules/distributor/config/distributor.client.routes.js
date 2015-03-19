@@ -13,6 +13,7 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
       url: '/distributor',
       templateUrl: 'modules/distributor/views/distributor.client.view.html'
     })
+<<<<<<< HEAD
     .state('myDistribution', {
       resolve: {
         credentials: function ($http){
@@ -23,6 +24,8 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
       url: '/distributor/myDistribution',
       templateUrl: 'modules/distributor/views/myDistribution.client.view.html'
     })
+=======
+>>>>>>> wrote route for unique user disribution
     .state('distributionUser', {
       resolve: {
         credentials: function ($http){

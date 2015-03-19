@@ -1,5 +1,6 @@
 'use strict';
 
+<<<<<<< HEAD
 angular.module('distributor').controller('userDistributionCtrl', ['$scope', '$http', 'Authentication', 'toaster','subledgerServices','distributorServices','$stateParams','credentials', '$state', function($scope, $http, Authentication, toaster, subledgerServices, distributorServices , $stateParams, credentials, $state) {
   $scope.user = {};
   $scope.journal = [];
@@ -17,11 +18,31 @@ angular.module('distributor').controller('userDistributionCtrl', ['$scope', '$ht
   var getByUsername = (function (username) {
     distributorServices.getByUsername(username).success(function (data, status, header, config){
       $scope.getJournals(data.account_id);
+=======
+angular.module('distributor').controller('userDistributionCtrl', ['$scope', '$http', 'Authentication', 'toaster','subledgerServices','distributorServices','$stateParams', function($scope, $http, Authentication, toaster, subledgerServices, distributorServices , $stateParams) {
+
+  var username = $stateParams.username;
+  $scope.authentication = Authentication;
+  Authentication.hasRole('distributor');
+
+  // $scope.getJournals = function(account) {
+  //   subledgerServices.getJournals(account, function(response) {
+  //     $scope.journal = response.posted_lines;
+  //      $scope.$digest();
+  //   });
+  // };
+  // $scope.getJournals();
+
+  var getByUsername = (function (username) {
+    distributorServices.getByUsername(username).success(function (data, status, header, config){
+      console.log(data);
+>>>>>>> wrote route for unique user disribution
     })
     .error(function (error,status, header, config){
       console.log(error);
     });
   })(username);
+<<<<<<< HEAD
 
 
   //get All lines of transaction
@@ -34,5 +55,7 @@ angular.module('distributor').controller('userDistributionCtrl', ['$scope', '$ht
   };
 
   // $scope.getJournals($scope.user.account_id);
+=======
+>>>>>>> wrote route for unique user disribution
 }]);
 
