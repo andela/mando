@@ -47,6 +47,10 @@
  background-color: #00a4d4 !important;
 }
 
+.btn-default {
+  border-radius: 80%;
+}
+
 iframe {
   width: 100%;
   border-radius: 10px;
