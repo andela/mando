@@ -1,7 +1,7 @@
 <section ng-show="isDistributor">
   <div>
-    <p>ALL DISTRIBUTION DETAILS</p>
-    <table class="table table-bordered">
+    <h2>My Distribution Details</h2>
+    <table class="table table-striped tb-head ">
       <tt>
         <th>Date</th>
         <th>Description</th>
@@ -10,11 +10,11 @@
         <th>Authorized by</th>
         <th>Balance</th>
       </tt>
-      <tr ng-repeat="transaction in journal">
+      <tr ng-repeat="transaction in distribution |filter: query">
         <td>{{transaction.effective_at | date}}</td>
         <td>{{transaction.description.description}}</td>
-        <td>{{transaction.value.type}}</td>d
-        <td>{{transaction.value.amount}}</td>
+        <td>{{transaction.value.type}}</td>
+        <td>{{transaction.value.amount |currency}}</td>
         <td>{{transaction.description.name}}</td>
         <td>{{transaction.balance.value.amount}}</td>
       </tr>

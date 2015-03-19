@@ -16,9 +16,6 @@ angular.module('distributor').controller('userDistributionCtrl', ['$scope', '$ht
 
   var getByUsername = (function (username) {
     distributorServices.getByUsername(username).success(function (data, status, header, config){
-   //   $scope.user = data;
-   //   console.log(data);
-      console.log(data.account_id);
       $scope.getJournals(data.account_id);
     })
     .error(function (error,status, header, config){
