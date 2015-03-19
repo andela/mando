@@ -1,17 +1,21 @@
-.content {
-	margin-top: 50px;
+body {
+  background-image: url('../img/app-images/leather_1.png');
 }
+.content {
+  margin-top: 58px;
+}
+
 .undecorated-link:hover {
-	text-decoration: none;
+  text-decoration: none;
 }
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-	display: none !important;
+  display: none !important;
 }
 .ng-invalid.ng-dirty {
-	border-color: #FA787E;
+  border-color: #FA787E;
 }
 .ng-valid.ng-dirty {
-	border-color: #78FA89;
+  border-color: #78FA89;
 }
 
 .home-campaigns {
@@ -20,7 +24,7 @@
   -o-border-radius:10px;
   border-radius:10px;
   margin: 2px;
-  background-color :#F5EFEE;
+  background-color :#fff;
   min-height: 17em;
   box-shadow: 2px 1px 2px #CDD1D1;
   padding: 20px;
@@ -40,10 +44,48 @@
   line-height: 1.5em;
 }
 
-.img {
-  width: 10%;
-  /*height: 5%;*/
+.nav-bar{
+  background-color: #31698a;
+  background-size: 13px, 29px, 37px, 53px;
+  /*height: 10%;*/
 }
+
+.nav-bar a {
+  color: #fff !important;
+}
+
+.nav-bar a:hover {
+  background: #fff;
+  border-radius: 80%;
+  margin-top: 5px;
+}
+
+.nav-bar a:active {
+  background: #003366;
+  border-radius: 80%;
+}
+
+#nav-logo {
+  background-image: url('../img/app-images/andela.png');
+}
+
+.auth-img {
+  height: 30px;
+  width: 30px;
+  border-radius: 80%;
+  margin-top: 10px;
+}
+
+.logo-image {
+  margin-top: -7px;
+  height: 65px;
+  width: 80px;
+}
+
+.second-div {
+  height: 80px;
+}
+
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 @media screen and (min-width: 1000px) {
   .home-campaigns {

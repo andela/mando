@@ -19,9 +19,7 @@
   margin-top: 30px;
 }
 
-body {
-  background: #F2EFED;
-}
+
 
 .title {
   font-size: 4vh;
@@ -44,9 +42,15 @@ body {
 .supportbtn {
   width:50%;
 }
+
 .tb-head {
  background-color: #00a4d4 !important;
 }
+
+.btn-default {
+  border-radius: 80%;
+}
+
 iframe {
   width: 100%;
   border-radius: 10px;

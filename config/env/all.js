@@ -31,7 +31,9 @@ module.exports = {
 				'public/lib/angular-youtube-mb/src/angular-youtube-embed.js',
 				'public/lib/angularjs-toaster/toaster.js',
 				'public/lib/ng-lodash/build/ng-lodash.js',
-				'public/lib/subledger-js-library/build/subledger.js'
+				'public/lib/subledger-js-library/build/subledger.js',
+				'public/lib/jquery/dist/jquery.js',
+				'public/lib/jquery/dist/jquery.min.js'
 			]
 		},
 		css: [

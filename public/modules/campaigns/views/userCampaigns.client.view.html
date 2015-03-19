@@ -1,90 +1,98 @@
 <section>
-    <button ng-show="isAdmin" class="btn btn-info pull-right"><a href="/#!/admin/users">Users</a></button>
-    <button ng-show="isBanker" class="btn btn-success pull-right"><a href="/#!/bank">Bank</a></button>
-    <button ng-show="isDistributor" class="btn btn-info pull-right"><a href="/#!/distributor/users">DISTRIBUTOR</a></button>
-    <div ng-show="isBanker">
-        <p><a ng-href="/#!/bank">System Balance: $  {{systemBalance.amount}}</a></p>
-    </div>
-    <!-- <p><a ng-href="{{url}}" class "btn btn-hover">USER BALANCE : {{balance.amount}}</p> -->
-    <p><a ng-href="/#!/myTransactions" class "btn btn-hover">USER BALANCE : {{balance.amount}}</p>
-  <div ng-hide="myCampaigns" class="jumbotron text-center">
+<div>
+  <a href="/#!/admin/users" ng-show="isAdmin" class="btn btn-default pull-right">Users</a>
+  <a href="/#!/bank" ng-show="isBanker" class="btn btn-default pull-right">Bank</a>
+  <a href="/#!/distributor/users" ng-show="isDistributor" class="btn btn-default pull-right">DISTRIBUTOR</a>
+
+  <div ng-show="isBanker">
+
+    <p><a ng-href="/#!/bank">System Balance: $  {{systemBalance.amount}}</a>
+    </p>
+  </div>
+
+  <p>USER BALANCE : ${{balance.amount}}</p>
+
+  <div ng-hide="myCampaigns" class="text-center">
     <h2>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h2>
-    <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
-        </div>
-        <div class="table-responsive" ng-show="myCampaigns">
-            <h2>My Campaigns</h2>
-            <table class="table table-bordered">
-                <tt>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Amount Needed</th>
-                    <th>Amount Raised</th>
-                    <th>Created</th>
-                    <th>Deadline</th>
-                    <th>Backers</th>
-                </tt>
-                <tr data-ng-repeat="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
-                    <td><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a></td>
-                    <td>{{campaign.status}}</td>
-                    <td>{{campaign.amount}}</td>
-                    <td>{{campaign.raised}}</td>
-                    <td>{{campaign.created | date}}</td>
-                    <td>{{campaign.dueDate | date}}</td>
-                    <td>{{campaign.backers}}</td>
-                </tr>
-            </table>
-            <div ng-hide="myCampaigns.length < 4">
-                <!-- <a href="#" ng-show="limit===4" ng-click="increment()">See All Campaigns</a>
+    <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a>
+    </button>
+  </div>
+  <div class="table-responsive" ng-show="myCampaigns">
+    <h2>My Campaigns</h2>
+    <table class="table table-bordered">
+      <tt>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Amount Needed</th>
+        <th>Amount Raised</th>
+        <th>Created</th>
+        <th>Deadline</th>
+        <th>Backers</th>
+      </tt>
+      <tr data-ng-repeat="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
+        <td><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a>
+        </td>
+        <td>{{campaign.status}}</td>
+        <td>{{campaign.amount}}</td>
+        <td>{{campaign.raised}}</td>
+        <td>{{campaign.created | date}}</td>
+        <td>{{campaign.dueDate | date}}</td>
+        <td>{{campaign.backers}}</td>
+      </tr>
+    </table>
+    <div ng-hide="myCampaigns.length < 4">
+      <!-- <a href="#" ng-show="limit===4" ng-click="increment()">See All Campaigns</a>
                 <a href="#" ng-hide="limit===4" ng-click="decrement()">Back</a> -->
-                <a href="#" ng-show="limit===4" ng-click="increment()">See All Campaigns</a>
-                <a href="#" ng-hide="limit===4" ng-click="decrement()">Back</a>
-            </div>
-        </div>
-        <div ng-show="isBanker">
-            <div ng-show="query < 1" class="jumbotron text-center">
-                <h2>YOU DO NOT HAVE ANY TRANSACTION</h2>
-            </div>
-            <div>
-                <h2>My Bank Transactions</h2>
-                <table class="table table-bordered">
-                    <tt>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Transaction Type</th>
-                        <th>Amount</th>
-                    </tt>
-                    <tr data-ng-repeat="transaction in journal | filter: query | limitTo: 3">
-                        <td>{{transaction.posted_at | date }}</td>
-                        <td>{{transaction.description.description}}</td>
-                        <td>{{transaction.value.type}}</td>
-                        <td>{{transaction.value.amount}}</td>
-                    </tr>
-                </table>
-                <a href="/#!/bank">See All Bank Transactions</a>
-            </div>
-        </div>
-        <div>
-            <div>
-                <!-- <a name=""></a> -->
-                <h2>My Account History</h2>
-                <table class="table table-bordered">
-                    <tt>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Transaction Type</th>
-                        <th>Amount</th>
-                        <th>Balance</th>
-                    </tt>
-                    <tr data-ng-repeat="transaction in myJournal | limitTo: 3">
-                        <td>{{transaction.posted_at | date }}</td>
-                        <td>{{transaction.description.description}}</td>
-                        <td>{{transaction.value.type}}</td>
-                        <td>{{transaction.value.amount}}</td>
-                        <td>{{transaction.balance.value.amount}}</td>
-                    </tr>
-                </table>
-                <a href="/#!/myTransactions">See All Transactions</a>
-            </div>
-        </div>
+      <a href="#" ng-show="limit===4" ng-click="increment()">See All Campaigns</a>
+      <a href="#" ng-hide="limit===4" ng-click="decrement()">Back</a>
+    </div>
+  </div>
+  <div ng-show="isBanker">
+    <div ng-show="query < 1" class="jumbotron text-center">
+      <h2>YOU DO NOT HAVE ANY TRANSACTION</h2>
+    </div>
+    <div>
+      <h2>My Bank Transactions</h2>
+      <table class="table table-bordered">
+        <tt>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Transaction Type</th>
+          <th>Amount</th>
+        </tt>
+        <tr data-ng-repeat="transaction in journal | filter: query | limitTo: 3">
+          <td>{{transaction.posted_at | date }}</td>
+          <td>{{transaction.description.description}}</td>
+          <td>{{transaction.value.type}}</td>
+          <td>{{transaction.value.amount}}</td>
+        </tr>
+      </table>
+      <a href="/#!/bank">See All Bank Transactions</a>
+    </div>
+  </div>
+  <div>
+    <div>
+      <!-- <a name=""></a> -->
+      <h2>My Account History</h2>
+      <table class="table table-bordered">
+        <tt>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Transaction Type</th>
+          <th>Amount</th>
+          <th>Balance</th>
+        </tt>
+        <tr data-ng-repeat="transaction in myJournal | limitTo: 3">
+          <td>{{transaction.posted_at | date }}</td>
+          <td>{{transaction.description.description}}</td>
+          <td>{{transaction.value.type}}</td>
+          <td>{{transaction.value.amount}}</td>
+          <td>{{transaction.balance.value.amount}}</td>
+        </tr>
+      </table>
+      <a href="/#!/myTransactions">See All Transactions</a>
+    </div>
+  </div>
+
         <!-- <a name="here"></a>  this will be the d tag that will house the table if transaction is less than one-->
 </section>
