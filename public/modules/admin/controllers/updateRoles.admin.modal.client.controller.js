@@ -38,7 +38,7 @@ angular.module('admin').controller('ModalInstanceCtrl', ['$scope', 'adminBackend
   });
   $scope.disableSaveButton = function(isAdmin, checkStatus) {
     $timeout(function() {
-      if (checkStatus !== 'indeterminate') {
+      if (checkStatus !== 'indeterminate' && isAdmin) {
         $scope.disable = (isAdmin && checkStatus);
       }
     }, 100);
