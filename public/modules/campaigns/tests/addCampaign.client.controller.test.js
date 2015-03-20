@@ -25,7 +25,7 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
     });
     $httpBackend.whenGET('modules/campaigns/views/viewCampaign.client.view.html').respond(200);
     $httpBackend.whenGET('modules/core/views/home.client.view.html').respond(200);
-    $httpBackend.whenGET('modules/core/views/home.client.view.html').respond(200);
+     $httpBackend.when('GET', '/bank/credentials').respond(200);
 
   }));
 //Authenticated user should be able to create a new campaign
