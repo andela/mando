@@ -19,7 +19,7 @@ angular.module('distributor').controller('userDistributionCtrl', ['$scope', '$ht
 
     })
     .error(function (error,status, header, config){
-      console.log(error);
+      toaster.pop('error', 'Error Fetching File. Try Again Later');
     });
   })(username);
 
@@ -28,7 +28,6 @@ angular.module('distributor').controller('userDistributionCtrl', ['$scope', '$ht
     subledgerServices.getJournals(account, function(response) {
       $scope.journal = response.posted_lines;
       $scope.$digest();
-      console.log($scope.journal);
     });
   };
 

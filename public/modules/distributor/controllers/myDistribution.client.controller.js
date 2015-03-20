@@ -2,7 +2,6 @@
 angular.module('distributor').controller('myDistribution', ['$scope', '$http', 'Authentication', '$state', 'subledgerServices', 'credentials', function($scope, $http, Authentication, $state, subledgerServices, credentials) {
   $scope.distribution = [];
   $scope.authentication = Authentication;
-  console.log(Authentication.user);
   $scope.query = $scope.authentication.user.displayName;
   $scope.isDistributor = Authentication.hasRole('distributor');
 
@@ -19,7 +18,6 @@ angular.module('distributor').controller('myDistribution', ['$scope', '$http', '
     subledgerServices.getJournals(accountId, function(response) {
       $scope.distribution = response.posted_lines;
       $scope.$digest();
-      console.log($scope.distribution);
     });
   };
 
