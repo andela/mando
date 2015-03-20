@@ -1,3 +1,4 @@
+
 'use strict';
 
 angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices', 'distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices, $location, $state, $modal, toaster, credentials) {
@@ -30,32 +31,30 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
       $scope.$digest();
     });
   };
-
-  $scope.depositIntoUser = function(amount, user) {
-
+  //method to credit each account
+  $scope.depositIntoUser = function(transaction, user) {
     var confirmMsg = confirm('Are you sure you want to credit '+ user.displayName);
     if(confirmMsg) {
-      toaster.pop('success', 'Credited successful');
-      distributorServices.depositorAction('credit', amount, user, $scope.authentication.user, function() {
-      $scope.getUsers();
-    });
-  }
+      subledgerServices.bankerAction('credit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
+        toaster.pop('success', 'credited successfully');
+        $scope.getUsers();
+        });
+    }
   };
 
   //method to debit each user account
-  $scope.withdrawFromUser = function(transaction, amount, user) {
+  $scope.withdrawFromUser = function(transaction, user) {
+    var confirmMsg = confirm('Are you sure you want to credit '+ user.displayName);
     // Compare with user balance
     if (transaction.amount > user.amount) {
       toaster.pop('error', 'Balance is insufficient');
       return;
-    }
-
-    var confirmMsg = confirm('Are you sure you want to withdraw from ' + user.displayName);
-    if(confirmMsg) {
+      }
+      if(confirmMsg) {
+    subledgerServices.bankerAction('debit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
       toaster.pop('success', 'Withdrawal successful');
-      distributorServices.depositorAction('debit', amount, user, $scope.authentication.user, function() {
       $scope.getUsers();
-    });
+      });
     }
   };
 
