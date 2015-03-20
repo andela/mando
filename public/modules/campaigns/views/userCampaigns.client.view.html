@@ -2,7 +2,7 @@
   <div>
     <a href="/#!/admin/users" ng-show="isAdmin" class="btn btn-default pull-right">Users</a>
     <a href="/#!/bank" ng-show="isBanker" class="btn btn-default pull-right">Bank</a>
-    <a href="/#!/distributor/users" ng-show="isDistributor" class="btn btn-default pull-right">DISTRIBUTOR</a>
+    <a href="/#!/distributor" ng-show="isDistributor" class="btn btn-default pull-right">DISTRIBUTOR</a>
     <div ng-show="isBanker">
       <p><a ng-href="/#!/bank">System Balance:   {{systemBalance.amount | currency}}</a>
       </p>
