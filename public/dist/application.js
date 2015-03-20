@@ -884,20 +884,23 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
         $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
 
         //GET UNIQUE USER JOURNAL REPORTS  
-        //this methods should only load the bank and  another method will load the user and filter it by 
-        //query seems to be undefined here 
         $scope.getJournals = function(account, cb) {
             subledgerServices.getJournals(account, function(response) {
                 response = response.posted_lines;
                 cb(response);
-            //    url();
-
             });
         };
+
+        /*
+            This is the method that fetches the  transaction journal for the banker using the bank id
+            If the Authenticated User plays Both Role of A banker and a Distributor the Data will have the same values 
+        */
         $scope.getJournals(cred.bank_id, function(response) {
             $scope.journal = response;
             $scope.$digest();
         });
+
+        //This is the method that loads the Transaction journal for the Authenticated User.
         $scope.getJournals($scope.authentication.user.account_id, function(response) {
             $scope.myJournal = response;
             $scope.$digest();
@@ -1135,14 +1138,35 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
         }]
       },
       controller: 'distributorCtrl',
-      url: '/distributor/users',
+      url: '/distributor',
       templateUrl: 'modules/distributor/views/distributor.client.view.html'
+    })
+    .state('myDistribution', {
+      resolve: {
+        credentials: ["$http", function ($http){
+          return  $http.get('/bank/credentials');
+        }]
+      },
+      controller: 'myDistribution',
+      url: '/distributor/myDistribution',
+      templateUrl: 'modules/distributor/views/myDistribution.client.view.html'
+    })
+    .state('distributionUser', {
+      resolve: {
+        credentials: ["$http", function ($http){
+          return  $http.get('/bank/credentials');
+        }]
+      },
+      controller: 'userDistributionCtrl',
+      url: '/distributor/:username',
+      templateUrl: 'modules/distributor/views/user.distributor.client.view.html'
     });
+
 }]);
 
 'use strict';
 
-angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices', 'distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices, $location, $state, $modal, toaster, credentials) {
+angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices', 'distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices, $location, $state, $modal, toaster, credentials ) {
 
   var cred = credentials.data;
   subledgerServices.setCredentials(cred);
@@ -1172,13 +1196,12 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
       $scope.$digest();
     });
   };
-  // $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
-  // $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
 
   //method to credit each account
   $scope.depositIntoUser = function(transaction, user) {
     subledgerServices.bankerAction('credit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
-      $scope.getUsers();
+      toaster.pop('success', 'Transaction Completed');
+      $scope.getCurrentBalance(user.account_id, user);
     });
   };
 
@@ -1189,9 +1212,10 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
       toaster.pop('error', 'Balance is insufficient');
       return;
     }
-
     subledgerServices.bankerAction('debit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
-      $scope.getUsers();
+      toaster.pop('success', 'Transaction Completed');
+      $scope.getCurrentBalance(user.account_id, user);
+      //   console.log(user.account_id);
     });
   };
 
@@ -1221,6 +1245,73 @@ angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$mo
 }]);
 
 'use strict';
+angular.module('distributor').controller('myDistribution', ['$scope', '$http', 'Authentication', '$state', 'subledgerServices', 'credentials', function($scope, $http, Authentication, $state, subledgerServices, credentials) {
+  $scope.distribution = [];
+  $scope.authentication = Authentication;
+  console.log(Authentication.user);
+  $scope.query = $scope.authentication.user.displayName;
+  $scope.isDistributor = Authentication.hasRole('distributor');
+
+  var cred = credentials.data;
+  subledgerServices.setCredentials(cred);
+
+  subledgerServices.setCredentials(cred);
+
+
+  Authentication.requireLogin($state);
+  Authentication.requireRole($state, 'distributor');
+
+  var getDistributionJournal = function(accountId) {
+    subledgerServices.getJournals(accountId, function(response) {
+      $scope.distribution = response.posted_lines;
+      $scope.$digest();
+      console.log($scope.distribution);
+    });
+  };
+
+  getDistributionJournal(cred.bank_id);
+}]);
+
+'use strict';
+
+angular.module('distributor').controller('userDistributionCtrl', ['$scope', '$http', 'Authentication', 'toaster','subledgerServices','distributorServices','$stateParams','credentials', '$state', function($scope, $http, Authentication, toaster, subledgerServices, distributorServices , $stateParams, credentials, $state) {
+  $scope.user = {};
+  $scope.journal = [];
+
+  var username = $stateParams.username;
+  $scope.authentication = Authentication;
+  Authentication.requireLogin($state);
+  Authentication.requireRole($state, 'banker', 'userCampaigns');
+  $scope.isDistributor = Authentication.hasRole('distributor');
+  var cred = credentials.data;
+  subledgerServices.setCredentials(cred);
+
+  subledgerServices.setCredentials(cred);
+
+  var getByUsername = (function (username) {
+    distributorServices.getByUsername(username).success(function (data, status, header, config){
+      $scope.getJournals(data.account_id);
+    })
+    .error(function (error,status, header, config){
+      console.log(error);
+    });
+  })(username);
+
+
+  //get All lines of transaction
+  $scope.getJournals = function(account) {
+    subledgerServices.getJournals(account, function(response) {
+      $scope.journal = response.posted_lines;
+      $scope.$digest();
+      console.log($scope.journal);
+    });
+  };
+
+  // $scope.getJournals($scope.user.account_id);
+}]);
+
+
+'use strict';
 /*global Subledger*/
 
 //This is just a repetition of the apis made in banker
@@ -1239,10 +1330,15 @@ angular.module('distributor').factory('distributorServices', ['$http', function(
   var getAllUsers = function() {
     return $http.get('/distributor/users');
   };
+  var getByUsername = function (username) {
+    return $http.get('/distributor/getByUsername/'+username);
+  };
+  
 
   return {
     getAllUsers: getAllUsers,
-    setCredentials: setCredentials
+    setCredentials: setCredentials,
+    getByUsername: getByUsername
   };
 }]);
 

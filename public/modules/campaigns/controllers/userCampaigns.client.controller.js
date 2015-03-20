@@ -42,20 +42,23 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
         $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
 
         //GET UNIQUE USER JOURNAL REPORTS  
-        //this methods should only load the bank and  another method will load the user and filter it by 
-        //query seems to be undefined here 
         $scope.getJournals = function(account, cb) {
             subledgerServices.getJournals(account, function(response) {
                 response = response.posted_lines;
                 cb(response);
-            //    url();
-
             });
         };
+
+        /*
+            This is the method that fetches the  transaction journal for the banker using the bank id
+            If the Authenticated User plays Both Role of A banker and a Distributor the Data will have the same values 
+        */
         $scope.getJournals(cred.bank_id, function(response) {
             $scope.journal = response;
             $scope.$digest();
         });
+
+        //This is the method that loads the Transaction journal for the Authenticated User.
         $scope.getJournals($scope.authentication.user.account_id, function(response) {
             $scope.myJournal = response;
             $scope.$digest();
