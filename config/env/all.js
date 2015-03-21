@@ -15,7 +15,8 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
-				'public/lib/angularjs-toaster/toaster.css'
+				'public/lib/angularjs-toaster/toaster.css',
+				'public/lib/ng-table/dist/ng-table.css'
 			],
 			js: [
 				'public/lib/angular/angular.js',
@@ -33,7 +34,8 @@ module.exports = {
 				'public/lib/ng-lodash/build/ng-lodash.js',
 				'public/lib/subledger-js-library/build/subledger.js',
 				'public/lib/jquery/dist/jquery.js',
-				'public/lib/jquery/dist/jquery.min.js'
+				'public/lib/jquery/dist/jquery.min.js',
+				'public/lib/ng-table/dist/ng-table.js'
 			]
 		},
 		css: [
