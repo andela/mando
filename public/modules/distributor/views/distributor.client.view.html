@@ -13,7 +13,7 @@
         <button ng-click="distributorModal(user, depositIntoUser)">Credit</button>
         <button ng-click="distributorModal(user, withdrawFromUser)">Withdraw</button>
       </td>
-      <td>{{user.amount | currency}}</td>
+      <td>{{user.amount | currencyflt}} </td>
       <td>{{user.firstName}}</td>
       <td>{{user.lastName}}</td>
       <td><a ng-href="/#!/distributor/{{user.username}}">{{user.email}}</a></td>

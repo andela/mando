@@ -44,7 +44,7 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
 
   //method to debit each user account
   $scope.withdrawFromUser = function(transaction, user) {
-    var confirmMsg = confirm('Are you sure you want to credit ' + user.displayName);
+    var confirmMsg = confirm('Are you sure you want to debit ' + user.displayName);
     // Compare with user balance
     if (transaction.amount > user.amount) {
       toaster.pop('error', 'Balance is insufficient');

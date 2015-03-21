@@ -4,10 +4,13 @@
     <a href="/#!/bank" ng-show="isBanker" class="btn btn-default pull-right">Bank</a>
     <a href="/#!/distributor" ng-show="isDistributor" class="btn btn-default pull-right">DISTRIBUTOR</a>
     <div ng-show="isBanker">
-      <p><a ng-href="/#!/bank">System Balance:   {{systemBalance.amount | currency}}</a>
+      <p>
+        <a ng-href="/#!/bank">System Balance:   {{systemBalance.amount | currencyflt}}</a>
       </p>
     </div>
-    <p><a ng-href="/#!/myTransactions" class "btn btn-hover">USER BALANCE : {{balance.amount| currency:undefined:0}}</p>
+    <p>
+      <a ng-href="/#!/myTransactions" class "btn btn-hover">USER BALANCE : {{balance.amount| currencyflt}}
+    </p>
   <div ng-hide="myCampaigns" class="jumbotron text-center">
     <h2>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h2>
     <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
@@ -27,25 +30,23 @@
       <tr data-ng-repeat="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
         <td><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a></td>
         <td>{{campaign.status}}</td>
-        <td>{{campaign.amount | currency}}</td>
-        <td>{{campaign.raised | currency}}</td>
+        <td>{{campaign.amount | currencyflt}}</td>
+        <td>{{campaign.raised | currencyflt}}</td>
         <td>{{campaign.created | date}}</td>
         <td>{{campaign.dueDate | date}}</td>
         <td>{{campaign.backers}}</td>
       </tr>
     </table>
     <div ng-hide="myCampaigns.length < 4">
-      <!-- <a href="#" ng-show="limit===4" ng-click="increment()">See All Campaigns</a>
-                <a href="#" ng-hide="limit===4" ng-click="decrement()">Back</a> -->
       <a href="#" ng-show="limit===4" ng-click="increment()">See All Campaigns</a>
       <a href="#" ng-hide="limit===4" ng-click="decrement()">Back</a>
     </div>
   </div>
   <div ng-show="isBanker">
-    <div ng-show="query < 1" class="jumbotron text-center">
+    <div ng-hide="query" class="jumbotron text-center">
       <h2>YOU DO NOT HAVE ANY TRANSACTION</h2>
     </div>
-    <div>
+    <div ng-show="query">
       <h2>My Bank Transactions</h2>
       <table class="table table-bordered">
         <tt>
@@ -58,16 +59,18 @@
           <td>{{transaction.posted_at | date }}</td>
           <td>{{transaction.description.description}}</td>
           <td>{{transaction.value.type}}</td>
-          <td>{{transaction.value.amount | currency:"$":0}}</td>
+          <td>{{transaction.value.amount | currencyflt}}</td>
         </tr>
       </table>
-
       <a href="/#!/bank">See All Bank Transactions</a>
     </div>
   </div>
   <div>
-    <div>
-      <!-- <a name=""></a> -->
+    <div ng-hide="myJournal" class="jumbotron text-center">
+      <h2>YOU DO NOT HAVE ANY BANK HISTORY</h2>
+    </div>
+    <div ng-show="myJournal">
+      <!-- <a name=""></a> myJournal-->
       <h2>My Account History</h2>
       <table class="table table-bordered">
         <tt>
@@ -81,7 +84,7 @@
           <td>{{transaction.posted_at | date }}</td>
           <td>{{transaction.description.description}}</td>
           <td>{{transaction.value.type}}</td>
-          <td>{{transaction.value.amount |currency:"$":0}}</td>
+          <td>{{transaction.value.amount |currencyflt}}</td>
           <td>{{transaction.balance.value.amount}}</td>
         </tr>
       </table>
@@ -89,25 +92,30 @@
     </div>
   </div>
   <div ng-show="isDistributor">
-    <h2>My Distributions</h2>
-    <table class="table table-bordered">
-      <tt>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Transaction Type</th>
-        <th>Amount</th>
-        <th>Bank Balance</th>
-      </tt>
-      <tr data-ng-repeat="distribution in journal | filter: query | limitTo: 3">
-        <td>{{distribution.posted_at | date }}</td>
-        <td>{{distribution.description.description}}</td>
-        <td>{{distribution.value.type}}</td>
-        <td>{{distribution.value.amount | currency:"$" }}</td>
-        <td>{{distribution.balance.value.amount}}</td>
-      </tr>
-    </table>
-    <a ui-sref="myDistribution">See All My Distributions</a>
-    <div>
+    <div ng-hide="journal" class="jumbotron text-center">
+      <h2>YOU DO NOT HAVE ANY DISTRIBUTIONS</h2>
     </div>
+    <div ng-show="journal">
+      <h2>My Distributions</h2>
+      <table class="table table-bordered">
+        <tt>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Transaction Type</th>
+          <th>Amount</th>
+          <th>Bank Balance</th>
+        </tt>
+        <tr data-ng-repeat="distribution in journal | filter: query | limitTo: 3">
+          <td>{{distribution.posted_at | date }}</td>
+          <td>{{distribution.description.description}}</td>
+          <td>{{distribution.value.type}}</td>
+          <td>{{distribution.value.amount | currencyflt
+}}</td>
+          <td>{{distribution.balance.value.amount}}</td>
+        </tr>
+      </table>
+      <a ui-sref="myDistribution">See All My Distributions</a>
+    </div>
+  </div>
   </div>
 </section>

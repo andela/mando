@@ -14,7 +14,7 @@
         <td>{{transaction.effective_at | date}}</td>
         <td>{{transaction.description.description}}</td>
         <td>{{transaction.value.type}}</td>
-        <td>{{transaction.value.amount |currency}}</td>
+        <td>{{transaction.value.amount |currencyflt}}</td>
         <td>{{transaction.description.name}}</td>
         <td>{{transaction.balance.value.amount}}</td>
       </tr>
