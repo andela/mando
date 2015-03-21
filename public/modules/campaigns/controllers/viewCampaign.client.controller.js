@@ -72,6 +72,7 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
             toaster.pop('success', 'Success! - Thanks for supporting this campaign');
             $scope.campaign = data;
             getCampaignBalance($scope.campaign.account_id);
+            getCampaignBackersHistory(data._id);
             getUserAccountBalance(Authentication.user.account_id);
           });
       });
