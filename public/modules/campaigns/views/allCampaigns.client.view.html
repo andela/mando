@@ -15,7 +15,7 @@
       <li class="col-sm-4 home-campaigns" data-ng-repeat="campaign in Campaigns | orderBy: criteria">
         <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a>
         </p>
-        <p> ${{campaign.amount}}</p>
+        <p> {{campaign.amount }}</p>
         <p>Expiry Date: "{{campaign.dueDate | date}}"</p>
         <p>{{campaign.balance}}</p>
         <span><i>Description</i></span>
