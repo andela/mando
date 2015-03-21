@@ -14,8 +14,8 @@
         <!--Disabled the support button for unauthenticated user -->
           <button class="btn btn-success btn-lg supportbtn"  data-ng-disabled="!authentication.user" ng-click="openModal()">$SUPPORT</button>
         </div>
-          <p class="cash">Needs: ${{campaign.amount}}</p>
-          <p class="cash">Raised: ${{campaignBalance}}</p>
+          <p class="cash">Needs: {{campaign.amount | currencyflt}}</p>
+          <p class="cash">Raised: {{campaignBalance | currencyflt}}</p>
         <div>
           <youtube-video video-id="campaign.youtubeUrl"></youtube-video>
         </div>
@@ -35,7 +35,7 @@
             {{backer.created | date}}
           </td>
           <td data-title="'Amount'" sortable="'amountDonated'">
-            {{backer.amountDonated | currency}}
+            {{backer.amountDonated | currencyflt}}
           </td>
         </tr>
       </table>
