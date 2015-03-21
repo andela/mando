@@ -11,7 +11,7 @@
       <input type="number" name="deposit" data-ng-model="amount" Placeholder="Enter amount to support">
     </div>
     <div class="modal-footer footer-center">
-      <button class="btn btn-primary" ng-click="ok()" ng-disabled="supportCampaign.$invalid || amount > userAccountBalance || amount + userAccountBalance > amountNeeded">Support</button>
+      <button class="btn btn-primary" ng-click="ok()" ng-disabled="supportCampaign.$invalid || amount > userAccountBalance || amount + campaignBalance > amountNeeded">Support</button>
       <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
   </form>
