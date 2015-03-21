@@ -22,4 +22,19 @@
       </div>
     </div>
   </div>
+  <div>
+    <table ng-table="tableParams" class="table">
+      <tr ng-repeat="backer in $data">
+        <td data-title="'Name'" sortable="'userid.displayName'">
+          {{backer.userid.displayName}}
+        </td>
+        <td data-title="'Date'" sortable="'created'">
+          {{backer.created | date}}
+        </td>
+        <td data-title="'Amount'" sortable="'amountDonated'">
+          {{backer.amountDonated | currency}}
+        </td>
+      </tr>
+    </table>
+  </div>
 </section>

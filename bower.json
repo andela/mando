@@ -18,7 +18,8 @@
     "angular-youtube-mb": "~0.1.6",
     "angularjs-toaster": "0.4.9",
     "ng-lodash": "~0.2.0",
-    "subledger-js-library": "https://github.com/subledger/js-client.git"
+    "subledger-js-library": "https://github.com/subledger/js-client.git",
+    "ng-table": "~0.5.4"
   },
   "resolutions": {
     "angular": "1.2.28"
