@@ -18,7 +18,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     var getCampaignBackersHistory = function (campaignid) {
       backendService.getCampaignBackers(campaignid).success(function (data) {
         $scope.campaignBackers = data;
-        console.log(data);
         $scope.tableParams = new ngTableParams({
           page: 1,
           count: data.length,
@@ -35,8 +34,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
             $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
         });
-      }).error(function (error) {
-        console.log(error);
       });
     };
     var getUserAccountBalance = function (userAccountid) {
