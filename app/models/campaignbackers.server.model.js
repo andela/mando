@@ -16,10 +16,6 @@ var campaignBackerSchema = new Schema({
     type: Number,
     required: true
   },
-  status: {
-    type: String,
-    enum: ['active', 'cancelled']
-  },
   created: {
     type: Date,
     default: Date.now
@@ -37,3 +33,5 @@ var campaignBackerSchema = new Schema({
     ref: 'User'
   }
 });
+
+mongoose.model('CampaignBacker', campaignBackerSchema);
