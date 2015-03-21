@@ -32,8 +32,11 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         controller: 'supportCampaignCtrl',
         size: 'sm',
         resolve: {
-          campaignAccountId: function() {
-            return $scope.campaign.account_id;
+          campaign: function() {
+            return {
+              accountid: $scope.campaign.account_id,
+              id: $scope.campaign._id
+            };
           },
           amountNeeded: function() {
             return $scope.campaign.amount;
