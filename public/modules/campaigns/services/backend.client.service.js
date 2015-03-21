@@ -32,6 +32,10 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
   };
 
+  var createCampaignBacker = function(backerData) {
+    return $http.post('/campaign/backer/new', backerData);
+  };
+
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
@@ -40,5 +44,6 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     updateCampaign: updateCampaign,
     deleteCampaign: deleteCampaign,
     getCampaigns: getCampaigns,
+    createCampaignBacker: createCampaignBacker
   };
 }]);

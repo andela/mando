@@ -12,9 +12,12 @@ var campaignBackerSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  amount: {
+  amountDonated: {
     type: Number,
     required: true
+  },
+  transactionType: {
+    type: String
   },
   created: {
     type: Date,
