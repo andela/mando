@@ -16,7 +16,6 @@ exports.createCampaignBacker = function(req, res) {
 };
 
 exports.getCampaignBackers = function(req, res) {
-  console.log(1, req.params.campaignid);
   CampaignBacker.find({campaignid: req.params.campaignid}).populate('userid').exec(function(err, campaignBackers) {
     if (err) res.json(err);
     res.json(campaignBackers);
