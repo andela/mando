@@ -814,27 +814,38 @@ angular.module('campaign').controller('editCampaignCtrl', ['$scope', 'toaster', 
 
 'use strict';
 
-angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaignAccountId', 'amountNeeded', 'subledgerServices', 'Authentication', '$modalInstance', function($scope, campaignAccountId, amountNeeded, subledgerServices, Authentication, $modalInstance) {
+angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaign', 'amountNeeded', 'subledgerServices', 'Authentication', '$modalInstance', 'backendService', function($scope, campaign, amountNeeded, subledgerServices, Authentication, $modalInstance, backendService) {
 
   subledgerServices.getBalance(Authentication.user.account_id, function(response) {
     $scope.userAccountBalance = response;
     $scope.$digest();
   });
-  subledgerServices.getBalance(campaignAccountId, function(response) {
+  subledgerServices.getBalance(campaign.accountid, function(response) {
     $scope.campaignBalance = response;
     $scope.$digest();
   });
   $scope.amountNeeded = amountNeeded;
 
+  var createCampaignBacker = function() {
+    var backer = {
+      amountDonated: $scope.amount,
+      transactionType: 'credit',
+      campaignid: campaign.id
+    };
+    backendService.createCampaignBacker(backer);
+  };
+
   $scope.ok = function() {
+    createCampaignBacker();
     var transaction = {
       amount: $scope.amount,
       reason: 'Support campaign'
     };
-    subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaignAccountId, Authentication.user, function() {
+    subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function() {
       $modalInstance.close(true);
     });
   };
+
   $scope.cancel = function() {
     $modalInstance.dismiss('cancelled');
   };
@@ -983,8 +994,11 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         controller: 'supportCampaignCtrl',
         size: 'sm',
         resolve: {
-          campaignAccountId: function() {
-            return $scope.campaign.account_id;
+          campaign: function() {
+            return {
+              accountid: $scope.campaign.account_id,
+              id: $scope.campaign._id
+            };
           },
           amountNeeded: function() {
             return $scope.campaign.amount;
@@ -1038,6 +1052,10 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
   };
 
+  var createCampaignBacker = function(backerData) {
+    return $http.post('/campaign/backer/new', backerData);
+  };
+
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
@@ -1046,6 +1064,7 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     updateCampaign: updateCampaign,
     deleteCampaign: deleteCampaign,
     getCampaigns: getCampaigns,
+    createCampaignBacker: createCampaignBacker
   };
 }]);
 'use strict';
@@ -1141,6 +1160,7 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
       url: '/distributor',
       templateUrl: 'modules/distributor/views/distributor.client.view.html'
     })
+
     .state('myDistribution', {
       resolve: {
         credentials: ["$http", function ($http){
@@ -1166,7 +1186,7 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
 
 'use strict';
 
-angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices', 'distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices, $location, $state, $modal, toaster, credentials ) {
+angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authentication', 'subledgerServices', 'distributorServices', '$location', '$state', '$modal', 'toaster', 'credentials', function($scope, Authentication, subledgerServices, distributorServices, $location, $state, $modal, toaster, credentials) {
 
   var cred = credentials.data;
   subledgerServices.setCredentials(cred);
@@ -1175,7 +1195,7 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
   Authentication.requireLogin($state);
   Authentication.requireRole($state, 'distributor', 'userCampaigns');
 
-  //Get All The Users Inn the System ANd populates it with their System Balance...
+  //Get All The Users In the System and populates it with their System Balance...
   $scope.getUsers = function() {
     distributorServices.getAllUsers().success(function(data) {
       $scope.users = data;
@@ -1188,8 +1208,8 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
     });
   };
   $scope.getUsers();
-  //Method to populate each user's account with their system balance
 
+  //Method to populate each user's account with their system balance
   $scope.getCurrentBalance = function(account, destination) {
     subledgerServices.getBalance(account, function(response) {
       destination.amount = response;
@@ -1199,24 +1219,28 @@ angular.module('distributor').controller('distributorCtrl', ['$scope', 'Authenti
 
   //method to credit each account
   $scope.depositIntoUser = function(transaction, user) {
-    subledgerServices.bankerAction('credit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
-      toaster.pop('success', 'Transaction Completed');
-      $scope.getCurrentBalance(user.account_id, user);
-    });
+    var confirmMsg = confirm('Are you sure you want to credit ' + user.displayName);
+    if (confirmMsg) {
+      subledgerServices.bankerAction('credit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
+        toaster.pop('success', 'credited successfully');
+        $scope.getCurrentBalance(user.account_id, user);
+      });
+    }
   };
 
   //method to debit each user account
   $scope.withdrawFromUser = function(transaction, user) {
+    var confirmMsg = confirm('Are you sure you want to credit ' + user.displayName);
     // Compare with user balance
     if (transaction.amount > user.amount) {
       toaster.pop('error', 'Balance is insufficient');
       return;
+    } else if (confirmMsg) {
+      subledgerServices.bankerAction('debit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
+        toaster.pop('success', 'Transaction Completed');
+        $scope.getCurrentBalance(user.account_id, user);
+      });
     }
-    subledgerServices.bankerAction('debit', transaction, cred.bank_id, user.account_id, $scope.authentication.user, function() {
-      toaster.pop('success', 'Transaction Completed');
-      $scope.getCurrentBalance(user.account_id, user);
-      //   console.log(user.account_id);
-    });
   };
 
   $scope.distributorModal = function(user, cb) {
@@ -1248,7 +1272,6 @@ angular.module('distributor').controller('disModalInstanceCtrl', ['$scope', '$mo
 angular.module('distributor').controller('myDistribution', ['$scope', '$http', 'Authentication', '$state', 'subledgerServices', 'credentials', function($scope, $http, Authentication, $state, subledgerServices, credentials) {
   $scope.distribution = [];
   $scope.authentication = Authentication;
-  console.log(Authentication.user);
   $scope.query = $scope.authentication.user.displayName;
   $scope.isDistributor = Authentication.hasRole('distributor');
 
@@ -1265,7 +1288,6 @@ angular.module('distributor').controller('myDistribution', ['$scope', '$http', '
     subledgerServices.getJournals(accountId, function(response) {
       $scope.distribution = response.posted_lines;
       $scope.$digest();
-      console.log($scope.distribution);
     });
   };
 
@@ -1286,28 +1308,25 @@ angular.module('distributor').controller('userDistributionCtrl', ['$scope', '$ht
   var cred = credentials.data;
   subledgerServices.setCredentials(cred);
 
-  subledgerServices.setCredentials(cred);
-
   var getByUsername = (function (username) {
     distributorServices.getByUsername(username).success(function (data, status, header, config){
+
       $scope.getJournals(data.account_id);
+
     })
     .error(function (error,status, header, config){
-      console.log(error);
+      toaster.pop('error', 'Error Fetching File. Try Again Later');
     });
   })(username);
-
 
   //get All lines of transaction
   $scope.getJournals = function(account) {
     subledgerServices.getJournals(account, function(response) {
       $scope.journal = response.posted_lines;
       $scope.$digest();
-      console.log($scope.journal);
     });
   };
 
-  // $scope.getJournals($scope.user.account_id);
 }]);
 
 
