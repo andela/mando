@@ -1,15 +1,14 @@
 /*campaign controller */
 'use strict';
-
 var mongoose = require('mongoose'),
+  async = require('async'),
   errorHandler = require('./errors.server.controller'),
   moment = require('moment'),
   User = mongoose.model('User'),
   subledger = require('./banker.server.controller'),
   Campaign = mongoose.model('Campaign');
-
 /****Create A campaign *****/
-exports.createCampaign = function(req, res) {
+exports.createCampaign = function (req, res) {
   var campaign = new Campaign(req.body);
   campaign.createdBy = req.user._id;
   campaign.lastModifiedBy = req.user._id;
@@ -21,14 +20,14 @@ exports.createCampaign = function(req, res) {
     'description': campaign.title + campaign._id,
     'reference': 'http://andela.co',
     'normal_balance': 'credit'
-  }, function(err, account) {
+  }, function (err, account) {
     if (err) {
       // fail the transaction
       return res.json(err);
     } else {
       campaign.account_id = account.active_account.id;
       // continue with saving the user
-      campaign.save(function(err, campaign) {
+      campaign.save(function (err, campaign) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
@@ -37,24 +36,52 @@ exports.createCampaign = function(req, res) {
           //querying the database again because we want to populate the createdBy and lastModifiedBy field
           Campaign.populate(campaign, {
             path: 'createdBy lastModifiedBy'
-          }, function(err, newCampaign) {
+          }, function (err, newCampaign) {
             res.json(newCampaign);
           });
         }
       });
-
     }
   });
-
 };
 
-exports.getCampaign = function(req, res) {
+//gets backers for a single campaign
+var getCampaignBackers = function (campaign, cb) {
+  var CampaignBacker = mongoose.model('CampaignBacker');
+  CampaignBacker.find({
+    campaignid: campaign._id
+  }).distinct('userid').exec(function (err, backers) {
+    campaign = campaign.toObject();
+    campaign.backers = backers.length;
+    cb(campaign);
+  });
+};
+
+//get backers for array of campaigns
+var _getCampaignsBackers = function (newCampaigns, callback) {
+  var campaigns = [];
+  async.each(newCampaigns, function (campaign, cb) {
+    var CampaignBacker = mongoose.model('CampaignBacker');
+    CampaignBacker.find({
+      campaignid: campaign._id
+    }).distinct('userid').exec(function (err, backers) {
+      campaign = campaign.toObject();
+      campaign.backers = backers.length;
+      campaigns.push(campaign);
+      cb();
+    });
+  }, function (err) {
+    callback(campaigns);
+  });
+};
+
+exports.getCampaign = function (req, res) {
   //the slug format is 080808/new-campaign, hence the addition in the find object
   Campaign.findOne({
       slug: req.params.timestamp + '/' + req.params.campaignslug
     })
     .select('-lastModifiedBy -lastModified')
-    .exec(function(err, campaign) {
+    .exec(function (err, campaign) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
@@ -68,16 +95,17 @@ exports.getCampaign = function(req, res) {
       }
       Campaign.populate(campaign, {
         path: 'createdBy lastModifiedBy'
-      }, function(err, newCampaign) {
-        res.json(newCampaign);
+      }, function (err, newCampaign) {
+        getCampaignBackers(newCampaign, function (campaign) {
+          res.json(campaign);
+        });
       });
     });
 };
-
-exports.getUserCampaigns = function(req, res) {
+exports.getUserCampaigns = function (req, res) {
   //validates the user id if valid or not
   User.findById(req.params.userId)
-    .exec(function(err, user) {
+    .exec(function (err, user) {
       if (err) {
         return res.status(404).send({
           message: errorHandler.getErrorMessage(err)
@@ -94,22 +122,24 @@ exports.getUserCampaigns = function(req, res) {
   Campaign.find({
       'createdBy': new ObjectId(req.params.userId)
     })
-    .exec(function(err, campaign) {
+    .exec(function (err, campaigns) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
       }
-      Campaign.populate(campaign, {
+      Campaign.populate(campaigns, {
         path: 'createdBy lastModifiedBy'
-      }, function(err, newCampaign) {
-        res.json(newCampaign);
+      }, function (err, newCampaigns) {
+        _getCampaignsBackers(newCampaigns, function (userCampaigns) {
+          res.json(userCampaigns);
+        });
       });
     });
 };
 
-exports.getCampaigns = function(req, res) {
-  Campaign.find({}, function(err, campaigns) {
+exports.getCampaigns = function (req, res) {
+  Campaign.find({}, function (err, campaigns) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -117,13 +147,14 @@ exports.getCampaigns = function(req, res) {
     }
     Campaign.populate(campaigns, {
       path: 'createdBy lastModifiedBy'
-    }, function(err, newCampaign) {
-      res.json(newCampaign);
+    }, function (err, newCampaigns) {
+      _getCampaignsBackers(newCampaigns, function (allCampaigns) {
+        res.json(allCampaigns);
+      });
     });
   });
 };
-
-exports.updateCampaign = function(req, res) {
+exports.updateCampaign = function (req, res) {
   var campaign = req.body;
   campaign.lastModifiedBy = req.user._id;
   campaign.lastModified = moment().format();
@@ -133,7 +164,7 @@ exports.updateCampaign = function(req, res) {
   Campaign
     .findByIdAndUpdate(req.params.campaignId, {
       $set: campaign
-    }, {}, function(err, editedCampaign) {
+    }, {}, function (err, editedCampaign) {
       if (err) {
         res.status(400).json(err);
       }
@@ -145,16 +176,14 @@ exports.updateCampaign = function(req, res) {
       }
       Campaign.populate(editedCampaign, {
         path: 'createdBy lastModifiedBy'
-      }, function(err, campaign) {
+      }, function (err, campaign) {
         res.json(campaign);
       });
     });
 };
-
-
-exports.deleteCampaign = function(req, res) {
+exports.deleteCampaign = function (req, res) {
   Campaign.findByIdAndRemove(req.params.campaignId)
-    .exec(function(err, campaign) {
+    .exec(function (err, campaign) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
@@ -163,6 +192,6 @@ exports.deleteCampaign = function(req, res) {
         //archive the account before deleting the campaign.
         res.send('deleted successfully');
       }
-
     });
 };
+
