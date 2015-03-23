@@ -7,9 +7,11 @@ var _ = require('lodash'),
 
   errorHandler = require('../errors.server.controller'),
   mongoose = require('mongoose'),
+  async = require('async'),
   passport = require('passport'),
   adminRoles = require('../admin/roles.server.controller.js'),
   User = mongoose.model('User'),
+  CampaignBacker = mongoose.model('CampaignBacker'),
   subledger = require('../banker.server.controller');
 
 /**
@@ -40,6 +42,32 @@ exports.oauthCallback = function(strategy) {
   };
 };
 
+//gets backers for a single campaign
+var getCampaignBackers = function (campaign, cb) {
+  CampaignBacker.find({
+    campaignid: campaign.campaignid._id
+  }).distinct('userid').exec(function (err, backers) {
+    campaign = campaign.toObject();
+    campaign.backers = backers.length;
+    cb(campaign);
+  });
+};
+
+exports.campaignsUserBacks = function(req, res) {
+  CampaignBacker.find({userid: req.user._id}).distinct('campaignid').exec(function(err, campaigns) {
+    var allCampaigns = [];
+    async.each(campaigns, function(campaign, cb) {
+      CampaignBacker.findOne({campaignid: campaign}).populate('campaignid').exec(function(err, result) {
+        getCampaignBackers(result, function(_campaign) {
+          allCampaigns.push(_campaign);
+          cb();
+        });
+      });
+    }, function(err) {
+      res.json(allCampaigns);
+    });
+  });
+};
 /**
  * Helper function to save or update a OAuth user profile
  */

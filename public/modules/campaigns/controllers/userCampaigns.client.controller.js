@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'subledgerServices', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state',
-  function($scope, backendService, toaster, $location, subledgerServices, Authentication, $stateParams, lodash, credentials, $state) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'subledgerServices', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state', 'ngTableParams', '$filter',
+  function($scope, backendService, toaster, $location, subledgerServices, Authentication, $stateParams, lodash, credentials, $state, ngTableParams, $filter) {
 
     $scope.myCampaigns = [];
     $scope.systemBalance = {};
@@ -22,6 +22,30 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     //uses the Currently signed-in id to get the user id.
     var userid = $scope.authentication.user._id;
 
+    backendService.campaignsIBacked().success(function(data) {
+      $scope.campaignsBacked = data;
+      $scope.noOfCampaignsBacked = data.length;
+      for (var i = 0; i < data.length; i++) {
+        $scope.getCampaignBalance(data[i].campaignid.account_id, $scope.campaignsBacked[i].campaignid);
+      }
+      $scope.tableParams = new ngTableParams({
+        page: 1,
+        count: data.length,
+        sorting: {
+          'title': 'asc'
+        }
+      }, {
+        counts: [],
+        total: data.length,
+        getData: function ($defer, params) {
+          // use build-in angular filter
+          var orderedData = params.sorting() ?
+            $filter('orderBy')(data, params.orderBy()) : data;
+          $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+        }
+      });
+    });
+
     backendService.getUserCampaigns(userid)
       .success(function(data) {
         $scope.myCampaigns = data;
@@ -30,7 +54,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 
           $scope.getCampaignBalance(accountNo, $scope.myCampaigns[i]);
         }
-        // $scope.myCampaigns = 
       })
       .error(function(error, status, header, config) {
         //not cool to redirect the user if any error occured, should be improved by
@@ -41,7 +64,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.getCampaignBalance = function(account, destination) {
       subledgerServices.getBalance(account, function(response) {
         destination.raised = response;
-
         $scope.$digest();
       });
     };
@@ -56,7 +78,7 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
     $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
 
-    //GET UNIQUE USER JOURNAL REPORTS  
+    //GET UNIQUE USER JOURNAL REPORTS
     $scope.getJournals = function(account, cb) {
       subledgerServices.getJournals(account, function(response) {
         response = response.posted_lines;

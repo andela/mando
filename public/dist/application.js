@@ -625,6 +625,16 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
     url: '/campaigns/myAndonation',
     templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html',
     controller: 'userCampaignsCtrl'
+  }).
+  state('allCampaignsBacked', {
+    resolve: {
+      credentials: ["$http", function($http) {
+        return $http.get('/bank/credentials');
+      }]
+    },
+    url: '/campaignIBacked',
+    templateUrl: '/modules/campaigns/views/campaignsIBacked.client.view.html',
+    controller: 'campaignsIBackedCtrl'
   });
 
   //Add YouTube to resource whitelist so that we can embed YouTube videos
@@ -732,6 +742,45 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location',
   };
   $scope.init();
 }]);
+
+'use strict';
+
+angular.module('campaign').controller('campaignsIBackedCtrl', ['$scope', 'backendService', 'ngTableParams', '$filter', 'subledgerServices', 'credentials', function ($scope, backendService, ngTableParams, $filter, subledgerServices, credentials) {
+
+  var cred = credentials.data;
+  subledgerServices.setCredentials(cred);
+
+  backendService.campaignsIBacked().success(function (data) {
+    $scope.campaignsBacked = data;
+    for (var i = 0; i < data.length; i++) {
+      $scope.getCampaignBalance(data[i].campaignid.account_id, $scope.campaignsBacked[i].campaignid);
+    }
+    $scope.tableParams = new ngTableParams({
+      page: 1,
+      count: data.length,
+      sorting: {
+        'title': 'asc'
+      }
+    }, {
+      counts: [],
+      total: data.length,
+      getData: function ($defer, params) {
+        // use build-in angular filter
+        var orderedData = params.sorting() ?
+          $filter('orderBy')(data, params.orderBy()) : data;
+        $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+      }
+    });
+  });
+  $scope.getCampaignBalance = function (account, destination) {
+    subledgerServices.getBalance(account, function (response) {
+      destination.raised = response;
+      $scope.$digest();
+    });
+  };
+
+}]);
+
 
 'use strict';
 
@@ -853,8 +902,8 @@ angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaig
 
 'use strict';
 
-angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'subledgerServices', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state',
-  function($scope, backendService, toaster, $location, subledgerServices, Authentication, $stateParams, lodash, credentials, $state) {
+angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendService', 'toaster', '$location', 'subledgerServices', 'Authentication', '$stateParams', 'lodash', 'credentials', '$state', 'ngTableParams', '$filter',
+  function($scope, backendService, toaster, $location, subledgerServices, Authentication, $stateParams, lodash, credentials, $state, ngTableParams, $filter) {
 
     $scope.myCampaigns = [];
     $scope.systemBalance = {};
@@ -875,6 +924,30 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     //uses the Currently signed-in id to get the user id.
     var userid = $scope.authentication.user._id;
 
+    backendService.campaignsIBacked().success(function(data) {
+      $scope.campaignsBacked = data;
+      $scope.noOfCampaignsBacked = data.length;
+      for (var i = 0; i < data.length; i++) {
+        $scope.getCampaignBalance(data[i].campaignid.account_id, $scope.campaignsBacked[i].campaignid);
+      }
+      $scope.tableParams = new ngTableParams({
+        page: 1,
+        count: data.length,
+        sorting: {
+          'title': 'asc'
+        }
+      }, {
+        counts: [],
+        total: data.length,
+        getData: function ($defer, params) {
+          // use build-in angular filter
+          var orderedData = params.sorting() ?
+            $filter('orderBy')(data, params.orderBy()) : data;
+          $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+        }
+      });
+    });
+
     backendService.getUserCampaigns(userid)
       .success(function(data) {
         $scope.myCampaigns = data;
@@ -883,7 +956,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
 
           $scope.getCampaignBalance(accountNo, $scope.myCampaigns[i]);
         }
-        // $scope.myCampaigns = 
       })
       .error(function(error, status, header, config) {
         //not cool to redirect the user if any error occured, should be improved by
@@ -894,7 +966,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.getCampaignBalance = function(account, destination) {
       subledgerServices.getBalance(account, function(response) {
         destination.raised = response;
-
         $scope.$digest();
       });
     };
@@ -909,7 +980,7 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.getCurrentBalance(cred.bank_id, $scope.systemBalance);
     $scope.getCurrentBalance($scope.authentication.user.account_id, $scope.balance);
 
-    //GET UNIQUE USER JOURNAL REPORTS  
+    //GET UNIQUE USER JOURNAL REPORTS
     $scope.getJournals = function(account, cb) {
       subledgerServices.getJournals(account, function(response) {
         response = response.posted_lines;
@@ -976,8 +1047,8 @@ angular.module('campaign').controller('userTransactionCtrl', ['$scope', '$http',
 
 
 'use strict';
-angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter',
-  function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter) {
+angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter', '$timeout',
+  function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout) {
     var campaignBalance, userAccountBalance;
     $scope.authentication = Authentication;
     var cred = credentials.data;
@@ -985,9 +1056,9 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
-        getCampaignBackersHistory(data._id);
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
+        getCampaignBackersHistory(data._id);
       })
       .error(function (error, status, header, config) {
         $location.path('/');
@@ -1020,7 +1091,9 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     };
     var getCampaignBalance = function (campaignAccountid) {
       subledgerServices.getBalance(campaignAccountid, function (response) {
-        $scope.campaignBalance = response;
+        $timeout(function() {
+          $scope.campaignBalance = response;
+        });
       });
     };
     $scope.openModal = function () {
@@ -1114,6 +1187,9 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/campaigns/' + campaignid + '/backers');
   };
 
+  var campaignsIBacked = function() {
+    return $http.get('/user/campaigns/backed');
+  };
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
@@ -1123,7 +1199,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     deleteCampaign: deleteCampaign,
     getCampaigns: getCampaigns,
     createCampaignBacker: createCampaignBacker,
-    getCampaignBackers: getCampaignBackers
+    getCampaignBackers: getCampaignBackers,
+    campaignsIBacked: campaignsIBacked
   };
 }]);
 'use strict';

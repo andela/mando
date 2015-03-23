@@ -1,6 +1,6 @@
 'use strict';
-angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter',
-  function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter) {
+angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter', '$timeout',
+  function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout) {
     var campaignBalance, userAccountBalance;
     $scope.authentication = Authentication;
     var cred = credentials.data;
@@ -8,9 +8,9 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
-        getCampaignBackersHistory(data._id);
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
+        getCampaignBackersHistory(data._id);
       })
       .error(function (error, status, header, config) {
         $location.path('/');
@@ -43,7 +43,9 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     };
     var getCampaignBalance = function (campaignAccountid) {
       subledgerServices.getBalance(campaignAccountid, function (response) {
-        $scope.campaignBalance = response;
+        $timeout(function() {
+          $scope.campaignBalance = response;
+        });
       });
     };
     $scope.openModal = function () {
