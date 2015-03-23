@@ -16,6 +16,13 @@ var campaignBackerSchema = new Schema({
     type: Number,
     required: true
   },
+
+  status: {
+    type: String,
+    enum: ['active', 'cancelled'],
+    default: 'active'
+  },
+
   transactionType: {
     type: String
   },

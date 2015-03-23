@@ -6,7 +6,8 @@ var mongoose = require('mongoose'),
   moment = require('moment'),
   User = mongoose.model('User'),
   subledger = require('./banker.server.controller'),
-  Campaign = mongoose.model('Campaign');
+  Campaign = mongoose.model('Campaign'),
+  CampaignBacker = mongoose.model('CampaignBacker');
 /****Create A campaign *****/
 exports.createCampaign = function (req, res) {
   var campaign = new Campaign(req.body);
@@ -47,7 +48,6 @@ exports.createCampaign = function (req, res) {
 
 //gets backers for a single campaign
 var getCampaignBackers = function (campaign, cb) {
-  var CampaignBacker = mongoose.model('CampaignBacker');
   CampaignBacker.find({
     campaignid: campaign._id
   }).distinct('userid').exec(function (err, backers) {
@@ -120,7 +120,8 @@ exports.getUserCampaigns = function (req, res) {
     });
   var ObjectId = mongoose.Types.ObjectId;
   Campaign.find({
-      'createdBy': new ObjectId(req.params.userId)
+      'createdBy': new ObjectId(req.params.userId),
+      status: { $ne: 'deleted'}
     })
     .exec(function (err, campaigns) {
       if (err) {
@@ -139,7 +140,7 @@ exports.getUserCampaigns = function (req, res) {
 };
 
 exports.getCampaigns = function (req, res) {
-  Campaign.find({}, function (err, campaigns) {
+  Campaign.find({status: 'active'}, function (err, campaigns) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -181,17 +182,44 @@ exports.updateCampaign = function (req, res) {
       });
     });
 };
+var archiveCampaignAccount = function(res, campaignAccountId, cb) {
+  subledger.archiveCampaignAccount(campaignAccountId, function(error, response) {
+    if (error) {
+      res.status(500).json({message: 'Cannot archive the campaign account'});
+    }
+    res.send('deleted successfully');
+  });
+};
+
 exports.deleteCampaign = function (req, res) {
-  Campaign.findByIdAndRemove(req.params.campaignId)
-    .exec(function (err, campaign) {
-      if (err) {
-        return res.status(400).send({
-          message: errorHandler.getErrorMessage(err)
+  var data = {};
+  data.lastModifiedBy = req.user._id;
+  data.lastModified = moment().format();
+  data.status = 'deleted';
+  Campaign.findByIdAndUpdate(req.params.campaignId, { $set: data }, {}, function (err, campaign) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      CampaignBacker.find({campaignid: campaign._id, status: 'active'}).populate('userid').exec(function(err, result) {
+        if (!result) {
+          archiveCampaignAccount(res, campaign.account_id);
+        }
+        async.each(result, function(backer, cb) {
+          backer.status = 'cancelled';
+          backer.save();
+          subledger.creditUserAccount('credit', backer.amountDonated, campaign.account_id, backer.userid.account_id, campaign.title, function(error, response) {
+            cb(error);
+          });
+        }, function(err) {
+          if (err) {
+            res.status(500).json({message: 'Cannot credit users'});
+          }
+          archiveCampaignAccount(res, campaign.account_id);
         });
-      } else {
-        //archive the account before deleting the campaign.
-        res.send('deleted successfully');
-      }
-    });
+      });
+    }
+  });
 };
 

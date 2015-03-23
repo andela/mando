@@ -55,6 +55,12 @@ var getCampaignBackers = function (campaign, cb) {
 
 exports.campaignsUserBacks = function(req, res) {
   CampaignBacker.find({userid: req.user._id}).distinct('campaignid').exec(function(err, campaigns) {
+    if (err) {
+      errorHandler.getErrorMessage(err);
+    }
+    if (!campaigns) {
+      res.json([]);
+    }
     var allCampaigns = [];
     async.each(campaigns, function(campaign, cb) {
       CampaignBacker.findOne({campaignid: campaign}).populate('campaignid').exec(function(err, result) {
