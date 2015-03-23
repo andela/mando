@@ -12,6 +12,9 @@ module.exports = function(app) {
   //signout route
   app.route('/auth/signout').get(users.signout);
 
+  //get campaigns a user is backing
+  app.route('/user/campaigns/backed').get(users.requiresLogin, users.campaignsUserBacks);
+
   // Setting the google oauth routes
   app.route('/auth/google').get(passport.authenticate('google', {
     scope: [

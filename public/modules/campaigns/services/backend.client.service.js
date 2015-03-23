@@ -40,6 +40,9 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/campaigns/' + campaignid + '/backers');
   };
 
+  var campaignsIBacked = function() {
+    return $http.get('/user/campaigns/backed');
+  };
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
@@ -49,6 +52,7 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     deleteCampaign: deleteCampaign,
     getCampaigns: getCampaigns,
     createCampaignBacker: createCampaignBacker,
-    getCampaignBackers: getCampaignBackers
+    getCampaignBackers: getCampaignBackers,
+    campaignsIBacked: campaignsIBacked
   };
 }]);

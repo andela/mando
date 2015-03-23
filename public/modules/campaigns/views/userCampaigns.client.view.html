@@ -1,4 +1,4 @@
-<section>
+<section class="container">
   <div>
     <a href="/#!/admin/users" ng-show="isAdmin" class="btn btn-default pull-right">Users</a>
     <a href="/#!/bank" ng-show="isBanker" class="btn btn-default pull-right">Bank</a>
@@ -38,8 +38,44 @@
       </tr>
     </table>
     <div ng-hide="myCampaigns.length < 4">
-      <a href="#" ng-show="limit===4" ng-click="increment()">See All Campaigns</a>
-      <a href="#" ng-hide="limit===4" ng-click="decrement()">Back</a>
+      <a href="#" ng-show="limit===4" ng-click="increment()" class="pull-right">See All Campaigns</a>
+      <a href="#" ng-hide="limit===4" ng-click="decrement()" class="pull-right">Back</a>
+    </div>
+  </div>
+  <div class="row">
+    <h2>Campaigns I Backed</h2>
+    <div ng-hide="campaignsBacked">
+      <h3>You have not backed any campaign</h3>
+    </div>
+    <div ng-show="campaignsBacked">
+      <table ng-table="tableParams" class="table table-responsive">
+        <tr ng-repeat="campaignsbacked in $data | limitTo: 4">
+          <td data-title="'Title'" sortable="'campaignid.title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
+            {{campaignsbacked.campaignid.title}}</a>
+          </td>
+          <td data-title="'Status'" sortable="'campaignid.status'" class="text-capitalize">
+            {{campaignsbacked.campaignid.status}}
+          </td>
+          <td data-title="'Amount Needed'" sortable="'campaignid.amount'">
+            {{campaignsbacked.campaignid.amount | currencyflt}}
+          </td>
+          <td data-title="'Amount Raised'" sortable="'campaignid.raised'">
+            {{campaignsbacked.campaignid.raised | currencyflt}}
+          </td>
+          <td data-title="'Created'" sortable="'campaignid.created'">
+            {{campaignsbacked.campaignid.created | date}}
+          </td>
+          <td data-title="'Deadline'" sortable="'campaignid.dueDate'">
+            {{campaignsbacked.campaignid.dueDate | date}}
+          </td>
+          <td data-title="'Backers'" sortable="'backers'">
+            {{campaignsbacked.backers}}
+          </td>
+        </tr>
+      </table>
+      <div ng-show="noOfCampaignsBacked > 4">
+        <p class="pull-right"> <a href="/#!/campaignIBacked">See all campaigns I backed</a></p>
+      </div>
     </div>
   </div>
   <div ng-show="isBanker">
@@ -62,7 +98,7 @@
           <td>{{transaction.value.amount | currencyflt}}</td>
         </tr>
       </table>
-      <a href="/#!/bank">See All Bank Transactions</a>
+      <a href="/#!/bank" class="pull-right">See All Bank Transactions</a>
     </div>
   </div>
   <div>
@@ -88,7 +124,7 @@
           <td>{{transaction.balance.value.amount}}</td>
         </tr>
       </table>
-      <a href="/#!/myTransactions">See All Transactions</a>
+      <a href="/#!/myTransactions" class="pull-right">See All Transactions</a>
     </div>
   </div>
   <div ng-show="isDistributor">
@@ -114,7 +150,7 @@
           <td>{{distribution.balance.value.amount}}</td>
         </tr>
       </table>
-      <a ui-sref="myDistribution">See All My Distributions</a>
+      <a ui-sref="myDistribution" class="pull-right">See All My Distributions</a>
     </div>
   </div>
   </div>

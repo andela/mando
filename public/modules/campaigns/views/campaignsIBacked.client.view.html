@@ -1,0 +1,32 @@
+<section class="container">
+  <div>
+    <h2>Campaigns I Backed</h2>
+    <div ng-show="campaignsBacked">
+      <table ng-table="tableParams" class="table table-responsive">
+        <tr ng-repeat="campaignsbacked in $data">
+          <td data-title="'Title'" sortable="'campaignid.title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
+            {{campaignsbacked.campaignid.title}}</a>
+          </td>
+          <td data-title="'Status'" sortable="'campaignid.status'" class="text-capitalize">
+            {{campaignsbacked.campaignid.status}}
+          </td>
+          <td data-title="'Amount Needed'" sortable="'campaignid.amount'">
+            {{campaignsbacked.campaignid.amount | currencyflt}}
+          </td>
+          <td data-title="'Amount Raised'" sortable="'campaignid.raised'">
+            {{campaignsbacked.campaignid.raised | currencyflt}}
+          </td>
+          <td data-title="'Created'" sortable="'campaignid.created'">
+            {{campaignsbacked.campaignid.created | date}}
+          </td>
+          <td data-title="'Deadline'" sortable="'campaignid.dueDate'">
+            {{campaignsbacked.campaignid.dueDate | date}}
+          </td>
+          <td data-title="'Backers'" sortable="'backers'">
+            {{campaignsbacked.backers}}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>

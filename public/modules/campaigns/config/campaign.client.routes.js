@@ -47,6 +47,16 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
     url: '/campaigns/myAndonation',
     templateUrl: 'modules/campaigns/views/userCampaigns.client.view.html',
     controller: 'userCampaignsCtrl'
+  }).
+  state('allCampaignsBacked', {
+    resolve: {
+      credentials: function($http) {
+        return $http.get('/bank/credentials');
+      }
+    },
+    url: '/campaignIBacked',
+    templateUrl: '/modules/campaigns/views/campaignsIBacked.client.view.html',
+    controller: 'campaignsIBackedCtrl'
   });
 
   //Add YouTube to resource whitelist so that we can embed YouTube videos
