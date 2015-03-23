@@ -50,7 +50,11 @@
 }
 
 .btn-default {
-  border-radius: 80%;
+  border: transparent;
+}
+
+.btn-default:hover {
+  font-size: 1.2em;
 }
 
 iframe {

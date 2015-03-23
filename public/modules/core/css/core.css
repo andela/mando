@@ -25,11 +25,11 @@ body {
   -o-border-radius:10px;
   border-radius:10px;
   margin: 2px;
-  background-color :#fff;
+  /*background-color :#fff;*/
   min-height: 17em;
   box-shadow: 2px 1px 2px #CDD1D1;
   padding: 20px;
-  border: 2px solid #ddd;
+  border: 3px solid #fff;
   list-style-type: none;
   color: #222;
 }
@@ -46,8 +46,10 @@ body {
 }
 
 .nav-bar{
-  background-color: #31698a;
-  background-size: 13px, 29px, 37px, 53px;
+  background: -webkit-linear-gradient(top, #31698a , #1fa1d5 );
+  background: -moz-linear-gradient(top, #31698a , #1fa1d5 );
+  background-size: cover;
+  border-color: white;
   /*height: 10%;*/
 }
 
@@ -66,10 +68,6 @@ body {
   border-radius: 80%;
 }
 
-#nav-logo {
-  background-image: url('../img/app-images/andela.png');
-}
-
 .auth-img {
   height: 30px;
   width: 30px;
@@ -80,11 +78,25 @@ body {
 .logo-image {
   margin-top: -7px;
   height: 65px;
-  width: 80px;
+  width: 70px;
 }
 
 .second-div {
   height: 80px;
+  background-color: #088da5;
+}
+
+.third-div {
+  background-color: #088da5;
+}
+
+.home-pic {
+  min-width: 100%;
+}
+
+.see-more-campaigns a{
+  color: #222;
+  text-shadow: 1px 1px 1px #fff;
 }
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
