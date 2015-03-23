@@ -6,7 +6,8 @@ var mongoose = require('mongoose'),
   moment = require('moment'),
   User = mongoose.model('User'),
   subledger = require('./banker.server.controller'),
-  Campaign = mongoose.model('Campaign');
+  Campaign = mongoose.model('Campaign'),
+  CampaignBacker = mongoose.model('CampaignBacker');
 /****Create A campaign *****/
 exports.createCampaign = function (req, res) {
   var campaign = new Campaign(req.body);
@@ -47,7 +48,6 @@ exports.createCampaign = function (req, res) {
 
 //gets backers for a single campaign
 var getCampaignBackers = function (campaign, cb) {
-  var CampaignBacker = mongoose.model('CampaignBacker');
   CampaignBacker.find({
     campaignid: campaign._id
   }).distinct('userid').exec(function (err, backers) {
@@ -182,6 +182,15 @@ exports.updateCampaign = function (req, res) {
       });
     });
 };
+var archiveCampaignAccount = function(res, campaignAccountId, cb) {
+  subledger.archiveCampaignAccount(campaignAccountId, function(error, response) {
+    if (error) {
+      res.status(500).json({message: 'Cannot archive the campaign account'});
+    }
+    res.send('deleted successfully');
+  });
+};
+
 exports.deleteCampaign = function (req, res) {
   var data = {};
   data.lastModifiedBy = req.user._id;
@@ -193,11 +202,22 @@ exports.deleteCampaign = function (req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      subledger.archiveCampaignAccount(campaign.account_id, function(error, response) {
-        if (error) {
-          res.status(500).json({message: 'Cannot archive the campaign account'});
+      CampaignBacker.find({campaignid: campaign._id, status: 'active'}).populate('userid').exec(function(err, result) {
+        if (!result) {
+          archiveCampaignAccount(res, campaign.account_id);
         }
-        res.send('deleted successfully');
+        async.each(result, function(backer, cb) {
+          backer.status = 'cancelled';
+          backer.save();
+          subledger.creditUserAccount('credit', backer.amountDonated, campaign.account_id, backer.userid.account_id, campaign.title, function(error, response) {
+            cb(error);
+          });
+        }, function(err) {
+          if (err) {
+            res.status(500).json({message: 'Cannot credit users'});
+          }
+          archiveCampaignAccount(res, campaign.account_id);
+        });
       });
     }
   });
