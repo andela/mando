@@ -120,7 +120,8 @@ exports.getUserCampaigns = function (req, res) {
     });
   var ObjectId = mongoose.Types.ObjectId;
   Campaign.find({
-      'createdBy': new ObjectId(req.params.userId)
+      'createdBy': new ObjectId(req.params.userId),
+      status: { $ne: 'deleted'}
     })
     .exec(function (err, campaigns) {
       if (err) {
@@ -139,7 +140,7 @@ exports.getUserCampaigns = function (req, res) {
 };
 
 exports.getCampaigns = function (req, res) {
-  Campaign.find({}, function (err, campaigns) {
+  Campaign.find({status: 'active'}, function (err, campaigns) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -182,16 +183,23 @@ exports.updateCampaign = function (req, res) {
     });
 };
 exports.deleteCampaign = function (req, res) {
-  Campaign.findByIdAndRemove(req.params.campaignId)
-    .exec(function (err, campaign) {
-      if (err) {
-        return res.status(400).send({
-          message: errorHandler.getErrorMessage(err)
-        });
-      } else {
-        //archive the account before deleting the campaign.
+  var data = {};
+  data.lastModifiedBy = req.user._id;
+  data.lastModified = moment().format();
+  data.status = 'deleted';
+  Campaign.findByIdAndUpdate(req.params.campaignId, { $set: data }, {}, function (err, campaign) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      subledger.archiveCampaignAccount(campaign.account_id, function(error, response) {
+        if (error) {
+          res.status(500).json({message: 'Cannot archive the campaign account'});
+        }
         res.send('deleted successfully');
-      }
-    });
+      });
+    }
+  });
 };
 

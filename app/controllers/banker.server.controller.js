@@ -61,5 +61,11 @@ exports.getConstants = function(req, res){
   return res.json(datas);
 };
 
+exports.archiveCampaignAccount = function(account_id, cb) {
+  subledger.organization(org_id).book(book_id).account(account_id).archive(function (error,apiRes){
+    cb(error, apiRes);
+  });
+};
+
 
 

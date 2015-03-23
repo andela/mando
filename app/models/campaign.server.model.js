@@ -41,7 +41,7 @@ var campaignSchema = new Schema({
 
   status: {
     type: String,
-    enum: ['active', 'cancelled', 'expired'],
+    enum: ['active', 'funded', 'expired', 'deleted'],
     default: 'active'
   },
 
