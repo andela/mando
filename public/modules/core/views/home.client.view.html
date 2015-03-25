@@ -1,11 +1,14 @@
 <section data-ng-controller="HomeController">
-    <!-- home-page image -->
-  <div class="carousel-inner">
-    <div class="item active">
-      <img src="modules/core/img/app-images/caros3.jpg" class="home-pic">
-    <div class="carousel-caption">
-      <h3>Donate and make a dream come true</h3>
-    </div>
+  <div class="slides_control">
+    <div>
+      <carousel interval="myInterval" disable-animation="true">
+        <slide ng-repeat="slide in slides" active="slide.active">
+          <img ng-src="{{slide.image}}"class="caros-img" width="1400" height="500" style="margin:auto;">
+          <div class="carousel-caption">
+            <h3>Donate and make a dream come true</h3>
+          </div>
+        </slide>
+      </carousel>
     </div>
   </div>
   <div class="second-div">
@@ -13,11 +16,11 @@
   <div class="row third-div">
     <ul>
       <li class="col-sm-4 home-campaigns" ng-repeat="campaign in campaigns | orderBy: 'created'.descending | limitTo:3">
+        <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
         <p><a href="/#!/campaign/{{ campaign.slug}}" class="class-title"> {{campaign.title }}</a></p>
-        <p> ${{campaign.amount}}</p>
+        <p>Amount Needed: ${{campaign.amount}}</p>
         <p>DueDate: {{campaign.dueDate | date}}</p>
         <p>{{campaign.balance}}</p>
-        <!-- {{campaign.created}} -->
         <span class="text-muted">Description</span>
         <p class="">{{campaign.description |limitTo: 136}} ...</p>
       </li>
