@@ -15,32 +15,34 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
         $scope.error = error;
       });
 
-    $scope.myInterval = 2000;
-    var slides = $scope.slides = [];
-    $scope.addSlide = function() {
-      slides.push({
-        image: 'modules/core/img/app-images/caros1.jpg' + 'modules/core/img/app-images/andela.png' + 'modules/core/img/app-images/andela.png',
-        text: ['Happy','Laugh','Honesty']
-      });
-    };
-    for (var i=0; i<4; i++) {
-    $scope.addSlide();
+  $scope.myInterval = 3000;
+  $scope.slides = [
+    {
+      image: 'http://res.cloudinary.com/andela/image/upload/v1427207822/caros3_lnwm8z.jpg'
+    },
+    {
+      image: 'http://res.cloudinary.com/andela/image/upload/v1427278895/caros6_lujtxb.jpg'
+    },
+    {
+      image: 'http://res.cloudinary.com/andela/image/upload/v1427279010/caros7_xvgevw.jpg'
+    },
+    {
+      image: 'http://res.cloudinary.com/andela/image/upload/v1427279114/caros8_detjfr.jpg'
     }
+  ];
 
 	}
+
+
 ]);
 
-// $scope.myInterval = 5000;
-//   var slides = $scope.slides = [];
-//   $scope.addSlide = function() {
-//     var newWidth = 600 + slides.length + 1;
-//     slides.push({
-//       image: 'http://placekitten.com/' + newWidth + '/300',
-//       text: ['More','Extra','Lots of','Surplus'][slides.length % 4] + ' ' +
-//         ['Cats', 'Kittys', 'Felines', 'Cutes'][slides.length % 4]
-//     });
-//   };
-//   for (var i=0; i<4; i++) {
-//     $scope.addSlide();
-//   }
-// });
+angular.module('core').directive('disableAnimation', function($animate){
+    return {
+        restrict: 'A',
+        link: function($scope, $element, $attrs){
+            $attrs.$observe('disableAnimation', function(value){
+                $animate.enabled(!value, $element);
+            });
+        }
+    };
+});
