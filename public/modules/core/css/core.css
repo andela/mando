@@ -1,6 +1,3 @@
-body {
-  background-image: url(http://res.cloudinary.com/andela/image/upload/v1427207873/img2_s8fzmp.png);
-}
 .content {
   margin-top: 58px;
 }
@@ -45,8 +42,8 @@ body {
 }
 
 .nav-bar{
-  background: -webkit-linear-gradient(top, #31698a , #1fa1d5 );
-  background: -moz-linear-gradient(top, #31698a , #1fa1d5 );
+  background: -webkit-linear-gradient(top, #00796B , #009688 );
+  background: -moz-linear-gradient(top, #00796B , #009688);
   background-size: cover;
   border-color: white;
 }
