@@ -45,7 +45,6 @@
   background: -webkit-linear-gradient(top, #00796B , #009688 );
   background: -moz-linear-gradient(top, #00796B , #009688);
   background-size: cover;
-  border-color: white;
 }
 
 .nav-bar a {
@@ -80,14 +79,21 @@
   height: 20px;
 }
 
-.home-pic {
-  min-width: 100%;
+.third-div {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .see-more-campaigns a{
   color: #222;
   font-weight: bolder;
+  font-size: 1.6em;
   text-shadow: 1px 1px 1px #fff;
+}
+
+.footer {
+  background: #B6B6B6;
+  height: 4.5em;
 }
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
