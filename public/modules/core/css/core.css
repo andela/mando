@@ -1,17 +1,18 @@
 .content {
-	margin-top: 50px;
+  margin-top: 58px;
 }
+
 .undecorated-link:hover {
-	text-decoration: none;
+  text-decoration: none;
 }
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-	display: none !important;
+  display: none !important;
 }
 .ng-invalid.ng-dirty {
-	border-color: #FA787E;
+  border-color: #FA787E;
 }
 .ng-valid.ng-dirty {
-	border-color: #78FA89;
+  border-color: #78FA89;
 }
 
 .home-campaigns {
@@ -20,11 +21,10 @@
   -o-border-radius:10px;
   border-radius:10px;
   margin: 2px;
-  background-color :#F5EFEE;
-  min-height: 17em;
+  height: 46em;
   box-shadow: 2px 1px 2px #CDD1D1;
   padding: 20px;
-  border: 2px solid #ddd;
+  border: 3px solid #fff;
   list-style-type: none;
   color: #222;
 }
@@ -38,6 +38,62 @@
 .home-campaigns p {
   font-size: .9em;
   line-height: 1.5em;
+  font-weight: bold;
+}
+
+.nav-bar{
+  background: -webkit-linear-gradient(top, #00796B , #009688 );
+  background: -moz-linear-gradient(top, #00796B , #009688);
+  background-size: cover;
+}
+
+.nav-bar a {
+  color: #fff !important;
+}
+
+.nav-bar a:hover {
+  background: #fff;
+  border-radius: 80%;
+  margin-top: 5px;
+}
+
+.nav-bar a:active {
+  background: #003366;
+  border-radius: 80%;
+}
+
+.auth-img {
+  height: 30px;
+  width: 30px;
+  border-radius: 80%;
+  margin-top: 10px;
+}
+
+.logo-image {
+  margin-top: -7px;
+  height: 65px;
+  width: 70px;
+}
+
+.second-div {
+  height: 20px;
+}
+
+.third-div {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.see-more-campaigns a{
+  color: #222;
+  font-weight: bolder;
+  font-size: 1.6em;
+  text-shadow: 1px 1px 1px #fff;
+}
+
+.footer {
+  background: #B6B6B6;
+  height: 4.5em;
 }
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
@@ -46,3 +102,4 @@
     width:32%;
   }
 }
+

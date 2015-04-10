@@ -32,6 +32,17 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.put('/campaign/' + campaignData._id + '/edit', campaignData);
   };
 
+  var createCampaignBacker = function(backerData) {
+    return $http.post('/campaign/backer/new', backerData);
+  };
+
+  var getCampaignBackers = function(campaignid) {
+    return $http.get('/campaigns/' + campaignid + '/backers');
+  };
+
+  var campaignsIBacked = function() {
+    return $http.get('/user/campaigns/backed');
+  };
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
@@ -39,6 +50,9 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getUserCampaigns: getUserCampaigns,
     updateCampaign: updateCampaign,
     deleteCampaign: deleteCampaign,
-    getCampaigns: getCampaigns
-   };
+    getCampaigns: getCampaigns,
+    createCampaignBacker: createCampaignBacker,
+    getCampaignBackers: getCampaignBackers,
+    campaignsIBacked: campaignsIBacked
+  };
 }]);

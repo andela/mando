@@ -36,7 +36,7 @@ module.exports = function(grunt) {
       },
       clientJS: {
         files: watchFiles.clientJS,
-        tasks: ['jshint'],
+        tasks: ['jshint', 'unittest'],
         options: {
           livereload: true
         }
@@ -188,8 +188,10 @@ module.exports = function(grunt) {
   // Test task.
   grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit', 'protractor:all']);
   //unit test task
-  grunt.registerTask('unittest', ['env:test','karma:unit']);
+  grunt.registerTask('unittest', ['env:test','karma:unit','mochaTest']);
+
+  grunt.registerTask('mocha-test', ['env:test', 'mochaTest']);
 
   //TEST Protractor
-  grunt.registerTask('test-protractor', ['env:test', 'protractor:all']);
+  grunt.registerTask('e2etest', ['env:test', 'protractor:all']);
 };

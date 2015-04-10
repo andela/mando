@@ -17,6 +17,12 @@ var getUniqueErrorMessage = function(err) {
 	return output;
 };
 
+exports.sendError = function(res, err) {
+	return res.status(400).send({
+    message: exports.getErrorMessage(err)
+  });
+};
+
 /**
  * Get the error message from error object
  */

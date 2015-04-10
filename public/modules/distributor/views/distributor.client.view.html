@@ -1,0 +1,22 @@
+<section>
+  <h2>DISTRIBUTE MONEY</h2>
+  <table class="table table-bordered">
+    <tt>
+      <th>Credit User Account</th>
+      <th>Account Balance</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+    </tt>
+    <tr ng-repeat="user in users | orderBy: 'firstName'">
+      <td>
+        <button ng-click="distributorModal(user, depositIntoUser)">Credit</button>
+        <button ng-click="distributorModal(user, withdrawFromUser)">Withdraw</button>
+      </td>
+      <td>{{user.amount | currencyflt}} </td>
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+      <td><a ng-href="/#!/distributor/{{user.username}}">{{user.email}}</a></td>
+    </tr>
+  </table>
+</section>

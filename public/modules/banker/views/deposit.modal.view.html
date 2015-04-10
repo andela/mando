@@ -1,0 +1,13 @@
+<div class="modal-header text-center">
+  <h5 class="modal-title">DEPOSIT INTO ACCOUNT</h5>
+</div>
+<form name="depositForm" class="text-center" novalidate>
+  <div class="modal-body text-center">
+    <p ng-show="depositForm.$invalid &amp;&amp;depositForm.$dirty" class="error text-muted red">Please Enter A Valid Amount</p>
+    <input type="number" name="deposit" data-ng-model="deposit.amount" Placeholder="Amount to Deposit">
+  </div>
+  <div class="modal-footer footer-center">
+    <button class="btn btn-primary" ng-click="ok(deposit)" ng-disabled="depositForm.$invalid">Deposit</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
+</form>

@@ -12,7 +12,6 @@ angular.module('users').config(['$httpProvider',
 							case 401:
 								// Deauthenticate the global user
 								Authentication.user = null;
-
 								// Redirect to signin page
 								$location.path('/');
 								break;
@@ -20,7 +19,6 @@ angular.module('users').config(['$httpProvider',
 								// Add unauthorized behaviour
 								break;
 						}
-
 						return $q.reject(rejection);
 					}
 				};

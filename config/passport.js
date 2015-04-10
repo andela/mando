@@ -19,15 +19,21 @@ module.exports = function() {
 
 	// Deserialize sessions
 	passport.deserializeUser(function(id, done) {
-		User.findOne({
-			_id: id
-		}, '-salt -password', function(err, user) {
+		User.findOne({_id: id})
+			.select('-salt -password')
+			.populate('roles')
+			.exec(function(err, user) {
 			done(err, user);
 		});
 	});
 
 	// Initialize strategies
-	config.getGlobbedFiles('./config/strategies/**/*.js').forEach(function(strategy) {
-		require(path.resolve(strategy))();
-	});
+	// config.getGlobbedFiles('./config/strategies/**/*.js').forEach(function(strategy) {
+	// 	require(path.resolve(strategy))();
+	// });
+
+	if (process.env.NODE_ENV === 'test') {
+		require('./strategies/mock')();
+	}
+	require('./strategies/google')();
 };

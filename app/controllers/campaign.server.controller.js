@@ -1,42 +1,88 @@
 /*campaign controller */
 'use strict';
-
 var mongoose = require('mongoose'),
-    errorHandler =require('./errors.server.controller'),
-    moment = require('moment'),
-    User = mongoose.model('User'),
-    Campaign = mongoose.model('Campaign');
-
+  async = require('async'),
+  errorHandler = require('./errors.server.controller'),
+  moment = require('moment'),
+  User = mongoose.model('User'),
+  subledger = require('./banker.server.controller'),
+  Campaign = mongoose.model('Campaign'),
+  CampaignBacker = mongoose.model('CampaignBacker');
 /****Create A campaign *****/
-exports.createCampaign= function(req, res){
+exports.createCampaign = function (req, res) {
   var campaign = new Campaign(req.body);
   campaign.createdBy = req.user._id;
   campaign.lastModifiedBy = req.user._id;
   if (!campaign.dueDate) {
     campaign.dueDate = moment().add(30, 'days');
   }
-  campaign
-    .save(function(err, campaign){
-    if(err){
-       return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
+  // create subledger account for a campaign
+  subledger.createAccount({
+    'description': campaign.title + campaign._id,
+    'reference': 'http://andela.co',
+    'normal_balance': 'credit'
+  }, function (err, account) {
+    if (err) {
+      // fail the transaction
+      return res.json(err);
     } else {
-      //querying the database again because we want to populate the createdBy and lastModifiedBy field
-      Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-          res.json(newCampaign);
+      campaign.account_id = account.active_account.id;
+      // continue with saving the user
+      campaign.save(function (err, campaign) {
+        if (err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        } else {
+          //querying the database again because we want to populate the createdBy and lastModifiedBy field
+          Campaign.populate(campaign, {
+            path: 'createdBy lastModifiedBy'
+          }, function (err, newCampaign) {
+            res.json(newCampaign);
+          });
+        }
       });
     }
   });
-
 };
 
-exports.getCampaign = function(req, res){
+//gets backers for a single campaign
+var getCampaignBackers = function (campaign, cb) {
+  CampaignBacker.find({
+    campaignid: campaign._id
+  }).distinct('userid').exec(function (err, backers) {
+    campaign = campaign.toObject();
+    campaign.backers = backers.length;
+    cb(campaign);
+  });
+};
+
+//get backers for array of campaigns
+var _getCampaignsBackers = function (newCampaigns, callback) {
+  var campaigns = [];
+  async.each(newCampaigns, function (campaign, cb) {
+    var CampaignBacker = mongoose.model('CampaignBacker');
+    CampaignBacker.find({
+      campaignid: campaign._id
+    }).distinct('userid').exec(function (err, backers) {
+      campaign = campaign.toObject();
+      campaign.backers = backers.length;
+      campaigns.push(campaign);
+      cb();
+    });
+  }, function (err) {
+    callback(campaigns);
+  });
+};
+
+exports.getCampaign = function (req, res) {
   //the slug format is 080808/new-campaign, hence the addition in the find object
-  Campaign.findOne({slug: req.params.timestamp + '/' + req.params.campaignslug})
+  Campaign.findOne({
+      slug: req.params.timestamp + '/' + req.params.campaignslug
+    })
     .select('-lastModifiedBy -lastModified')
-    .exec(function(err, campaign){
-      if(err){
+    .exec(function (err, campaign) {
+      if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
@@ -47,17 +93,20 @@ exports.getCampaign = function(req, res){
           message: 'Invalid campaignslug'
         });
       }
-      Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-        res.json(newCampaign);
+      Campaign.populate(campaign, {
+        path: 'createdBy lastModifiedBy'
+      }, function (err, newCampaign) {
+        getCampaignBackers(newCampaign, function (campaign) {
+          res.json(campaign);
+        });
       });
     });
 };
-
-exports.getUserCampaigns = function(req, res) {
+exports.getUserCampaigns = function (req, res) {
   //validates the user id if valid or not
   User.findById(req.params.userId)
-    .exec(function(err, user) {
-      if(err) {
+    .exec(function (err, user) {
+      if (err) {
         return res.status(404).send({
           message: errorHandler.getErrorMessage(err)
         });
@@ -70,33 +119,43 @@ exports.getUserCampaigns = function(req, res) {
       }
     });
   var ObjectId = mongoose.Types.ObjectId;
-  Campaign.find({'createdBy': new ObjectId(req.params.userId)})
-    .exec(function(err, campaign){
-      if(err){
+  Campaign.find({
+      'createdBy': new ObjectId(req.params.userId),
+      status: { $ne: 'deleted'}
+    })
+    .exec(function (err, campaigns) {
+      if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
       }
-      Campaign.populate(campaign, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-          res.json(newCampaign);
+      Campaign.populate(campaigns, {
+        path: 'createdBy lastModifiedBy'
+      }, function (err, newCampaigns) {
+        _getCampaignsBackers(newCampaigns, function (userCampaigns) {
+          res.json(userCampaigns);
+        });
       });
     });
 };
 
-exports.getCampaigns = function(req, res) {
-  Campaign.find({}, function(err, campaigns) {
+exports.getCampaigns = function (req, res) {
+  Campaign.find({status: 'active'}, function (err, campaigns) {
     if (err) {
       return res.status(400).send({
-          message: errorHandler.getErrorMessage(err)
+        message: errorHandler.getErrorMessage(err)
       });
     }
-    Campaign.populate(campaigns, {path:'createdBy lastModifiedBy'}, function(err, newCampaign) {
-      res.json(newCampaign);
+    Campaign.populate(campaigns, {
+      path: 'createdBy lastModifiedBy'
+    }, function (err, newCampaigns) {
+      _getCampaignsBackers(newCampaigns, function (allCampaigns) {
+        res.json(allCampaigns);
+      });
     });
   });
 };
-
-exports.updateCampaign = function(req, res) {
+exports.updateCampaign = function (req, res) {
   var campaign = req.body;
   campaign.lastModifiedBy = req.user._id;
   campaign.lastModified = moment().format();
@@ -104,9 +163,11 @@ exports.updateCampaign = function(req, res) {
     campaign.dueDate = moment().add(30, 'days');
   }
   Campaign
-    .findByIdAndUpdate(req.params.campaignId, campaign, {}, function(err, editedCampaign) {
-      if(err){
-          res.status(400).json(err);
+    .findByIdAndUpdate(req.params.campaignId, {
+      $set: campaign
+    }, {}, function (err, editedCampaign) {
+      if (err) {
+        res.status(400).json(err);
       }
       //if the user has no campaign created
       if (!editedCampaign) {
@@ -114,24 +175,51 @@ exports.updateCampaign = function(req, res) {
           message: 'Invalid campaign id'
         });
       }
-     Campaign.populate(editedCampaign, {path: 'createdBy lastModifiedBy'}, function (err, campaign){
-      res.json(campaign);
-     });
-   });
-  };
+      Campaign.populate(editedCampaign, {
+        path: 'createdBy lastModifiedBy'
+      }, function (err, campaign) {
+        res.json(campaign);
+      });
+    });
+};
+var archiveCampaignAccount = function(res, campaignAccountId, cb) {
+  subledger.archiveCampaignAccount(campaignAccountId, function(error, response) {
+    if (error) {
+      res.status(500).json({message: 'Cannot archive the campaign account'});
+    }
+    res.send('deleted successfully');
+  });
+};
 
-
-exports.deleteCampaign = function(req, res) {
-  Campaign.findByIdAndRemove(req.params.campaignId)
-  .exec(function(err, campaign) {
-    if(err) {
+exports.deleteCampaign = function (req, res) {
+  var data = {};
+  data.lastModifiedBy = req.user._id;
+  data.lastModified = moment().format();
+  data.status = 'deleted';
+  Campaign.findByIdAndUpdate(req.params.campaignId, { $set: data }, {}, function (err, campaign) {
+    if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.send('deleted successfully');
+      CampaignBacker.find({campaignid: campaign._id, status: 'active'}).populate('userid').exec(function(err, result) {
+        if (!result) {
+          archiveCampaignAccount(res, campaign.account_id);
+        }
+        async.each(result, function(backer, cb) {
+          backer.status = 'cancelled';
+          backer.save();
+          subledger.creditUserAccount('credit', backer.amountDonated, campaign.account_id, backer.userid.account_id, campaign.title, function(error, response) {
+            cb(error);
+          });
+        }, function(err) {
+          if (err) {
+            res.status(500).json({message: 'Cannot credit users'});
+          }
+          archiveCampaignAccount(res, campaign.account_id);
+        });
+      });
     }
-
-    });
+  });
 };
 

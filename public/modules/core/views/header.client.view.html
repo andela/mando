@@ -1,4 +1,5 @@
 <div class="container" data-ng-controller="HeaderController">
+  <nav class=" nav nav-bar navbar-inverse collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
   <div class="navbar-header">
     <button class="navbar-toggle" type="button" data-ng-click="toggleCollapsibleMenu()">
       <span class="sr-only">Toggle navigation</span>
@@ -6,16 +7,15 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
+    <a href="/#!/"><img class="img navbar-brand logo-image" src="modules/core/img/app-images/andela.png"></img></a>
     <a href="/#!/" class="navbar-brand">Andonation</a>
   </div>
-  <nav class="collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
     <ul class="nav navbar-nav navbar-right" data-ng-hide="authentication.user">
       <li>
         <a href="/auth/google" id='signIn'>Sign In</a>
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right" data-ng-show="authentication.user">
-      <li><span data-ng-bind="authentication.user.gravatar"></span></li>
       <li>
         <a href="/#!/campaign/add" id="myCampaign">Add Campaign</a>
       </li>
@@ -23,6 +23,8 @@
         <a href="/#!/campaigns/myAndonation" id="myAndonation">My Andonation</a>
       </li>
        <li><a href="/auth/signout" id="signout">Signout</a></li>
+       <li><img class="img auth-img" data-ng-src="{{authentication.user.providerData.picture}}"> </img>
+      </li>
     </ul>
   </nav>
 </div>

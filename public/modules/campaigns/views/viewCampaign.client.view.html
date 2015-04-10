@@ -1,4 +1,4 @@
-<section id="section" data-ng-controller="viewCampaignCtrl">
+<section id="section">
   <div class="container main-container">
     <div class="row col-md-10 col-md-offset-1">
       <div class="<col-md-5>">
@@ -12,14 +12,33 @@
       <div class="col-md-5">
         <div>
         <!--Disabled the support button for unauthenticated user -->
-          <button class="btn btn-success btn-lg supportbtn"  data-ng-disabled="!authentication.user">$SUPPORT</button>
+          <button class="btn btn-success btn-lg supportbtn"  data-ng-disabled="!authentication.user" ng-click="openModal()">$SUPPORT</button>
         </div>
-          <p class="cash">Needs: ${{campaign.amount}}</p>
-          <p class="cash">Raised: ${{}}</p>
+          <p class="cash">Needs: {{campaign.amount | currencyflt}}</p>
+          <p class="cash">Raised: {{campaignBalance | currencyflt}}</p>
         <div>
           <youtube-video video-id="campaign.youtubeUrl"></youtube-video>
         </div>
       </div>
+    </div>
+  </div>
+  <div>
+    <h2>Backers</h2>
+    <div ng-hide="campaignBackers" class="page-header"><h3 class="">This campaign does not have any backers</h3></div>
+    <div ng-show="campaignBackers">
+      <table ng-table="tableParams" class="table">
+        <tr ng-repeat="backer in $data">
+          <td data-title="'Name'" sortable="'userid.displayName'">
+            {{backer.userid.displayName}}
+          </td>
+          <td data-title="'Date'" sortable="'created'">
+            {{backer.created | date}}
+          </td>
+          <td data-title="'Amount'" sortable="'amountDonated'">
+            {{backer.amountDonated | currencyflt}}
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </section>

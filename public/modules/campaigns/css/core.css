@@ -18,9 +18,9 @@
 .main-container {
   margin-top: 30px;
 }
-
-body {
-  background: #F2EFED;
+/*hides pagination div*/
+.ng-table-pagination {
+  display: none;
 }
 
 .title {
@@ -43,6 +43,18 @@ body {
 
 .supportbtn {
   width:50%;
+}
+
+.tb-head {
+ background-color: #00a4d4 !important;
+}
+
+.btn-default {
+  border: transparent;
+}
+
+.btn-default:hover {
+  font-size: 1.2em;
 }
 
 iframe {
