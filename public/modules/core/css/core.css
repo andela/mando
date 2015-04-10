@@ -21,7 +21,7 @@
   -o-border-radius:10px;
   border-radius:10px;
   margin: 2px;
-  height: 46em;
+  height: 32em;
   box-shadow: 2px 1px 2px #CDD1D1;
   padding: 20px;
   border: 3px solid #fff;
@@ -94,6 +94,11 @@
 .footer {
   background: #B6B6B6;
   height: 4.5em;
+}
+
+/* Styling for youtube videos on the home page*/
+iframe { 
+    height: 200px;
 }
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
