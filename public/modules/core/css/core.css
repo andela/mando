@@ -16,15 +16,15 @@
 }
 
 .home-campaigns {
-  -webkit-border-radius: 10px;
-  -moz-border-radius:10px;
-  -o-border-radius:10px;
-  border-radius:10px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius:2px;
+  -o-border-radius:2px;
+  border-radius:2px;
   margin: 2px;
-  height: 32em;
-  box-shadow: 2px 1px 2px #CDD1D1;
+  height: 100%;
+  box-shadow: 0 10px 6px -6px #777;
   padding: 20px;
-  border: 3px solid #fff;
+  border: 1px solid #eee;
   list-style-type: none;
   color: #222;
 }
@@ -47,19 +47,27 @@
   background-size: cover;
 }
 
-.nav-bar a {
+.nav a {
   color: #fff !important;
+  /*transition: all linear .2s;*/
 }
 
-.nav-bar a:hover {
-  background: #fff;
-  border-radius: 80%;
-  margin-top: 5px;
+.nav li a:hover {
+  color: #292929 !important;
+  transition: all linear .2s;
 }
 
-.nav-bar a:active {
+/*.nav li a:active {
   background: #003366;
   border-radius: 80%;
+}*/
+
+.margin-top {
+  margin-top: 20px;
+}
+
+.margin-btm {
+  margin-bottom: 20px;
 }
 
 .auth-img {
@@ -80,8 +88,7 @@
 }
 
 .third-div {
-  margin-left: 0;
-  margin-right: 0;
+  margin: 0 auto;
 }
 
 .see-more-campaigns a{
@@ -98,7 +105,8 @@
 
 /* Styling for youtube videos on the home page*/
 iframe { 
-    height: 200px;
+    height: 270px;
+    border-radius: 0;
 }
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
