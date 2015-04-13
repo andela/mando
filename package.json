@@ -47,8 +47,8 @@
     "passport": "~0.2.0",
     "passport-google-oauth": "~0.1.5",
     "protractor": "^1.6.1",
-    "subledger": "git+https://github.com/subledger/js-client.git",
     "sinon": "^1.13.0",
+    "subledger": "git+https://github.com/subledger/js-client.git",
     "swig": "~1.4.1",
     "xmlhttprequest": "^1.7.0"
   },
