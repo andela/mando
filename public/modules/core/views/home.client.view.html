@@ -20,9 +20,9 @@
         <ul>
           <li class="col-lg-4 home-campaigns" ng-repeat="campaign in campaigns | orderBy: 'created'.descending | limitTo:3">
             <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
-            <p><a href="/#!/campaign/{{ campaign.slug}}" class="class-title"> {{campaign.title }}</a></p>
-            <p>Amount Needed: ${{campaign.amount}}</p>
-            <p>DueDate: {{campaign.dueDate | date}}</p>
+            <h6><a href="/#!/campaign/{{ campaign.slug}}" class="class-title"> {{campaign.title }}</a></h6>
+            <p>Amount Needed: <span class="text-info">{{campaign.amount | currency}}</span></p>
+            <p>Deadline: <span class="text-info">{{campaign.dueDate | date}}</span></p>
             <p>{{campaign.balance}}</p>
             <p class="">Description</p>
             <span class="">{{campaign.description |limitTo: 136}} ...</span>
@@ -37,8 +37,3 @@
     </div>
    </div>
 </section>
-<footer class="footer">
-  <div class="text-center">
-    <p>Designed By: The Mando Team &copy; 2015</p>
-  </div>
-</footer>
