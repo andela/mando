@@ -52,14 +52,9 @@
   /*transition: all linear .2s;*/
 }
 
-.nav li a:hover {
+/*.nav li a:hover {
   color: #292929 !important;
   transition: all linear .2s;
-}
-
-/*.nav li a:active {
-  background: #003366;
-  border-radius: 80%;
 }*/
 
 .margin-top {
@@ -83,10 +78,14 @@
   width: 70px;
 }
 
-.second-div {
-  height: 20px;
+.margin_left {
+  margin-left: 45px;
 }
 
+/*.second-div {
+  height: 20px;
+}
+*/
 .third-div {
   margin: 0 auto;
 }
@@ -105,7 +104,7 @@
 
 /* Styling for youtube videos on the home page*/
 iframe { 
-    height: 270px;
+    height: 260px;
     border-radius: 0;
 }
 

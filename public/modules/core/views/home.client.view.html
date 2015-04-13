@@ -12,10 +12,11 @@
     </div>
   </div>
   <div class="container-fluid"> 
-      <div class="container second-div margin-btm">
+    <div>
+      <div class="margin_left second-div margin-btm">
         <h3>Most recent campaigns</h3>
-      </div><br>
-      <div class="third-div">
+      </div>
+      <div class="column third-div">
         <ul>
           <li class="col-lg-4 home-campaigns" ng-repeat="campaign in campaigns | orderBy: 'created'.descending | limitTo:3">
             <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
@@ -27,12 +28,13 @@
             <span class="">{{campaign.description |limitTo: 136}} ...</span>
           </li>
         </ul>
-        <div class="container"> 
+        <div> 
           <div class="pull-right see-more-campaigns margin-btm margin-top" ng-hide="campaigns.length < 3">
             <a href="/#!/campaigns" id="all-campaigns">See All {{campaigns.length + 1}} Campaigns</a>
           </div>
         </div>
-      </div>
+      </div>      
+    </div>
    </div>
 </section>
 <footer class="footer">
