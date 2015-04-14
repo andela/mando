@@ -20,7 +20,6 @@
   -moz-border-radius:2px;
   -o-border-radius:2px;
   border-radius:2px;
-  margin: 2px;
   height: 100%;
   box-shadow: 0 10px 6px -6px #777;
   padding: 20px;
@@ -30,7 +29,7 @@
 }
 
 .class-title {
-  font-size: 1.7em;
+  font-size: 1.5em;
   color:#2A2B2B;
   text-transform: capitalize;
 }
@@ -80,6 +79,9 @@
 .margin_left {
   margin-left: 45px;
 }
+/*.padding_left {
+  padding-left: 54px;
+}*/
 
 .third-div {
   margin: 0 auto;
@@ -98,7 +100,7 @@ section {
 
 .footer {
   background: #EDEFF1;
-  color: #009688;
+  color: #053530;
   height: 70px;
   padding: 20px 0; 
   position: relative;
@@ -110,6 +112,25 @@ section {
   margin-top: 20px;
 }
 
+.vcenter {
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+  padding: 30px 0 20px 20px;
+}
+
+.custom_side_margin {
+  margin-right: 25px;
+  margin-left: 25px;
+}
+
+.campaign_cards {
+  margin-bottom: 30px;
+}
+
+.all_campaign_heading {
+  padding: 2px 0 0 30px;
+}
 /* Styling for youtube videos on the home page*/
 iframe { 
   height: 260px;
@@ -117,9 +138,9 @@ iframe {
 }
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
-@media screen and (min-width: 1000px) {
+/*@media screen and (min-width: 1000px) {
   .home-campaigns {
     width:32%;
   }
-}
+}*/
 

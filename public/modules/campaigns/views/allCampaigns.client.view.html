@@ -1,28 +1,37 @@
 <section data-ng-controller="allCampaignCtrl">
-  <div class="row">
-    <ul>
-      <div class="pull-right">
-        Sort By:
-        <select ng-model="criteria" style="margin-right: 42px;">
-          <option value="created"> Date created </option>
-          <option value="dueDate"> Dead-Line(Nearest to Furthest)</option>
-          <option value="-dueDate"> Dead-Line(Furthest to Nearest)</option>
-          <option value="amount"> Amount(Lowest to Highest)</option>
-          <option value="-amount"> Amount(Highest to Lowest)</option>
-        </select>
+  <div class="container">
+      <div class="row">
+        <div class="col-lg-6 margin-btm all_campaign_heading">
+          <h2> All Current Campaigns</h2>
+        </div>
+      
+        <div class="col-md-3 col-md-offset-3 vcenter">
+          Sort By:
+          <select ng-model="criteria">
+            <option value="created"> Date created </option>
+            <option value="dueDate"> Deadline (Nearest to Furthest)</option>
+            <option value="-dueDate"> Deadline (Furthest to Nearest)</option>
+            <option value="amount"> Amount (Lowest to Highest)</option>
+            <option value="-amount"> Amount (Highest to Lowest)</option>
+          </select>
+        </div>        
       </div>
-      <h2> All Current Campaigns</h2>
-      <li class="col-sm-4 home-campaigns" data-ng-repeat="campaign in Campaigns | orderBy: criteria">
-        <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
-        <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a>
-        </p>
-        <p> Amount Needed: <span class="values">{{campaign.amount | currency}}</span></p>
-        <p> Deadline: <span class="text-info">{{campaign.dueDate | date}}</span></p>
-        <p> {{campaign.balance}}</p>
-        <span style="font-weight: bold;">Description</span>
-        <p class="" style="font-weight: normal;">{{campaign.description |limitTo: 136}} ...</p>
-      </li>
-    </ul>
+      
+
+    <div>
+      <div class="col-sm-4 campaign_cards" data-ng-repeat="campaign in Campaigns | orderBy: criteria">
+        <div class="home-campaigns">
+          <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
+          <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a>
+          </p>
+          <p> Amount Needed: <span class="values">{{campaign.amount | currency}}</span></p>
+          <p> Deadline: <span class="text-info">{{campaign.dueDate | date}}</span></p>
+          <p> {{campaign.balance}}</p>
+          <span style="font-weight: bold;">Description</span>
+          <p class="" style="font-weight: normal;">{{campaign.description |limitTo: 136}} ...</p>
+        </div>
+      </div>
+    </div>
 
   </div>
 
