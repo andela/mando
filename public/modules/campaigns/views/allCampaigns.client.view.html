@@ -8,15 +8,14 @@
         <div class="col-md-3 col-md-offset-3 vcenter">
           Sort By:
           <select ng-model="criteria">
-            <option value="created"> Date created </option>
-            <option value="dueDate"> Deadline (Nearest to Furthest)</option>
-            <option value="-dueDate"> Deadline (Furthest to Nearest)</option>
-            <option value="amount"> Amount (Lowest to Highest)</option>
-            <option value="-amount"> Amount (Highest to Lowest)</option>
+            <option value="created">Date created</option>
+            <option value="dueDate">Deadline (Nearest to Furthest)</option>
+            <option value="-dueDate">Deadline (Furthest to Nearest)</option>
+            <option value="amount">Amount (Lowest to Highest)</option>
+            <option value="-amount">Amount (Highest to Lowest)</option>
           </select>
         </div>        
       </div>
-      
 
     <div>
       <div class="col-sm-4 campaign_cards" data-ng-repeat="campaign in Campaigns | orderBy: criteria">
