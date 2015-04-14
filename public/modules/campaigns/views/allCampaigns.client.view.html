@@ -16,7 +16,7 @@
         <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
         <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a>
         </p>
-        <p> Amount Needed: <span class="text-info">{{campaign.amount }}</span></p>
+        <p> Amount Needed: <span class="text-info">{{campaign.amount | currency}}</span></p>
         <p> Deadline: <span class="text-info">{{campaign.dueDate | date}}</span></p>
         <p> {{campaign.balance}}</p>
         <span style="font-weight: bold;">Description</span>
