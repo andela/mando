@@ -25,7 +25,7 @@
           <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a>
           </p>
           <p> Amount Needed: <span class="values">{{campaign.amount | currency}}</span></p>
-          <p> Deadline: <span class="text-info">{{campaign.dueDate | date}}</span></p>
+          <p> Deadline: <span class="values">{{campaign.dueDate | date}}</span></p>
           <p> {{campaign.balance}}</p>
           <span style="font-weight: bold;">Description</span>
           <p class="" style="font-weight: normal;">{{campaign.description |limitTo: 136}} ...</p>
