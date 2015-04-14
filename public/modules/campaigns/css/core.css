@@ -69,3 +69,8 @@ iframe {
 .titles {
   font-weight: bold;
 }
+
+.viewCampaignWrapper {
+  text-align: justify;
+  margin-top: 30px;
+}
