@@ -81,10 +81,6 @@
   margin-left: 45px;
 }
 
-/*.second-div {
-  height: 20px;
-}
-*/
 .third-div {
   margin: 0 auto;
 }
@@ -103,7 +99,7 @@ section {
 .footer {
   background: #EDEFF1;
   color: #009688;
-  height: auto;
+  height: 70px;
   padding: 20px 0; 
   position: relative;
   bottom: 0;
@@ -116,7 +112,7 @@ section {
 
 /* Styling for youtube videos on the home page*/
 iframe { 
-  height: 230px;
+  height: 260px;
   border-radius: 0;
 }
 
