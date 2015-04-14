@@ -36,7 +36,7 @@
 }
 
 .home-campaigns p {
-  /*font-size: .9em;*/
+  font-size: .9em;
   line-height: 1.5em;
   font-weight: bold;
 }
@@ -97,7 +97,7 @@
 }
 
 section {
-  height: 100%;
+  min-height: 100%;
 }
 
 .footer {
@@ -105,19 +105,19 @@ section {
   color: #009688;
   height: auto;
   padding: 20px 0; 
-  position: fixed;
+  position: relative;
   bottom: 0;
   left: 0;
   width: 100%;
   border-bottom: 1px solid #CCCCCC;
   border-top: 1px solid #DDDDDD;
-
+  margin-top: 20px;
 }
 
 /* Styling for youtube videos on the home page*/
 iframe { 
-    height: 260px;
-    border-radius: 0;
+  height: 230px;
+  border-radius: 0;
 }
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
