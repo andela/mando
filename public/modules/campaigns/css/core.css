@@ -61,3 +61,15 @@ iframe {
   width: 100%;
   border-radius: 10px;
 }
+
+.values {
+  font-weight: normal;
+}
+
+.titles {
+  font-weight: bold;
+}
+
+.viewCampaignWrapper {
+  margin-top: 75px;
+}

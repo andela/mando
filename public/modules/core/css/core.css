@@ -16,15 +16,15 @@
 }
 
 .home-campaigns {
-  -webkit-border-radius: 10px;
-  -moz-border-radius:10px;
-  -o-border-radius:10px;
-  border-radius:10px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius:2px;
+  -o-border-radius:2px;
+  border-radius:2px;
   margin: 2px;
-  height: 46em;
-  box-shadow: 2px 1px 2px #CDD1D1;
+  height: 100%;
+  box-shadow: 0 10px 6px -6px #777;
   padding: 20px;
-  border: 3px solid #fff;
+  border: 1px solid #eee;
   list-style-type: none;
   color: #222;
 }
@@ -47,19 +47,21 @@
   background-size: cover;
 }
 
-.nav-bar a {
+.nav a {
   color: #fff !important;
 }
 
-.nav-bar a:hover {
-  background: #fff;
-  border-radius: 80%;
-  margin-top: 5px;
+/*.nav li a:hover {
+  color: #292929 !important;
+  transition: all linear .2s;
+}*/
+
+.margin-top {
+  margin-top: 20px;
 }
 
-.nav-bar a:active {
-  background: #003366;
-  border-radius: 80%;
+.margin-btm {
+  margin-bottom: 20px;
 }
 
 .auth-img {
@@ -75,13 +77,16 @@
   width: 70px;
 }
 
-.second-div {
-  height: 20px;
+.margin_left {
+  margin-left: 45px;
 }
 
+/*.second-div {
+  height: 20px;
+}
+*/
 .third-div {
-  margin-left: 0;
-  margin-right: 0;
+  margin: 0 auto;
 }
 
 .see-more-campaigns a{
@@ -91,9 +96,28 @@
   text-shadow: 1px 1px 1px #fff;
 }
 
+section {
+  min-height: 100%;
+}
+
 .footer {
-  background: #B6B6B6;
-  height: 4.5em;
+  background: #EDEFF1;
+  color: #009688;
+  height: auto;
+  padding: 20px 0; 
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid #CCCCCC;
+  border-top: 1px solid #DDDDDD;
+  margin-top: 20px;
+}
+
+/* Styling for youtube videos on the home page*/
+iframe { 
+  height: 230px;
+  border-radius: 0;
 }
 
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
