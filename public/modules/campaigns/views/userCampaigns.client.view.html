@@ -38,17 +38,17 @@
       </tr>
     </table>
     <div ng-hide="myCampaigns.length < 4">
-      <a href="#" ng-show="limit===4" ng-click="increment()" class="pull-right">See All Campaigns</a>
+      <a href="#" ng-show="limit===4" ng-click="increment()" class="pull-right">See all of my Campaigns</a>
       <a href="#" ng-hide="limit===4" ng-click="decrement()" class="pull-right">Back</a>
     </div>
   </div>
-  <div class="row">
+  <div class="table-responsive">
     <div class="jumbotron text-center" ng-hide="campaignsBacked">
       <h3>You have not backed any campaign</h3>
     </div>
     <div ng-show="campaignsBacked">
-      <h2>Campaigns I Backed</h2>
-      <table ng-table="tableParams" class="table table-responsive">
+      <h2>My Backed Campaigns</h2>
+      <table ng-table="tableParams" class="table table-bordered">
         <tr ng-repeat="campaignsbacked in $data | limitTo: 4">
           <td data-title="'Title'" sortable="'campaignid.title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
             {{campaignsbacked.campaignid.title}}</a>
@@ -98,7 +98,7 @@
           <td>{{transaction.value.amount | currencyflt}}</td>
         </tr>
       </table>
-      <a href="/#!/bank" class="pull-right">See All Bank Transactions</a>
+      <a href="/#!/bank" class="pull-right">See all Bank Transactions</a>
     </div>
   </div>
   <div>
@@ -124,7 +124,7 @@
           <td>{{transaction.balance.value.amount}}</td>
         </tr>
       </table>
-      <a href="/#!/myTransactions" class="pull-right">See All Transactions</a>
+      <a href="/#!/myTransactions" class="pull-right">See my full Account History</a>
     </div>
   </div>
   <div ng-show="isDistributor">
@@ -145,12 +145,11 @@
           <td>{{distribution.posted_at | date }}</td>
           <td>{{distribution.description.description}}</td>
           <td>{{distribution.value.type}}</td>
-          <td>{{distribution.value.amount | currencyflt
-}}</td>
+          <td>{{distribution.value.amount | currencyflt}}</td>
           <td>{{distribution.balance.value.amount}}</td>
         </tr>
       </table>
-      <a ui-sref="myDistribution" class="pull-right">See All My Distributions</a>
+      <a ui-sref="myDistribution" class="pull-right">See all of my Distributions</a>
     </div>
   </div>
   </div>
