@@ -4,10 +4,11 @@
 <form name="distributorForm" class="text-center" novalidate>
   <div class="modal-body">
     <label for="amount">Amount</label>
-    <p class="error text-muted red" ng-if="distributorForm.amount.$dirty &amp;&amp; distributorForm.amount.$invalid">Input a valid Number</p>
-    <input class="col-xs-12" type="number" name="amount" data-ng-model="transaction.amount" required>
+    <p class="error text-muted red" ng-if="distributorForm.amount.$error.number &amp;&amp; distributorForm.amount.$invalid">Input a valid Number</p>
+    <input class="col-xs-12" type="number" min="0" name="amount" data-ng-model="transaction.amount" required>
     <label class="col-xs-12" for="reason">Reason For Transaction</label>
     <p ng-if="distributorForm.reason.$invalid &amp;&amp; distributorForm.reason.$dirty" class="error text-muted red">Reasons must be between 5 and 140 characters</p>
+    <p class="error text-muted red" ng-if="distributorForm.amount.$error.min">Amount cannot be negative</p>
     <textarea class="col-xs-12" type="text" data-ng-minlength="5" data-ng-maxlength="140" name="reason" data-ng-model="transaction.reason" required></textarea>
   </div>
   <div class="modal-footer footer-center">
