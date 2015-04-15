@@ -38,7 +38,7 @@
       </tr>
     </table>
     <div ng-hide="myCampaigns.length < 4">
-      <a href="#" ng-show="limit===4" ng-click="increment()" class="pull-right">See All Campaigns</a>
+      <a href="#" ng-show="limit===4" ng-click="increment()" class="pull-right">See all of My Campaigns</a>
       <a href="#" ng-hide="limit===4" ng-click="decrement()" class="pull-right">Back</a>
     </div>
   </div>
@@ -124,7 +124,7 @@
           <td>{{transaction.balance.value.amount}}</td>
         </tr>
       </table>
-      <a href="/#!/myTransactions" class="pull-right">See All Transactions</a>
+      <a href="/#!/myTransactions" class="pull-right">See my full Account History</a>
     </div>
   </div>
   <div ng-show="isDistributor">
@@ -150,7 +150,7 @@
           <td>{{distribution.balance.value.amount}}</td>
         </tr>
       </table>
-      <a ui-sref="myDistribution" class="pull-right">See All My Distributions</a>
+      <a ui-sref="myDistribution" class="pull-right">See all of My Distributions</a>
     </div>
   </div>
   </div>
