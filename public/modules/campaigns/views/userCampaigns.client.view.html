@@ -49,7 +49,7 @@
     <div ng-show="campaignsBacked" class="campaignTableMargins">
       <h2>My Backed Campaigns</h2>
       <table ng-table="tableParams" class="table table-responsive table-bordered">
-        <tr ng-repeat="campaignsbacked in $data | limitTo: 4">
+        <tr ng-repeat="campaignsbacked in $data | limitTo: 3">
           <td data-title="'Title'" sortable="'campaignid.title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
             {{campaignsbacked.campaignid.title}}</a>
           </td>
