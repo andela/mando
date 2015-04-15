@@ -42,13 +42,13 @@
       <a href="#" ng-hide="limit===4" ng-click="decrement()" class="pull-right">Back</a>
     </div>
   </div>
-  <div class="row">
+  <div class="">
     <div class="jumbotron text-center" ng-hide="campaignsBacked">
       <h3>You have not backed any campaign</h3>
     </div>
     <div ng-show="campaignsBacked">
-      <h2>Campaigns I Backed</h2>
-      <table ng-table="tableParams" class="table table-responsive">
+      <h2>My Backed Campaigns</h2>
+      <table ng-table="tableParams" class="table table-responsive table-bordered">
         <tr ng-repeat="campaignsbacked in $data | limitTo: 4">
           <td data-title="'Title'" sortable="'campaignid.title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
             {{campaignsbacked.campaignid.title}}</a>
