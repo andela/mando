@@ -37,7 +37,7 @@
 .home-campaigns p {
   font-size: .9em;
   line-height: 1.5em;
-  font-weight: bold;
+  /*font-weight: bold;*/
 }
 
 .nav-bar{
@@ -137,6 +137,13 @@ iframe {
   border-radius: 0;
 }
 
+.values {
+  font-weight: normal;
+}
+
+.titles {
+  font-weight: bold;
+}
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 /*@media screen and (min-width: 1000px) {
   .home-campaigns {
