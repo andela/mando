@@ -7,7 +7,7 @@
           <p class="title" data-ng-bind="campaign.title"></p>
           <p class="CreatedAndDeadline titles ">Created By: <span class="values">{{campaign.createdBy.displayName}} </span> <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign.slug}}/edit" id="editBtn" class="pull-right">EDIT CAMPAIGN </a></span></p>
           <p class="CreatedAndDeadline titles">Deadline: <span class="values">{{campaign.dueDate | date}}</span> </p>
-          <p>{{campaign.description}}</p>
+          <p class="values">{{campaign.description}}</p>
         <!-- </div> -->
       </div>
       <div class="col-md-5 col-md-offset-1">

@@ -23,10 +23,10 @@
               <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
               <h6><a href="/#!/campaign/{{ campaign.slug}}" class="class-title"> {{campaign.title }}</a></h6>
               <p><span class="titles"> Amount Needed:</span> <span class="values">{{campaign.amount | currency}}</span></p>
-              <p>Deadline: <span class="values">{{campaign.dueDate | date}}</span></p>
-              <p>{{campaign.balance}}</p>
+              <p><span class="titles">Deadline:</span> <span class="values">{{campaign.dueDate | date}}</span></p>
+              <p class="titles">{{campaign.balance}}</p>
               <p>Description</p>
-              <span>{{campaign.description |limitTo: 136}} ...</span>
+              <span class="values">{{campaign.description |limitTo: 136}} ...</span>
             </div>
           </div>
         <div> 
