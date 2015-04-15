@@ -63,7 +63,7 @@ iframe {
 }
 
 .values {
-  font-weight: normal;
+  font-weight: normal !important;
 }
 
 .titles {
