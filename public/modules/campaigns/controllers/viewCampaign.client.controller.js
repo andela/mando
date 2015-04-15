@@ -3,11 +3,13 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
   function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout) {
     var campaignBalance, userAccountBalance;
     $scope.authentication = Authentication;
+    console.log("user ", $scope.authentication.user);
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
     backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
+        console.log("campaign ", $scope.campaign.createdBy);
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
@@ -49,6 +51,12 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       });
     };
     $scope.openModal = function () {
+      if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
+        $scope.modalInstance = $modal.open({
+          templateUrl: 'modules/campaigns/views/supportOwnCampaign.modal.client.view.html'
+        });
+        return;
+      }
       $scope.modalInstance = $modal.open({
         templateUrl: 'modules/campaigns/views/supportCampaign.modal.client.view.html',
         controller: 'supportCampaignCtrl',
