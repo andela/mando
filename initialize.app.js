@@ -3,13 +3,13 @@
 require('./app/models/user.server.model.js');
 require('./app/models/role.server.model.js');
 
-// var config = require('./config/env/' + process.env.NODE_ENV);
+var config = require('./config/env/' + process.env.NODE_ENV);
 var mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Role = mongoose.model('Role');
 
 
-mongoose.connect('mongodb://localhost/andonation');
+mongoose.connect(config.db);
 
 var adminEmail = process.argv[2];
 
