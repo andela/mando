@@ -13,7 +13,8 @@
       <div class="col-md-5 col-md-offset-1">
         <div>
         <!--Disabled the support button for unauthenticated user -->
-          <button class="btn btn-success btn-lg supportbtn"  data-ng-disabled="!authentication.user" ng-click="openModal()">SUPPORT</button>
+          <button class="btn btn-success btn-lg supportbtn" ng-class="{'disabled': ownCampaign}"  data-ng-disabled="!authentication.user" ng-click="openModal()">SUPPORT</button>
+          <p class="supportFootnote" ng-show="ownCampaign">You can't support your own campaign</p>
         </div><br>
           <p class="cash titles">Needs: <span class="values">{{campaign.amount | currencyflt}}</span> </p>
           <p class="cash titles">Raised: <span class="values">{{campaignBalance | currencyflt}}</span> </p>
