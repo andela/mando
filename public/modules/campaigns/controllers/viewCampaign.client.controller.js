@@ -5,16 +5,21 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     $scope.authentication = Authentication;
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
+
     backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
+        if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
+          $scope.ownCampaign = true;
+        }
       })
       .error(function (error, status, header, config) {
         $location.path('/');
       });
+
     var getCampaignBackersHistory = function (campaignid) {
       backendService.getCampaignBackers(campaignid).success(function (data) {
         $scope.campaignBackers = data;

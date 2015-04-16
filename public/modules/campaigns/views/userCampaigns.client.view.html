@@ -1,5 +1,5 @@
 <section class="container">
-  <div>
+  <div class="myAndonationWrapper">
     <a href="/#!/admin/users" ng-show="isAdmin" class="btn btn-default pull-right">Users</a>
     <a href="/#!/bank" ng-show="isBanker" class="btn btn-default pull-right">Bank</a>
     <a href="/#!/distributor" ng-show="isDistributor" class="btn btn-default pull-right">DISTRIBUTOR</a>
@@ -16,7 +16,7 @@
     <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
   </div>
   <div class="table-responsive campaignTableMargins" ng-show="myCampaigns">
-    <h2>My Campaigns</h2>
+    <h2 class="andonationSubheadings" >My Campaigns</h2>
     <table class="table table-bordered">
       <tt>
         <th>Title</th>
@@ -47,7 +47,7 @@
       <h3>You have not backed any campaign</h3>
     </div>
     <div ng-show="campaignsBacked" class="campaignTableMargins">
-      <h2>My Backed Campaigns</h2>
+      <h2 class="andonationSubheadings" >My Backed Campaigns</h2>
       <table ng-table="tableParams" class="table table-responsive table-bordered">
         <tr ng-repeat="campaignsbacked in $data | limitTo: 3">
           <td data-title="'Title'" sortable="'campaignid.title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
@@ -83,7 +83,7 @@
       <h2>YOU DO NOT HAVE ANY TRANSACTION</h2>
     </div>
     <div ng-show="query" class="campaignTableMargins">
-      <h2>My Bank Transactions</h2>
+      <h2 class="andonationSubheadings" >My Bank Transactions</h2>
       <table class="table table-bordered">
         <tt>
           <th>Date</th>
@@ -107,7 +107,7 @@
     </div>
     <div ng-show="myJournal" class="campaignTableMargins">
       <!-- <a name=""></a> myJournal-->
-      <h2>My Account History</h2>
+      <h2 class="andonationSubheadings" >My Account History</h2>
         <table class="table table-bordered">
         <tt>
           <th>Date</th>
@@ -132,7 +132,7 @@
       <h2>YOU DO NOT HAVE ANY DISTRIBUTIONS</h2>
     </div>
     <div ng-show="journal">
-      <h2>My Distributions</h2>
+      <h2 class="andonationSubheadings" >My Distributions</h2>
       <table class="table table-bordered">
         <tt>
           <th>Date</th>
