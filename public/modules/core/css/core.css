@@ -28,10 +28,11 @@
   color: #222;
 }
 
-.class-title {
-  font-size: 1.5em;
-  color:#2A2B2B;
-  text-transform: capitalize;
+.progress-bar-success {
+  background-image: -webkit-linear-gradient(top, #007B6D 0%, #009587 100%)!important;
+  background-image: -o-linear-gradient(top, #007B6D 0%, #009587 100%)!important;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#007B6D), to(#009587))!important;
+  background-image: linear-gradient(to bottom, #007B6D 0%, #009587 100%)!important;
 }
 
 .home-campaigns p {

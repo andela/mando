@@ -5,7 +5,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     $scope.authentication = Authentication;
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
-
     backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
@@ -19,7 +18,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       .error(function (error, status, header, config) {
         $location.path('/');
       });
-
     var getCampaignBackersHistory = function (campaignid) {
       backendService.getCampaignBackers(campaignid).success(function (data) {
         $scope.campaignBackers = data;
@@ -50,9 +48,15 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       subledgerServices.getBalance(campaignAccountid, function (response) {
         $timeout(function() {
           $scope.campaignBalance = response;
+          console.log($scope.campaignBalance, $scope.campaign);
+          // Progress bar calculations
+          $scope.fundsRaised = Math.ceil(($scope.campaignBalance/$scope.campaign.amount) * 100);
+          $scope.fundsLeft = Math.floor(100 - $scope.fundsRaised);
         });
       });
     };
+
+    console.log($scope.campaignBalance);
     $scope.openModal = function () {
       if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
         $scope.modalInstance = $modal.open({
