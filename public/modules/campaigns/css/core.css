@@ -80,7 +80,9 @@ iframe {
 }
 
 .balances {
-  font-size: 20px;
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 30px;
 }
 
 .ng-table th {
@@ -94,4 +96,12 @@ iframe {
 .supportFootnote {
   font-size: 13px;
   font-style: italic;
+}
+
+.myAndonationWrapper {
+  margin-top: 45px;
+}
+
+.andonationSubheadings {
+  font-size: 23px;
 }
