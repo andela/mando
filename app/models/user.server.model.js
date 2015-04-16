@@ -33,13 +33,11 @@ var UserSchema = new Schema({
 	username: {
 		type: String,
 		unique: 'testing error message',
-		required: 'Please fill in a username',
 		trim: true
 	},
 
 	provider: {
 		type: String,
-		required: 'Provider is required'
 	},
 
 	providerData: {},
