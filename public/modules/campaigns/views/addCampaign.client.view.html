@@ -26,10 +26,11 @@
         <div ng-class="{'has-error': addcampaign.amount.$invalid &amp;&amp; addcampaign.amount.$dirty}" class="">
           <label for="amount" class="col-sm-2 control-label">Amount($)</label>
           <div class="col-sm-3">
-            <input type="number" class="form-control" ng-model="campaign.amount" name="amount" id="amount" placeholder="Enter the amount needed for this campaign(in dollars)" required>
+            <input type="number" min="0" class="form-control" ng-model="campaign.amount" name="amount" id="amount" placeholder="Enter the amount needed for this campaign(in dollars)" required>
             <span class="help-block has-error addcampaign.amount.$dirty">
               <span id="isInvalidErr" ng-show="addcampaign.amount.$error.number">Please enter a valid number</span>
               <span id="isEmptyErr" ng-show="addcampaign.amount.$error.required &amp;&amp; !addcampaign.amount.$error.number &amp;&amp; addcampaign.amount.$dirty">This field can not be empty, please enter an amount</span>
+              <span id="isNegative" ng-show="addcampaign.amount.$error.min">Amount cannot be negative</span>
           </span>
           </div>
         </div>
@@ -61,4 +62,3 @@
     </form>
   </div>
 </section>
-<div class="clearfix"></div>

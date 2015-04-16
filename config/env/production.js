@@ -37,5 +37,14 @@ module.exports = {
 		clientID: process.env.GOOGLE_ID || 'APP_ID',
 		clientSecret: process.env.GOOGLE_SECRET || 'APP_SECRET',
 		callbackURL: '/auth/google/callback'
-	}
+	},
+	subledger: {
+    identity_id: 'PNKWmtgMsLoHzB4LhUw4qN',
+    org_id: 'EpXxbhcVpxyC8BH0icuIQF',
+    book_id: 'EAAYJIHeQdBkaNPehMjKkO',
+    key_id: '2lzQysbyNXhPgYxx8pp2vE',
+    secret_id: 'CJzZPwRw01thgquyeD6RYc',
+    bank_id: 'mVraLCphcb0kCEj8riyYSX',
+    system_id: 'pkWxeWu2HQeaNDw8Py5Wwx'
+  }
 };

@@ -63,7 +63,7 @@ iframe {
 }
 
 .values {
-  font-weight: normal;
+  font-weight: normal !important;
 }
 
 .titles {
@@ -71,5 +71,37 @@ iframe {
 }
 
 .viewCampaignWrapper {
-  margin-top: 75px;
+  text-align: justify;
+  margin-top: 30px;
+}
+
+.campaignTableMargins {
+  margin-bottom: 75px;
+}
+
+.balances {
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 30px;
+}
+
+.ng-table th {
+ text-align: left!important;
+}
+
+.supportMyCampaign {
+  color: red;
+}
+
+.supportFootnote {
+  font-size: 13px;
+  font-style: italic;
+}
+
+.myAndonationWrapper {
+  margin-top: 45px;
+}
+
+.andonationSubheadings {
+  font-size: 23px;
 }

@@ -1,29 +1,30 @@
 
-<section id="section" class="container viewCampaignWrapper">
-  <div class="">
-    <div class="row col-md-10 col-md-offset-1">
-      <div class="<col-md-5>">
+<section id="section" class="container">
+  <div class="row viewCampaignWrapper">
+    <div class="col-md-12">
+      <!-- <div class="<col-md-5>"> -->
         <div class="col-md-6">
           <p class="title" data-ng-bind="campaign.title"></p>
-          <p class="CreatedAndDeadline">Created By: <span class="values">{{campaign.createdBy.displayName}}</span> <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign.slug}}/edit" id="editBtn">EDIT CAMPAIGN </a></span></p>
-          <p class="CreatedAndDeadline">Deadline: <span class="values">{{campaign.dueDate | date}}</span></p>
-          <p>{{campaign.description}}</p>
-        </div>
+          <p class="CreatedAndDeadline titles ">Created By: <span class="values">{{campaign.createdBy.displayName}} </span> <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign.slug}}/edit" id="editBtn" class="pull-right">EDIT CAMPAIGN </a></span></p>
+          <p class="CreatedAndDeadline titles">Deadline: <span class="values">{{campaign.dueDate | date}}</span> </p>
+          <p class="values">{{campaign.description}}</p>
+        <!-- </div> -->
       </div>
-      <div class="col-md-5">
+      <div class="col-md-5 col-md-offset-1">
         <div>
         <!--Disabled the support button for unauthenticated user -->
-          <button class="btn btn-success btn-lg supportbtn"  data-ng-disabled="!authentication.user" ng-click="openModal()">SUPPORT</button>
+          <button class="btn btn-success btn-lg supportbtn" ng-class="{'disabled': ownCampaign}"  data-ng-disabled="!authentication.user" ng-click="openModal()">SUPPORT</button>
+          <p class="supportFootnote" ng-show="ownCampaign">You can't support your own campaign</p>
         </div><br>
-          <p class="cash">Needs: <span class="values">{{campaign.amount | currencyflt}}</span></p>
-          <p class="cash">Raised: <span class="values">{{campaignBalance | currencyflt}}</span></p>
+          <p class="cash titles">Needs: <span class="values">{{campaign.amount | currencyflt}}</span> </p>
+          <p class="cash titles">Raised: <span class="values">{{campaignBalance | currencyflt}}</span> </p>
         <div>
           <youtube-video video-id="campaign.youtubeUrl"></youtube-video>
         </div>
       </div>
     </div>
   </div>
-  <div>
+  <div class="container-fluid">
     <h2>Backers</h2>
     <div ng-hide="campaignBackers" class="page-header"><h3 class="">This campaign does not have any backers</h3></div>
     <div ng-show="campaignBackers">

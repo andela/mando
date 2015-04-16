@@ -1053,16 +1053,21 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     $scope.authentication = Authentication;
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
+
     backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
+        if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
+          $scope.ownCampaign = true;
+        }
       })
       .error(function (error, status, header, config) {
         $location.path('/');
       });
+
     var getCampaignBackersHistory = function (campaignid) {
       backendService.getCampaignBackers(campaignid).success(function (data) {
         $scope.campaignBackers = data;
@@ -1097,6 +1102,12 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       });
     };
     $scope.openModal = function () {
+      if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
+        $scope.modalInstance = $modal.open({
+          templateUrl: 'modules/campaigns/views/supportOwnCampaign.modal.client.view.html'
+        });
+        return;
+      }
       $scope.modalInstance = $modal.open({
         templateUrl: 'modules/campaigns/views/supportCampaign.modal.client.view.html',
         controller: 'supportCampaignCtrl',
@@ -1237,7 +1248,6 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
 ]);
 'use strict';
 
-
 angular.module('core').controller('HomeController', ['$scope', 'Authentication', 'backendService',
 	function($scope, Authentication, backendService) {
 		// This provides Authentication context.
@@ -1252,35 +1262,32 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
         $scope.error = error;
       });
 
-  $scope.myInterval = 3000;
-  $scope.slides = [
-    {
-      image: 'http://res.cloudinary.com/andela/image/upload/v1427207822/caros3_lnwm8z.jpg'
-    },
-    {
-      image: 'http://res.cloudinary.com/andela/image/upload/v1427278895/caros6_lujtxb.jpg'
-    },
-    {
-      image: 'http://res.cloudinary.com/andela/image/upload/v1427279010/caros7_xvgevw.jpg'
-    },
-    {
-      image: 'http://res.cloudinary.com/andela/image/upload/v1427279114/caros8_detjfr.jpg'
-    }
-  ];
-
+    $scope.myInterval = 3000;
+    $scope.slides = [
+      {
+        image: 'http://res.cloudinary.com/andela/image/upload/v1428678401/carousel1a_jt77zm.jpg'
+      },
+      {
+        image: 'http://res.cloudinary.com/andela/image/upload/v1428678660/carousel2a_ksihkg.jpg'
+      },
+      {
+        image: 'http://res.cloudinary.com/andela/image/upload/v1428678664/carousel3a_n0gkdj.jpg'
+      },
+      {
+        image: 'http://res.cloudinary.com/andela/image/upload/v1428678401/carousel1a_jt77zm.jpg'
+      }
+    ];
 	}
-
-
 ]);
 
 angular.module('core').directive('disableAnimation', ["$animate", function($animate){
     return {
-        restrict: 'A',
-        link: function($scope, $element, $attrs){
-            $attrs.$observe('disableAnimation', function(value){
-                $animate.enabled(!value, $element);
-            });
-        }
+      restrict: 'A',
+      link: function($scope, $element, $attrs){
+        $attrs.$observe('disableAnimation', function(value){
+          $animate.enabled(!value, $element);
+        });
+      }
     };
 }]);
 'use strict';
