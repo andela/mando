@@ -48,10 +48,15 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       subledgerServices.getBalance(campaignAccountid, function (response) {
         $timeout(function() {
           $scope.campaignBalance = response;
-          console.log($scope.campaignBalance, $scope.campaign);
           // Progress bar calculations
-          $scope.fundsRaised = Math.ceil(($scope.campaignBalance/$scope.campaign.amount) * 100);
-          $scope.fundsLeft = Math.floor(100 - $scope.fundsRaised);
+          var campaignFundPercentage = Math.floor(($scope.campaignBalance/$scope.campaign.amount) * 97);
+          if(campaignFundPercentage === 0) {
+            $scope.fundsRaised = 3;
+            console.log($scope.fundsRaised, '$scope.fundsRaised');
+          }
+          else {
+            $scope.fundsRaised = campaignFundPercentage + 3;
+          }
         });
       });
     };

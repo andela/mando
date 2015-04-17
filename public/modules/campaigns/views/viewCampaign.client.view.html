@@ -21,10 +21,7 @@
           <div class="progress">
             <div class="progress-bar progress-bar-success" role="progressbar"  ng-style="{'width': fundsRaised +'%'}">
               {{campaignBalance | currencyflt}} Raised
-            </div>
-              <div class="progress-bar progress-bar-warning" role="progressbar" ng-style="{'width': fundsLeft +'%'}">
-              {{campaign.amount - campaignBalance | currencyflt}} Left
-              </div>
+            </div> 
           </div>
           <h4 class="text-success" ng-show="campaign.amount == campaignBalance">Campaign fully funded.</h4>
           <hr>
