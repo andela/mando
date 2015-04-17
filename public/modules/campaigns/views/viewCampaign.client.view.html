@@ -26,7 +26,7 @@
               {{campaign.amount - campaignBalance | currencyflt}} Left
               </div>
           </div>
-          <h4 class="text-success" ng-show="fundsRaised == 100">Campaign fully funded.</h4>
+          <h4 class="text-success" ng-show="campaign.amount == campaignBalance">Campaign fully funded.</h4>
           <hr>
         <div>
           <youtube-video video-id="campaign.youtubeUrl"></youtube-video>

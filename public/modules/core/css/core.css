@@ -2,6 +2,10 @@
   margin-top: 58px;
 }
 
+a {
+  color: #000;
+}
+
 .undecorated-link:hover {
   text-decoration: none;
 }
@@ -15,6 +19,24 @@
   border-color: #78FA89;
 }
 
+.btn-success:hover, .btn-success:focus {
+  background-image: -webkit-linear-gradient(top, #007B6D 0%, #009587 100%);
+  background-image: -o-linear-gradient(top, #007B6D 0%, #009587 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#007B6D), to(#009587));
+  background-image: linear-gradient(to bottom, #007B6D 0%, #009587 100%);
+  background: #009587;
+}
+
+.progress {
+height: 20px;
+margin-bottom: 20px;
+overflow: hidden;
+background-color: #f5f5f5;
+border-radius: 4px;
+-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
 .home-campaigns {
   -webkit-border-radius: 2px;
   -moz-border-radius:2px;
@@ -22,18 +44,18 @@
   border-radius:2px;
   height: 500px;
   box-shadow: 0 10px 6px -6px #777;
-  padding: 20px;
+  padding: 10px 20px 20px;
   border: 1px solid #eee;
   list-style-type: none;
   color: #222;
 }
 
-.progress-bar-success {
-  background-image: -webkit-linear-gradient(top, #007B6D 0%, #009587 100%)!important;
-  background-image: -o-linear-gradient(top, #007B6D 0%, #009587 100%)!important;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#007B6D), to(#009587))!important;
-  background-image: linear-gradient(to bottom, #007B6D 0%, #009587 100%)!important;
-}
+.progress-bar-success, .btn-success {
+  background-image: -webkit-linear-gradient(top, #007B6D 0%, #009587 100%);
+  background-image: -o-linear-gradient(top, #007B6D 0%, #009587 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#007B6D), to(#009587));
+  background-image: linear-gradient(to bottom, #007B6D 0%, #009587 100%);
+} 
 
 .home-campaigns p {
   font-size: .9em;

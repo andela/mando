@@ -20,9 +20,8 @@
     <div>
       <div class="col-sm-4 campaign_cards" data-ng-repeat="campaign in Campaigns | orderBy: criteria">
         <div class="home-campaigns">
+          <h4><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a></h4>
           <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
-          <p><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a>
-          </p>
           <p> Amount Needed: <span class="values">{{campaign.amount | currency}}</span></p>
           <p> Deadline: <span class="values">{{campaign.dueDate | date}}</span></p>
           <p> {{campaign.balance}}</p>
