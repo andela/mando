@@ -15,7 +15,7 @@
     <h2>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h2>
     <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
   </div>
-  <div class="table-responsive campaignTableMargins" ng-show="myCampaigns">
+  <div class="table-responsive campaignTableMargins card" ng-show="myCampaigns">
     <h2 class="andonationSubheadings" >My Campaigns</h2>
     <table class="table table-bordered">
       <tt>
@@ -50,25 +50,25 @@
       <h2 class="andonationSubheadings" >My Backed Campaigns</h2>
       <table ng-table="tableParams" class="table table-responsive table-bordered">
         <tr ng-repeat="campaignsbacked in $data | limitTo: 3">
-          <td data-title="'Title'" sortable="'campaignid.title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
+          <td data-title="'Title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
             {{campaignsbacked.campaignid.title}}</a>
           </td>
-          <td data-title="'Status'" sortable="'campaignid.status'" class="text-capitalize">
+          <td data-title="'Status'" class="text-capitalize">
             {{campaignsbacked.campaignid.status}}
           </td>
-          <td data-title="'Amount Needed'" sortable="'campaignid.amount'">
+          <td data-title="'Amount Needed'">
             {{campaignsbacked.campaignid.amount | currencyflt}}
           </td>
-          <td data-title="'Amount Raised'" sortable="'campaignid.raised'">
+          <td data-title="'Amount Raised'">
             {{campaignsbacked.campaignid.raised | currencyflt}}
           </td>
-          <td data-title="'Created'" sortable="'campaignid.created'">
+          <td data-title="'Created'">
             {{campaignsbacked.campaignid.created | date}}
           </td>
-          <td data-title="'Deadline'" sortable="'campaignid.dueDate'">
+          <td data-title="'Deadline'">
             {{campaignsbacked.campaignid.dueDate | date}}
           </td>
-          <td data-title="'Backers'" sortable="'backers'">
+          <td data-title="'Backers'">
             {{campaignsbacked.backers}}
           </td>
         </tr>
