@@ -182,16 +182,31 @@ exports.updateCampaign = function (req, res) {
       });
     });
 };
-var archiveCampaignAccount = function(res, campaignAccountId, cb) {
+exports.archiveCampaignAccount = function(campaignAccountId, cb) {
   subledger.archiveCampaignAccount(campaignAccountId, function(error, response) {
-    if (error) {
-      res.status(500).json({message: 'Cannot archive the campaign account'});
+  cb(error, response);
+  });
+};
+
+exports.refundBackers = function(campaign, description, callback) {
+  CampaignBacker.find({campaignid: campaign._id, status: 'active'}).populate('userid').exec(function(err, results) {
+    if (!results) {
+      return callback(err, results);
     }
-    res.send('deleted successfully');
+    async.each(results, function(backer, cb) {
+      backer.status = 'cancelled';
+      backer.save();
+      subledger.creditUserAccount('credit', backer.amountDonated, campaign.account_id, backer.userid.account_id, campaign.title, description, function(error, response) {
+        cb(error);
+      });
+    }, function(err) {
+      callback(err, results);
+    });
   });
 };
 
 exports.deleteCampaign = function (req, res) {
+  var description = 'Cash Refund from deleted campaign';
   var data = {};
   data.lastModifiedBy = req.user._id;
   data.lastModified = moment().format();
@@ -202,24 +217,35 @@ exports.deleteCampaign = function (req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      CampaignBacker.find({campaignid: campaign._id, status: 'active'}).populate('userid').exec(function(err, result) {
-        if (!result) {
-          archiveCampaignAccount(res, campaign.account_id);
-        }
-        async.each(result, function(backer, cb) {
-          backer.status = 'cancelled';
-          backer.save();
-          subledger.creditUserAccount('credit', backer.amountDonated, campaign.account_id, backer.userid.account_id, campaign.title, function(error, response) {
-            cb(error);
-          });
-        }, function(err) {
+      exports.refundBackers(campaign, description, function(err, results) {
+        exports.archiveCampaignAccount(campaign.account_id, function(err, response) {
           if (err) {
-            res.status(500).json({message: 'Cannot credit users'});
+            res.status(500).json({message: 'Cannot archive the campaign account'});
           }
-          archiveCampaignAccount(res, campaign.account_id);
+          res.send('deleted successfully');
         });
       });
     }
   });
 };
 
+exports.fundCampaign = function(req, res) {
+  Campaign.update({_id: req.params.campaignId}, {$inc: {raisedFunds: req.body.amount}}, function(err, res) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    }
+    else {
+      Campaign.find({status: 'active'}, function(err, campaigns) {
+        campaigns.forEach(function(campaign) {
+          if (campaign.raisedFunds === campaign.amount) {
+            campaign.status = 'funded';
+            campaign.save();
+            return;
+          }
+        });
+      });
+    }
+  });
+};

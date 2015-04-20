@@ -28,6 +28,9 @@ angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaig
       reason: 'Support campaign'
     };
     subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function() {
+     backendService.fundCampaign(campaign.id, transaction).success(function(res) {
+     }).error(function(err) {
+     });
       $modalInstance.close(true);
     });
   };
