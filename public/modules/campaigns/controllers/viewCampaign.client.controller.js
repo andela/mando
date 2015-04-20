@@ -11,6 +11,19 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
+        var currentDate = new Date(Date.now());
+        var campaignDeadline = new Date($scope.campaign.dueDate);
+        $scope.daysLeft = Math.ceil(Math.abs(currentDate - campaignDeadline)/(1000 * 3600 * 24));
+        if($scope.daysLeft > 10) {
+          $scope.deadlineStyle = 'success';
+        }
+        else if($scope.daysLeft > 5 && $scope.daysLeft < 10) {
+          $scope.deadlineStyle = 'warning';
+        }
+        else {
+          $scope.deadlineStyle = 'danger';
+        }
+
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
           $scope.ownCampaign = true;
         }
@@ -52,7 +65,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
           var campaignFundPercentage = Math.floor(($scope.campaignBalance/$scope.campaign.amount) * 97);
           if(campaignFundPercentage === 0) {
             $scope.fundsRaised = 3;
-            console.log($scope.fundsRaised, '$scope.fundsRaised');
           }
           else {
             $scope.fundsRaised = campaignFundPercentage + 3;
@@ -60,8 +72,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         });
       });
     };
-
-    console.log($scope.campaignBalance);
     $scope.openModal = function () {
       if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
         $scope.modalInstance = $modal.open({
