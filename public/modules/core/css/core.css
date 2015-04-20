@@ -167,10 +167,17 @@ iframe {
 .titles {
   font-weight: bold;
 }
+
+.btn-success.disabled{
+  background: #007C6E;
+  border: none;
+}
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 /*@media screen and (min-width: 1000px) {
   .home-campaigns {
     width:32%;
   }
 }*/
+
+
 

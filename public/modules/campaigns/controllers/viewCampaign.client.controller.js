@@ -2,6 +2,7 @@
 angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter', '$timeout',
   function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout) {
     var campaignBalance, userAccountBalance;
+    $scope.buttonValue = 'SUPPORT';
     $scope.authentication = Authentication;
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
@@ -13,17 +14,22 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         getCampaignBackersHistory(data._id);
         var currentDate = new Date(Date.now());
         var campaignDeadline = new Date($scope.campaign.dueDate);
-        $scope.daysLeft = Math.ceil(Math.abs(currentDate - campaignDeadline)/(1000 * 3600 * 24));
+        $scope.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
         if($scope.daysLeft > 10) {
           $scope.deadlineStyle = 'success';
         }
         else if($scope.daysLeft > 5 && $scope.daysLeft < 10) {
           $scope.deadlineStyle = 'warning';
         }
+        else if($scope.daysLeft <= 0) {
+          console.log('This campaign has expired by ' + $scope.daysLeft + 'days.');
+          $scope.daysLeft = 0;
+          $scope.buttonValue = 'EXPIRED';
+          $scope.deadlineStyle = 'danger';
+        }
         else {
           $scope.deadlineStyle = 'danger';
         }
-
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
           $scope.ownCampaign = true;
         }
