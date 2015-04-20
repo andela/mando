@@ -240,13 +240,9 @@ exports.fundCampaign = function(req, res) {
       Campaign.find({status: 'active'}, function(err, campaigns) {
         campaigns.forEach(function(campaign) {
           if (campaign.raisedFunds === campaign.amount) {
-            console.log(campaign.title, "finally funded");
             campaign.status = 'funded';
             campaign.save();
             return;
-          }
-          else {
-            console.log("sobs!!");
           }
         });
       });
