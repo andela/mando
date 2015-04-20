@@ -27,6 +27,11 @@ var campaignSchema = new Schema({
     required: 'Enter the required amount needed'
   },
 
+  raisedFunds: {
+    type: Number,
+    default: 0
+  },
+
   youtubeUrl: {
     type: String,
     required: 'Enter your youtube campaign video url'

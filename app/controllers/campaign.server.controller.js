@@ -228,3 +228,28 @@ exports.deleteCampaign = function (req, res) {
     }
   });
 };
+
+exports.fundCampaign = function(req, res) {
+  Campaign.update({_id: req.params.campaignId}, {$inc: {raisedFunds: req.body.amount}}, function(err, res) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    }
+    else {
+      Campaign.find({status: 'active'}, function(err, campaigns) {
+        campaigns.forEach(function(campaign) {
+          if (campaign.raisedFunds === campaign.amount) {
+            console.log(campaign.title, "finally funded");
+            campaign.status = 'funded';
+            campaign.save();
+            return;
+          }
+          else {
+            console.log("sobs!!");
+          }
+        });
+      });
+    }
+  });
+};
