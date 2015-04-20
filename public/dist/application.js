@@ -891,6 +891,9 @@ angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaig
       reason: 'Support campaign'
     };
     subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function() {
+     backendService.fundCampaign(campaign.id, transaction).success(function(res) {
+     }).error(function(err) {
+     });
       $modalInstance.close(true);
     });
   };
@@ -1226,6 +1229,10 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   var campaignsIBacked = function() {
     return $http.get('/user/campaigns/backed');
   };
+
+  var fundCampaign = function(campaignId, funds) {
+    return $http.put('/campaign/' + campaignId + '/fund', funds);
+  };
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
@@ -1236,7 +1243,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getCampaigns: getCampaigns,
     createCampaignBacker: createCampaignBacker,
     getCampaignBackers: getCampaignBackers,
-    campaignsIBacked: campaignsIBacked
+    campaignsIBacked: campaignsIBacked,
+    fundCampaign: fundCampaign
   };
 }]);
 'use strict';
