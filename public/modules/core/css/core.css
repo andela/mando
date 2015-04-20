@@ -172,6 +172,18 @@ iframe {
   background: #007C6E;
   border: none;
 }
+
+.text-danger {
+  color: #DA120D;
+}
+
+.text-warning {
+  color: #F1790D;
+}
+
+.text-success {
+  color: #008B7D;
+}
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 /*@media screen and (min-width: 1000px) {
   .home-campaigns {
