@@ -29,7 +29,7 @@
       </tt>
       <tr data-ng-repeat="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
         <td><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a></td>
-        <td>{{campaign.status}}</td>
+        <td class="text-capitalize">{{campaign.status}}</td>
         <td>{{campaign.amount | currencyflt}}</td>
         <td>{{campaign.raised | currencyflt}}</td>
         <td>{{campaign.created | date}}</td>

@@ -6,9 +6,11 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     $scope.authentication = Authentication;
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
-    backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
+    var getCampaigns = function() {
+      backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
+        $scope.dateFunded = $scope.campaign.dateFunded;
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
@@ -22,7 +24,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
           $scope.deadlineStyle = 'warning';
         }
         else if($scope.daysLeft <= 0) {
-          console.log('This campaign has expired by ' + $scope.daysLeft + 'days.');
           $scope.daysLeft = 0;
           $scope.buttonValue = 'EXPIRED';
           $scope.deadlineStyle = 'danger';
@@ -37,6 +38,8 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       .error(function (error, status, header, config) {
         $location.path('/');
       });
+    };
+    getCampaigns();
     var getCampaignBackersHistory = function (campaignid) {
       backendService.getCampaignBackers(campaignid).success(function (data) {
         $scope.campaignBackers = data;
@@ -77,6 +80,7 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
           else {
             $scope.fundsRaised = campaignFundPercentage + 4;
             $scope.campaignFundPercentage = $scope.fundsRaised;
+            getCampaigns();
           }
         });
       });
