@@ -21,7 +21,7 @@
           <p class="cash titles">Days left: <span ng-class="{values: false, 'text-success': deadlineStyle == 'success','text-warning': deadlineStyle == 'warning', 'text-danger': deadlineStyle == 'danger'}">{{daysLeft}}</span></p>
           <div class="progress">
             <div class="progress-bar progress-bar-success" role="progressbar"  ng-style="{'width': fundsRaised +'%'}">
-              {{campaignBalance | currencyflt}} Raised
+              {{campaignFundPercentage}}% funded
             </div> 
           </div>
           <h4 class="text-success" ng-show="campaign.amount == campaignBalance">Campaign fully funded.</h4>

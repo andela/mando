@@ -68,12 +68,15 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         $timeout(function() {
           $scope.campaignBalance = response;
           // Progress bar calculations
-          var campaignFundPercentage = Math.floor(($scope.campaignBalance/$scope.campaign.amount) * 97);
+          var campaignFundPercentage = Math.floor(($scope.campaignBalance/$scope.campaign.amount) * 96);
+          $scope.campaignFundPercentage = campaignFundPercentage;
           if(campaignFundPercentage === 0) {
-            $scope.fundsRaised = 3;
+            $scope.fundsRaised = 4;
+            $scope.campaignFundPercentage = 0;
           }
           else {
-            $scope.fundsRaised = campaignFundPercentage + 3;
+            $scope.fundsRaised = campaignFundPercentage + 4;
+            $scope.campaignFundPercentage = $scope.fundsRaised;
           }
         });
       });

@@ -22,8 +22,8 @@
         <div class="home-campaigns">
           <h4><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a></h4>
           <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
-          <p> Amount Needed: <span class="values">{{campaign.amount | currency}}</span></p>
-          <p> Deadline: <span class="values">{{campaign.dueDate | date}}</span></p>
+          <p class="title"> Amount Needed: <span class="values">{{campaign.amount | currency}}</span></p>
+          <p class="title"> Deadline: <span class="values">{{campaign.dueDate | date}}</span></p>
           <p> {{campaign.balance}}</p>
           <span style="font-weight: bold;">Description</span>
           <p class="" style="font-weight: normal;">{{campaign.description |limitTo: 136}} ...</p>
