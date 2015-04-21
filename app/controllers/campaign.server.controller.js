@@ -241,6 +241,7 @@ exports.fundCampaign = function(req, res) {
         campaigns.forEach(function(campaign) {
           if (campaign.raisedFunds === campaign.amount) {
             campaign.status = 'funded';
+            campaign.dateFunded = Date.now();
             campaign.save();
             return;
           }

@@ -32,6 +32,10 @@ var campaignSchema = new Schema({
     default: 0
   },
 
+  dateFunded: {
+    type: Date
+  },
+
   youtubeUrl: {
     type: String,
     required: 'Enter your youtube campaign video url'
