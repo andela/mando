@@ -6,6 +6,27 @@ a {
   color: #000;
 }
 
+/* Add campaign form's styling begins here*/
+legend {
+  padding: 10px 0;
+}
+.panel-body{
+  padding: 0 15px;
+}
+.newCampaign_form {
+  margin-top: 20px;
+}
+.dateBtn {
+  margin-left: 5px;
+}
+.btn-default:hover {
+  color: #009183;
+}
+small {
+  color: #5d5d5d;
+}
+/* Add campaign form's styling ends here */
+
 .undecorated-link:hover {
   text-decoration: none;
 }
