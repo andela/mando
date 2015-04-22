@@ -2,7 +2,12 @@
   <div class="container">
       <div class="row">
         <div class="col-lg-6 margin-btm all_campaign_heading">
-          <h2> Active Campaigns</h2>
+          <h2 class="text-capitalize"> {{current}} Campaigns</h2>
+          <ul class="nav nav-pills campaign-navs">
+            <li role="presentation" ng-class="{active: current === 'active' }" ng-click="showSelected('active')"><a >Active</a></li>
+            <li role="presentation" ng-class="{active: current === 'funded'}" ng-click="showSelected('funded')"><a >Funded</a></li>
+            <li role="presentation" ng-class="{active: current === 'expired'}" ng-click="showSelected('expired')"><a >Expired</a></li>
+          </ul>
         </div>
       
         <div class="col-md-3 col-md-offset-3 vcenter">
@@ -18,7 +23,7 @@
       </div>
 
     <div>
-      <div class="col-sm-4 campaign_cards" data-ng-repeat="campaign in Campaigns | orderBy: criteria">
+      <div class="col-sm-4 campaign_cards" data-ng-repeat="campaign in selectedCampaigns | orderBy: criteria">
         <div class="home-campaigns">
           <h4><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a></h4>
           <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>

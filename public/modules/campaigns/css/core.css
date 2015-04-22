@@ -66,6 +66,14 @@ iframe {
   font-weight: bold;
 }
 
+.campaign-navs li a {
+  color: #000000!important;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+  background-color: #009587;
+}
+
 .viewCampaignWrapper {
   text-align: justify;
   margin-top: 30px;
@@ -100,4 +108,8 @@ iframe {
 
 .andonationSubheadings {
   font-size: 23px;
+}
+
+.categories: hover {
+  background-color: green;
 }
