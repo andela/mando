@@ -1122,14 +1122,14 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         $timeout(function() {
           $scope.campaignBalance = response;
           // Progress bar calculations
-          var campaignFundPercentage = Math.floor(($scope.campaignBalance/$scope.campaign.amount) * 96);
-          $scope.campaignFundPercentage = campaignFundPercentage;
+          var fundsRatio = $scope.campaignBalance/$scope.campaign.amount;
+          var campaignFundPercentage = Math.floor(fundsRatio * 96);
           if(campaignFundPercentage === 0) {
             $scope.fundsRaised = 4;
             $scope.campaignFundPercentage = 0;
           }
           else {
-            $scope.fundsRaised = campaignFundPercentage + 4;
+            $scope.fundsRaised = campaignFundPercentage + Math.ceil(4*fundsRatio);
             $scope.campaignFundPercentage = $scope.fundsRaised;
             getCampaigns();
           }
@@ -1172,8 +1172,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     };
   }
 ]);
-
-
 'use strict';
 angular.module('campaign').filter('currencyflt', function() {
   return function cur(num) {
@@ -1293,10 +1291,19 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
     $scope.campaigns = [];
-
+    $scope.activeCampaigns = [];
+    $scope.fundedCampaigns = [];
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
+        angular.forEach($scope.campaigns, function(item) {
+          if(item.status === 'active') {
+            $scope.activeCampaigns.push(item);
+          }
+          else if(item.status === 'funded') {
+            $scope.fundedCampaigns.push(item);
+          }
+        })
       })
       .error(function(error, status, header, config) {
         $scope.error = error;

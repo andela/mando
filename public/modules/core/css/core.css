@@ -6,6 +6,21 @@ a {
   color: #000;
 }
 
+.pagination > .active > a, 
+.pagination > .active > span, 
+.pagination > .active > a:hover, 
+.pagination > .active > span:hover, 
+.pagination > .active > a:focus, 
+.pagination > .active > span:focus {
+  background-color: #008779;
+  border-color: #007C6E;
+  color: #fff;
+}
+
+.pagination > li > a {
+  color: #007C6E;
+}
+
 /* Add campaign form's styling begins here*/
 legend {
   padding: 10px 0;
@@ -19,7 +34,7 @@ legend {
 .dateBtn {
   margin-left: 5px;
 }
-.btn-default:hover {
+.btn-default:hover, .btn-default:active, .btn-default:focus {
   color: #009183;
 }
 small {

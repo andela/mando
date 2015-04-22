@@ -5,10 +5,19 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
     $scope.campaigns = [];
-
+    $scope.activeCampaigns = [];
+    $scope.fundedCampaigns = [];
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
+        angular.forEach($scope.campaigns, function(item) {
+          if(item.status === 'active') {
+            $scope.activeCampaigns.push(item);
+          }
+          else if(item.status === 'funded') {
+            $scope.fundedCampaigns.push(item);
+          }
+        })
       })
       .error(function(error, status, header, config) {
         $scope.error = error;
