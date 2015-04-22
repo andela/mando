@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('core').controller('HomeController', ['$scope', 'Authentication', 'backendService',
-	function($scope, Authentication, backendService) {
+angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Authentication', 'backendService',
+	function($scope, $rootScope, Authentication, backendService) {
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
     $scope.campaigns = [];
@@ -22,6 +22,10 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
       .error(function(error, status, header, config) {
         $scope.error = error;
       });
+
+      $scope.updateStatus = function() {
+        $rootScope.currentStatus = 'funded';
+      };
 
     $scope.myInterval = 3000;
     $scope.slides = [

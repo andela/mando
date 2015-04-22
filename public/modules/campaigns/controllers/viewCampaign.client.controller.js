@@ -80,6 +80,9 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
           else {
             $scope.fundsRaised = campaignFundPercentage + Math.ceil(4*fundsRatio);
             $scope.campaignFundPercentage = $scope.fundsRaised;
+            if($scope.campaignFundPercentage < 4) {
+              $scope.fundsRaised = 4;
+            }
             getCampaigns();
           }
         });

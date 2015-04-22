@@ -114,11 +114,6 @@ small {
   color: #fff !important;
 }
 
-/*.nav li a:hover {
-  color: #292929 !important;
-  transition: all linear .2s;
-}*/
-
 .margin-top {
   margin-top: 20px;
 }
@@ -143,9 +138,6 @@ small {
 .margin_left {
   margin-left: 45px;
 }
-/*.padding_left {
-  padding-left: 54px;
-}*/
 
 .third-div {
   margin: 0 auto;

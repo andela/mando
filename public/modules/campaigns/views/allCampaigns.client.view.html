@@ -37,8 +37,7 @@
     </div>
 
   </div>
-
-  <div class="text-center" ng-show="campaigns.length > itemsPerPage">
+  <div class="text-center" ng-show="selectedCampaigns.length > itemsPerPage">
     <pagination total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()">
     </pagination>
     <p>
