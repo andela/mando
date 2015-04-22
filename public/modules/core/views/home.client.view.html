@@ -18,7 +18,7 @@
       </div>
 
       <div class="third-div">
-          <div class="col-lg-4" ng-repeat="campaign in campaigns | orderBy: 'created'.descending | limitTo:3">
+          <div class="col-lg-4" ng-repeat="campaign in activeCampaigns | orderBy: 'created'.descending | limitTo:3">
             <div class="home-campaigns">
               <h4><a href="/#!/campaign/{{ campaign.slug}}" class="class-title"> {{campaign.title }}</a></h4><br>
               <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
@@ -30,10 +30,38 @@
             </div>
           </div>
         <div> 
-          <div class="container-fluid pull-right see-more-campaigns margin-btm margin-top" ng-hide="campaigns.length <= 3">
-            <a href="/#!/campaigns" id="all-campaigns">See All {{campaigns.length}} Active Campaigns</a>
+          <div class="container-fluid pull-right see-more-campaigns margin-btm margin-top" ng-hide="activeCampaigns.length <= 3">
+            <a href="/#!/campaigns" id="all-campaigns">See All {{activeCampaigns.length}} Active Campaigns</a>
           </div>
         </div>
-      </div>      
-    </div>
+      </div>
+
+      <div class="clearfix"></div>
+      <!-- Funded campaigns -->
+
+      <section ng-show="fundedCampaigns.length > 0">
+       <hr class="custom_side_margin">
+        <div class="container-fluid second-div margin-btm">
+          <h3>Funded Campaigns</h3>
+        </div>
+        <div class="third-div">
+          <div class="col-lg-4" ng-repeat="campaign in fundedCampaigns | orderBy: 'created'.descending | limitTo:3">
+            <div class="home-campaigns">
+              <h4><a href="/#!/campaign/{{ campaign.slug}}" class="class-title"> {{campaign.title }}</a></h4><br>
+              <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
+              <p><span class="titles"> Amount Needed:</span> <span class="values">{{campaign.amount | currency}}</span></p>
+              <p><span class="titles">Deadline:</span> <span class="values">{{campaign.dueDate | date}}</span></p>
+              <p class="titles">{{campaign.balance}}</p>
+              <p span class="titles">Description</p>
+              <p class="values">{{campaign.description |limitTo: 136}} ...</p>
+            </div>
+          </div>
+          <div> 
+            <div class="container-fluid pull-right see-more-campaigns margin-btm margin-top" ng-hide="fundedCampaigns.length <= 3">
+              <a href="/#!/campaigns" id="all-campaigns">See All {{fundedCampaigns.length}} Funded Campaigns</a>
+            </div>
+          </div>
+        </div>
+      </div>     
+    </section>
 </section>

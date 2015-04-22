@@ -71,14 +71,14 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         $timeout(function() {
           $scope.campaignBalance = response;
           // Progress bar calculations
-          var campaignFundPercentage = Math.floor(($scope.campaignBalance/$scope.campaign.amount) * 96);
-          $scope.campaignFundPercentage = campaignFundPercentage;
+          var fundsRatio = $scope.campaignBalance/$scope.campaign.amount;
+          var campaignFundPercentage = Math.floor(fundsRatio * 96);
           if(campaignFundPercentage === 0) {
             $scope.fundsRaised = 4;
             $scope.campaignFundPercentage = 0;
           }
           else {
-            $scope.fundsRaised = campaignFundPercentage + 4;
+            $scope.fundsRaised = campaignFundPercentage + Math.ceil(4*fundsRatio);
             $scope.campaignFundPercentage = $scope.fundsRaised;
             getCampaigns();
           }
@@ -121,4 +121,3 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     };
   }
 ]);
-

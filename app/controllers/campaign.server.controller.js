@@ -140,7 +140,7 @@ exports.getUserCampaigns = function (req, res) {
 };
 
 exports.getCampaigns = function (req, res) {
-  Campaign.find({status: 'active'}, function (err, campaigns) {
+  Campaign.find({}, function (err, campaigns) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
