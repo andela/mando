@@ -58,7 +58,7 @@
           </div>
           <div> 
             <div class="container-fluid pull-right see-more-campaigns margin-btm margin-top" ng-hide="fundedCampaigns.length <= 3">
-              <a href="/#!/campaigns" id="all-campaigns">See All {{fundedCampaigns.length}} Funded Campaigns</a>
+              <a href="/#!/campaigns" id="all-campaigns" ng-click="updateStatus()">See All {{fundedCampaigns.length}} Funded Campaigns</a>
             </div>
           </div>
         </div>

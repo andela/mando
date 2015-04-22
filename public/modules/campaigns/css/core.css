@@ -68,10 +68,16 @@ iframe {
 
 .campaign-navs li a {
   color: #000000!important;
+  padding: 5px 20px;
+  margin-right: 5px;
+  cursor: default;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1px 1px #eee;
 }
 
 .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
-  background-color: #009587;
+  background-color: #029A8B;
+  color: #fff!important;
 }
 
 .viewCampaignWrapper {

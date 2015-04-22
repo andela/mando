@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location', 'backendService', function($scope, $location, backendService) {
+angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope', '$location', 'backendService', function($scope, $rootScope, $location, backendService) {
   $scope.Campaigns = [];
   $scope.selectedCampaigns = [];
   $scope.criteria = 'created';
@@ -10,12 +10,14 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location',
   $scope.current = 'active';
 
   $scope.init = function() {
+    console.log($rootScope.currentStatus, 'root sccope current status');
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
+        console.log(data);
         $scope.totalItems = data.length;
         $scope.filterCampaigns();
-        $scope.showSelected();
+        $scope.showSelected($rootScope.currentStatus || '');
       })
       .error(function(error, status, header, config) {
         return error;

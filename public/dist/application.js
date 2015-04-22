@@ -706,19 +706,24 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', '
 
 'use strict';
 
-angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location', 'backendService', function($scope, $location, backendService) {
+angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope', '$location', 'backendService', function($scope, $rootScope, $location, backendService) {
   $scope.Campaigns = [];
+  $scope.selectedCampaigns = [];
   $scope.criteria = 'created';
   $scope.currentPage = 1;
   $scope.itemsPerPage = 21;
   $scope.totalItems = 1;
+  $scope.current = 'active';
 
   $scope.init = function() {
+    console.log($rootScope.currentStatus, 'root sccope current status');
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
+        console.log(data);
         $scope.totalItems = data.length;
         $scope.filterCampaigns();
+        $scope.showSelected($rootScope.currentStatus || '');
       })
       .error(function(error, status, header, config) {
         return error;
@@ -739,6 +744,16 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location',
 
   $scope.pageChanged = function() {
     $scope.filterCampaigns();
+  };
+
+  $scope.showSelected = function(state) {
+    $scope.current = state || 'active';
+    $scope.selectedCampaigns = [];
+    angular.forEach($scope.Campaigns, function(item){
+      if(item.status === $scope.current) {
+        $scope.selectedCampaigns.push(item);
+      }
+    });
   };
   $scope.init();
 }]);
@@ -1131,6 +1146,9 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
           else {
             $scope.fundsRaised = campaignFundPercentage + Math.ceil(4*fundsRatio);
             $scope.campaignFundPercentage = $scope.fundsRaised;
+            if($scope.campaignFundPercentage < 4) {
+              $scope.fundsRaised = 4;
+            }
             getCampaigns();
           }
         });
@@ -1286,8 +1304,8 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
 ]);
 'use strict';
 
-angular.module('core').controller('HomeController', ['$scope', 'Authentication', 'backendService',
-	function($scope, Authentication, backendService) {
+angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Authentication', 'backendService',
+	function($scope, $rootScope, Authentication, backendService) {
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
     $scope.campaigns = [];
@@ -1308,6 +1326,10 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
       .error(function(error, status, header, config) {
         $scope.error = error;
       });
+
+      $scope.updateStatus = function() {
+        $rootScope.currentStatus = 'funded';
+      };
 
     $scope.myInterval = 3000;
     $scope.slides = [
