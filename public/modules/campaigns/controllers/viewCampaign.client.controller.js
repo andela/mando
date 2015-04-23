@@ -23,7 +23,7 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         else if($scope.daysLeft > 5 && $scope.daysLeft < 10) {
           $scope.deadlineStyle = 'warning';
         }
-        else if($scope.daysLeft <= 0) {
+        else if($scope.daysLeft < 0) {
           $scope.daysLeft = 0;
           $scope.buttonValue = 'EXPIRED';
           $scope.deadlineStyle = 'danger';
@@ -66,25 +66,29 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         userAccountBalance = response;
       });
     };
+    var updateProgressbar = function () {
+      // Progress bar calculations
+      console.log($scope.campaignBalance, $scope.campaign)
+      var fundsRatio = $scope.campaign.raisedFunds/$scope.campaign.amount;
+      var campaignFundPercentage = Math.floor(fundsRatio * 96);
+      if(campaignFundPercentage === 0) {
+        $scope.fundsRaised = 4;
+        $scope.campaignFundPercentage = 0;
+      }
+      else {
+        $scope.fundsRaised = campaignFundPercentage + Math.ceil(4*fundsRatio);
+        $scope.campaignFundPercentage = $scope.fundsRaised;
+        if($scope.campaignFundPercentage < 4) {
+          $scope.fundsRaised = 4;
+        }
+      }
+    };
     var getCampaignBalance = function (campaignAccountid) {
       subledgerServices.getBalance(campaignAccountid, function (response) {
         $timeout(function() {
           $scope.campaignBalance = response;
-          // Progress bar calculations
-          var fundsRatio = $scope.campaignBalance/$scope.campaign.amount;
-          var campaignFundPercentage = Math.floor(fundsRatio * 96);
-          if(campaignFundPercentage === 0) {
-            $scope.fundsRaised = 4;
-            $scope.campaignFundPercentage = 0;
-          }
-          else {
-            $scope.fundsRaised = campaignFundPercentage + Math.ceil(4*fundsRatio);
-            $scope.campaignFundPercentage = $scope.fundsRaised;
-            if($scope.campaignFundPercentage < 4) {
-              $scope.fundsRaised = 4;
-            }
+            updateProgressbar();
             getCampaigns();
-          }
         });
       });
     };
@@ -98,7 +102,7 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       $scope.modalInstance = $modal.open({
         templateUrl: 'modules/campaigns/views/supportCampaign.modal.client.view.html',
         controller: 'supportCampaignCtrl',
-        size: 'sm',
+        size: 'md',
         resolve: {
           campaign: function () {
             return {
