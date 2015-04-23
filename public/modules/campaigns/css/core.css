@@ -18,9 +18,30 @@
 .main-container {
   margin-top: 30px;
 }
+
+.userHomePage .btn-default {
+  margin-right: 5px;
+  background-image: linear-gradient(to bottom, #009183 0%, #007D6F 100%);
+  text-shadow: none;
+  color: #fff;
+}
+
+.userHomePage .btn-default:hover {
+  background-color: #007D6F;
+  color: #eee;
+}
+
+.userCampaignTitle a {
+  color: #017165;
+}
+
 /*hides pagination div*/
 .ng-table-pagination {
   display: none;
+}
+
+.campaignModal {
+  
 }
 
 .title {
@@ -67,17 +88,13 @@ iframe {
 }
 
 .campaign-navs li a {
-  color: #000000!important;
-  padding: 5px 20px;
   margin-right: 5px;
   cursor: default;
-  border-radius: 2px;
-  box-shadow: 1px 1px 1px 1px #eee;
+  text-decoration: underline;
 }
 
-.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
-  background-color: #029A8B;
-  color: #fff!important;
+.campaign-navs li.active > a, .campaign-navs li.active > a:focus {
+  color: #009183;
 }
 
 .viewCampaignWrapper {

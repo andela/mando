@@ -3,7 +3,7 @@
       <div class="row">
         <div class="col-lg-6 margin-btm all_campaign_heading">
           <h2 class="text-capitalize"> {{current}} Campaigns</h2>
-          <ul class="nav nav-pills campaign-navs">
+          <ul class="list-inline campaign-navs">
             <li role="presentation" ng-class="{active: current === 'active' }" ng-click="showSelected('active')"><a >Active</a></li>
             <li role="presentation" ng-class="{active: current === 'funded'}" ng-click="showSelected('funded')"><a >Funded</a></li>
             <li role="presentation" ng-class="{active: current === 'expired'}" ng-click="showSelected('expired')"><a >Expired</a></li>
