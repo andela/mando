@@ -87,16 +87,6 @@ iframe {
   font-weight: bold;
 }
 
-.campaign-navs li a {
-  margin-right: 5px;
-  cursor: default;
-  text-decoration: underline;
-}
-
-.campaign-navs li.active > a, .campaign-navs li.active > a:focus {
-  color: #009183  ;
-}
-
 .viewCampaignWrapper {
   text-align: justify;
   margin-top: 30px;
@@ -155,4 +145,17 @@ iframe {
   margin: 0;
 }
 
+.campaign-navs>li.active>a, .campaign-navs>li.active>a:focus, .campaign-navs>li.active>a:hover {
+  background-color: #029A8B;
+  color: #fff!important;
+}
+
+.campaign-navs li a {
+  color: #333!important;
+  padding: 5px 20px;
+  margin-right: 5px;
+  cursor: default;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1px 1px #eee;
+}
 

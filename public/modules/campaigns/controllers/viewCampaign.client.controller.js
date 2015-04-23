@@ -102,7 +102,7 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       $scope.modalInstance = $modal.open({
         templateUrl: 'modules/campaigns/views/supportCampaign.modal.client.view.html',
         controller: 'supportCampaignCtrl',
-        size: 'md',
+        size: 'sm',
         resolve: {
           campaign: function () {
             return {
