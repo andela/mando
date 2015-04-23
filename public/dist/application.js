@@ -1134,7 +1134,7 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     var updateProgressbar = function () {
       // Progress bar calculations
       console.log($scope.campaignBalance, $scope.campaign)
-      var fundsRatio = $scope.campaign.raisedFunds/$scope.campaign.amount;
+      var fundsRatio = $scope.campaignBalance/$scope.campaign.amount;
       var campaignFundPercentage = Math.floor(fundsRatio * 96);
       if(campaignFundPercentage === 0) {
         $scope.fundsRaised = 4;
