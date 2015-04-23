@@ -10,7 +10,6 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
   $scope.current = 'active';
 
   $scope.init = function() {
-    console.log($rootScope.currentStatus, 'root sccope current status');
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;

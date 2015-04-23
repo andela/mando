@@ -1,22 +1,33 @@
 <section class="container">
-  <div class="myAndonationWrapper">
-    <a href="/#!/admin/users" ng-show="isAdmin" class="btn btn-default pull-right">Users</a>
-    <a href="/#!/bank" ng-show="isBanker" class="btn btn-default pull-right">Bank</a>
-    <a href="/#!/distributor" ng-show="isDistributor" class="btn btn-default pull-right">DISTRIBUTOR</a>
-    <div ng-show="isBanker">
-      <p>
-        <a ng-href="/#!/bank" class="balances">SYSTEM BALANCE:   {{systemBalance.amount | currencyflt}}</a>
-      </p>
+  <div class="myAndonationWrapper userHomePage">
+    <div class="row">
+    <div class="column-fluid">
+        <div class="col-md-8">
+          <div ng-show="isBanker">
+            <p>
+              <a ng-href="/#!/bank" class="balances">SYSTEM BALANCE:   {{systemBalance.amount | currencyflt}}</a>
+            </p>
+          </div>
+          <p>
+            <a ng-href="/#!/myTransactions" "btn btn-hover" class="balances">USER BALANCE : {{balance.amount| currencyflt}}</a>
+          </p>
+        </div>
+
+        <div class="col-md-4">
+          <ul class="list-inline navbar-right cancel-margin-right userPageCTA">
+            <li><a href="/#!/admin/users" ng-show="isAdmin">Manage Users</a></li>
+            <li><a href="/#!/bank" ng-show="isBanker">Manage Bank</a></li>
+            <li><a href="/#!/distributor" ng-show="isDistributor">Distribute Money</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <p>
-      <a ng-href="/#!/myTransactions" "btn btn-hover" class="balances">USER BALANCE : {{balance.amount| currencyflt}}</a>
-    </p>
   <div ng-hide="myCampaigns" class="jumbotron text-center">
     <h2>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h2>
     <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
   </div>
   <div class="table-responsive campaignTableMargins card" ng-show="myCampaigns">
-    <h2 class="andonationSubheadings" >My Campaigns</h2>
+    <h4>My Campaigns</h4>
     <table class="table table-bordered">
       <tt>
         <th>Title</th>
@@ -28,7 +39,7 @@
         <th>Backers</th>
       </tt>
       <tr data-ng-repeat="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
-        <td><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a></td>
+        <td class="userCampaignTitle"><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a></td>
         <td class="text-capitalize">{{campaign.status}}</td>
         <td>{{campaign.amount | currencyflt}}</td>
         <td>{{campaign.raised | currencyflt}}</td>
@@ -38,8 +49,8 @@
       </tr>
     </table>
     <div ng-hide="myCampaigns.length < 4">
-      <a href="#" ng-show="limit===4" ng-click="increment()" class="pull-right">See all of My Campaigns</a>
-      <a href="#" ng-hide="limit===4" ng-click="decrement()" class="pull-right">Back</a>
+      <a href="#" ng-show="limit===4" ng-click="increment()" class="pull-right viewAllCTA">See all of My Campaigns</a>
+      <a href="#" ng-hide="limit===4" ng-click="decrement()" class="pull-right viewAllCTA">Back</a>
     </div>
   </div>
   <div class="">
@@ -47,10 +58,10 @@
       <h3>You have not backed any campaign</h3>
     </div>
     <div ng-show="campaignsBacked" class="campaignTableMargins">
-      <h2 class="andonationSubheadings" >My Backed Campaigns</h2>
+      <h4>My Backed Campaigns</h4>
       <table ng-table="tableParams" class="table table-responsive table-bordered">
         <tr ng-repeat="campaignsbacked in $data | limitTo: 3">
-          <td data-title="'Title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
+          <td data-title="'Title'" class="userCampaignTitle"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
             {{campaignsbacked.campaignid.title}}</a>
           </td>
           <td data-title="'Status'" class="text-capitalize">
@@ -74,7 +85,7 @@
         </tr>
       </table>
       <div ng-show="noOfCampaignsBacked > 4">
-        <p class="pull-right"> <a href="/#!/campaignIBacked">See all campaigns I backed</a></p>
+        <p class="pull-right viewAllCTA"> <a href="/#!/campaignIBacked" class="viewAllCTA">See all campaigns I backed</a></p>
       </div>
     </div>
   </div>
@@ -83,7 +94,7 @@
       <h2>YOU DO NOT HAVE ANY TRANSACTION</h2>
     </div>
     <div ng-show="query" class="campaignTableMargins">
-      <h2 class="andonationSubheadings" >My Bank Transactions</h2>
+      <h4>My Bank Transactions</h4>
       <table class="table table-bordered">
         <tt>
           <th>Date</th>
@@ -98,7 +109,7 @@
           <td>{{transaction.value.amount | currencyflt}}</td>
         </tr>
       </table>
-      <a href="/#!/bank" class="pull-right">See All Bank Transactions</a>
+      <a href="/#!/bank" class="pull-right viewAllCTA">See All Bank Transactions</a>
     </div>
   </div>
   <div>
@@ -107,7 +118,7 @@
     </div>
     <div ng-show="myJournal" class="campaignTableMargins">
       <!-- <a name=""></a> myJournal-->
-      <h2 class="andonationSubheadings" >My Account History</h2>
+      <h4>My Account History</h4>
         <table class="table table-bordered">
         <tt>
           <th>Date</th>
@@ -124,7 +135,7 @@
           <td>{{transaction.balance.value.amount}}</td>
         </tr>
       </table>
-      <a href="/#!/myTransactions" class="pull-right">See my full Account History</a>
+      <a href="/#!/myTransactions" class="pull-right viewAllCTA">See my full Account History</a>
     </div>
   </div>
   <div ng-show="isDistributor">
@@ -132,7 +143,7 @@
       <h2>YOU DO NOT HAVE ANY DISTRIBUTIONS</h2>
     </div>
     <div ng-show="journal">
-      <h2 class="andonationSubheadings" >My Distributions</h2>
+      <h4>My Distributions</h4>
       <table class="table table-bordered">
         <tt>
           <th>Date</th>
@@ -150,7 +161,7 @@
           <td>{{distribution.balance.value.amount}}</td>
         </tr>
       </table>
-      <a ui-sref="myDistribution" class="pull-right">See all of My Distributions</a>
+      <a ui-sref="myDistribution" class="pull-right viewAllCTA">See all of My Distributions</a>
     </div>
   </div>
   </div>
