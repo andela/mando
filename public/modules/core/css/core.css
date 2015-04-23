@@ -1,9 +1,9 @@
 .content {
-  margin-top: 58px;
+  margin-top: 60px;
 }
 
 a {
-  color: #000;
+  color: #333;
 }
 
 .pagination > .active > a, 
@@ -224,5 +224,9 @@ iframe {
   }
 }*/
 
+.btn-success.disabled, .btn-success:disabled, .btn-success[disabled] {
+  background-color: #007D6F;
+  border-color: #007D6F;
+}
 
 

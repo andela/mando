@@ -32,7 +32,7 @@
 }
 
 .userCampaignTitle a {
-  color: #017165;
+  color: #2A5DB0;
 }
 
 /*hides pagination div*/
@@ -94,7 +94,7 @@ iframe {
 }
 
 .campaign-navs li.active > a, .campaign-navs li.active > a:focus {
-  color: #009183;
+  color: #009183  ;
 }
 
 .viewCampaignWrapper {
@@ -129,10 +129,30 @@ iframe {
   margin-top: 45px;
 }
 
-.andonationSubheadings {
-  font-size: 23px;
-}
-
 .categories: hover {
   background-color: green;
 }
+
+/*   Distribution page styling   */
+.title_margin {
+  margin: 40px 0 30px;
+}
+
+.usernameLinks a, .userPageCTA a, .viewAllCTA {
+  color: #2A5DB0;
+}
+
+.margin-btm-md {
+  margin-bottom: 50px;
+}
+
+.cancel-margin-right {
+  margin-right: 0;
+}
+
+.clear_padding, .clear_padding h3 {
+  padding: 0;
+  margin: 0;
+}
+
+
