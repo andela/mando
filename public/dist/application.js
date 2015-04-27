@@ -659,16 +659,18 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', '
     Authentication.requireLogin($state);
 
     $scope.addCampaign = function() {
-      $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
+      $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.validYoutubeUrl);
       backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
           toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
           $location.path('/campaign/' + data.slug);
+          console.log($scope.campaign.youtubeUrl, 'immediately after clicking');
         })
         .error(function(error, status, header, config) {
           //no $scope.error on the view, need to work on the error
           $scope.error = error;
         });
+    console.log($scope.campaign.youtubeUrl, 'some value sha ');
     };
 
     $scope.validateYoutubeUrl = function(url, isValid) {
