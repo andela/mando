@@ -13,18 +13,19 @@
       <div class="col-md-5 col-md-offset-1">
         <div>
         <!--Disabled the support button for unauthenticated user -->
-          <button class="btn btn-success btn-lg supportbtn" ng-class="{'disabled': ownCampaign || campaign.amount == campaignBalance || daysLeft < 0 || campaign.status === funded}"  data-ng-disabled="!authentication.user" ng-click="openModal()" ng-bind="buttonValue"></button>
+          <button class="btn btn-success btn-lg supportbtn" ng-class="{'disabled': ownCampaign || campaign.amount == campaignBalance || daysLeft === 'none' || campaign.status === 'funded'}"  data-ng-disabled="!authentication.user" ng-click="openModal()" ng-bind="buttonValue"></button>
           <p class="supportFootnote" ng-show="ownCampaign">You can't support your own campaign</p>
         </div><br>
           <p class="cash titles">Needs: <span class="values">{{campaign.amount | currencyflt}}</span></p>
           <p class="cash titles">Raised: <span class="values">{{campaignBalance | currencyflt}}</span></p>
-          <p class="cash titles">Days left: <span ng-class="{values: false, 'text-success': deadlineStyle == 'success','text-warning': deadlineStyle == 'warning', 'text-danger': deadlineStyle == 'danger'}">{{daysLeft}}</span></p>
+          <p class="cash titles" ng-hide="daysLeft === 'none'">Days left: <span ng-class="{values: false, 'text-success': deadlineStyle == 'success','text-warning': deadlineStyle == 'warning', 'text-danger': deadlineStyle == 'danger'}">{{daysLeft}}</span></p>
           <div class="progress">
             <div class="progress-bar progress-bar-success" role="progressbar"  ng-style="{'width': fundsRaised +'%'}">
-              {{campaignFundPercentage}}% funded <span ng-show="dateFunded"> on {{dateFunded | date}}</span>
+              {{campaignFundPercentage}}% funded <span ng-show="dateFunded != 'undefined'"> on {{dateFunded | date}}</span>
             </div> 
           </div>
           <h4 class="text-success" ng-show="campaign.amount == campaignBalance">Campaign fully funded.</h4>
+          <h4 class="text-danger" ng-show="daysLeft === 'none' && campaign.amount < campaignBalance">Campaign Expired.</h4>
           <hr>
         <div>
           <youtube-video video-id="campaign.youtubeUrl"></youtube-video>
