@@ -13,7 +13,9 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
-        console.log(data);
+        angular.forEach(data, function(item) {
+            console.log(item.status, item.title);
+          });
         $scope.totalItems = data.length;
         $scope.filterCampaigns();
         $scope.showSelected($rootScope.currentStatus || '');

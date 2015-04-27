@@ -719,7 +719,9 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
-        console.log(data);
+        angular.forEach(data, function(item) {
+            console.log(item.status, item.title);
+          });
         $scope.totalItems = data.length;
         $scope.filterCampaigns();
         $scope.showSelected($rootScope.currentStatus || '');
@@ -1075,6 +1077,9 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
+        if($scope.campaign.status === 'funded') {
+          $scope.buttonValue = 'FUNDED';
+        }
         $scope.dateFunded = $scope.campaign.dateFunded;
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
@@ -1088,13 +1093,12 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         else if($scope.daysLeft > 5 && $scope.daysLeft < 10) {
           $scope.deadlineStyle = 'warning';
         }
-        else if($scope.daysLeft < 0) {
-          $scope.daysLeft = 0;
-          $scope.buttonValue = 'EXPIRED';
+        else if($scope.daysLeft <= 5 && $scope.daysLeft >= 0) {
           $scope.deadlineStyle = 'danger';
         }
-        else {
-          $scope.deadlineStyle = 'danger';
+        else if($scope.daysLeft < 0) {
+          $scope.daysLeft = 'none';
+          $scope.buttonValue = 'EXPIRED';
         }
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
           $scope.ownCampaign = true;
@@ -1133,7 +1137,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     };
     var updateProgressbar = function () {
       // Progress bar calculations
-      console.log($scope.campaignBalance, $scope.campaign)
       var fundsRatio = $scope.campaignBalance/$scope.campaign.amount;
       var campaignFundPercentage = Math.floor(fundsRatio * 96);
       if(campaignFundPercentage === 0) {
