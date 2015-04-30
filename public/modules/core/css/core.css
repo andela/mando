@@ -30,18 +30,27 @@ a {
 legend {
   padding: 10px 0;
 }
-.panel-body{
-  padding: 0 15px;
+
+.panel {
+  box-shadow: 1px 1px 3px 2px #E9EBEE;
 }
+
+.panel-body{
+  padding: 10px 15px;
+}
+
 .newCampaign_form {
   margin-top: 20px;
 }
+
 .dateBtn {
   margin-left: 5px;
 }
+
 .btn-default:hover, .btn-default:active, .btn-default:focus {
   color: #009183;
 }
+
 small {
   color: #5d5d5d;
 }
@@ -107,6 +116,7 @@ small {
 
 /*    Navbar styling starts here  */
 .navbar-brand {
+  font-size: 23px;
   color: #384C61!important;
   text-shadow: none!important;
 }
@@ -119,6 +129,7 @@ small {
 
 .navbar {
   vertical-align: middle!important;
+  padding-top: 10px;
   border-bottom: 1px solid #eee;
   border-top: 1px solid #576779;
   min-height: 65px;
@@ -143,8 +154,7 @@ small {
 }
 
 .carousels {
-  margin: 0 2px;
-  background: #000;
+  background: #fff;
   opacity: .9;
   box-shadow: 1px 2px 2px 1px #96989A;
 }
@@ -262,4 +272,16 @@ iframe {
 .btn-success.disabled, .btn-success:disabled, .btn-success[disabled] {
   background-color: #0EA138;
   opacity: .7;
+}
+
+.carousel-control {
+  opacity: 1!important;
+}
+
+.carousel-control span:hover {
+  color: #FFF1F5;
+}
+
+.homePageContentsHolder {
+  margin-top: 30px;
 }

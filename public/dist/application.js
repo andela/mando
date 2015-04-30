@@ -635,6 +635,16 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
     url: '/campaignIBacked',
     templateUrl: '/modules/campaigns/views/campaignsIBacked.client.view.html',
     controller: 'campaignsIBackedCtrl'
+  }).
+  state('allMyCampaigns', {
+    resolve: {
+      credentials: ["$http", function($http) {
+        return $http.get('/bank/credentials');
+      }]
+    },
+    url: '/allMyCampaigns',
+    templateUrl: '/modules/campaigns/views/allMyCampaigns.client.view.html'//,
+    // controller: 'allMyCampaignCtrl'
   });
 
   //Add YouTube to resource whitelist so that we can embed YouTube videos
@@ -708,24 +718,27 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', '
 
 'use strict';
 
-angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope', '$location', 'backendService', function($scope, $rootScope, $location, backendService) {
-  $scope.Campaigns = [];
+angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope', '$location', 'backendService', 'currentStatus',  function($scope, $rootScope, $location, backendService, currentStatus) {
   $scope.selectedCampaigns = [];
   $scope.criteria = 'created';
   $scope.currentPage = 1;
   $scope.itemsPerPage = 21;
   $scope.totalItems = 1;
-  $scope.current = 'active';
+  $scope.current = $rootScope.currentStatus;
 
-  $scope.init = function() {
+  $scope.init = function(campaignStatus) {
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
+        $scope.selectedCampaigns = [];
         angular.forEach(data, function(item) {
-          });
+          if(item.status === campaignStatus) {
+            $scope.selectedCampaigns.push(item);
+          }
+        });
+        currentStatus.state = $rootScope.currentStatus;
         $scope.totalItems = data.length;
         $scope.filterCampaigns();
-        $scope.showSelected($rootScope.currentStatus || '');
       })
       .error(function(error, status, header, config) {
         return error;
@@ -749,16 +762,36 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
   };
 
   $scope.showSelected = function(state) {
-    $scope.current = state || 'active';
+    $scope.current = state;
+    $rootScope.currentStatus = state; 
     $scope.selectedCampaigns = [];
-    angular.forEach($scope.Campaigns, function(item){
-      if(item.status === $scope.current) {
-        $scope.selectedCampaigns.push(item);
-      }
-    });
+    $scope.init($scope.current);
   };
-  $scope.init();
+  $scope.init($rootScope.currentStatus);
+}])
+.factory('currentStatus', [function () {
+  return {};
 }]);
+
+'use strict';
+angular.module('campaign').controller('allMyCampaignCtrl', ['$scope', 'backendService', function($scope, backendService) {
+  $scope.myCampaigns = [];
+  backendService.getUserCampaigns(userid)
+    .success(function(data) {
+      $scope.myCampaigns = data;
+      // for (var i = 0; i < $scope.myCampaigns.length; i++) {
+      //   var accountNo = data[i].account_id;
+      //   $scope.getCampaignBalance(accountNo, $scope.myCampaigns[i]);
+      // }
+    })
+    .error(function(error, status, header, config) {
+      //not cool to redirect the user if any error occured, should be improved by
+      //checking for the exact error act base on the error
+      $location.path('/');
+    });
+}]);
+
+
 
 'use strict';
 
@@ -1023,15 +1056,7 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
       $scope.$digest();
     });
     // function to click the show more button on getMoreCampaigns page
-    $scope.limit = 4;
-    $scope.increment = function() {
-      var campaignLength = $scope.myCampaigns.length;
-      $scope.limit = campaignLength;
-    };
-
-    $scope.decrement = function() {
-      $scope.limit = 4;
-    };
+    $scope.limit = 3;
   }
 ]);
 
@@ -1080,6 +1105,10 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         $scope.campaign = data;
         if($scope.campaign.status === 'funded') {
           $scope.buttonValue = 'FUNDED';
+          $scope.daysLeft = 'none';
+        }
+        else if($scope.campaign.status === 'expired') {
+          $scope.buttonValue = 'EXPIRED';
         }
         $scope.dateFunded = $scope.campaign.dateFunded;
         getCampaignBalance($scope.campaign.account_id);
@@ -1099,7 +1128,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         }
         else if($scope.daysLeft < 0) {
           $scope.daysLeft = 'none';
-          $scope.buttonValue = 'EXPIRED';
         }
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
           $scope.ownCampaign = true;
@@ -1334,23 +1362,32 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
         $scope.error = error;
       });
 
-      $scope.updateStatus = function() {
-        $rootScope.currentStatus = 'funded';
+      $scope.updateStatus = function(param) {
+        $rootScope.currentStatus = param;
       };
 
-    $scope.myInterval = 3000;
+    $scope.myInterval = 8000; 
     $scope.slides = [
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678401/carousel1a_jt77zm.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430297767/caros3_tmgpvr.jpg',
+        caption: 'All for one, One for all'
       },
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678660/carousel2a_ksihkg.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430311270/carousel5_adruh8.jpg',
+        caption: 'Donate and make a dream come true'
       },
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678664/carousel3a_n0gkdj.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430298374/caros4_jlfcl1.jpg',
+        caption: 'Collaboration is the key to success'
       },
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678401/carousel1a_jt77zm.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430297249/carousll_ijwwov.jpg',
+        caption: 'Collaboration is the key to success'
+      },
+      {
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430321432/carousel5_shgamo.jpg',
+        // image: 'http://res.cloudinary.com/andela/image/upload/v1430321967/caroue6_kx01ei.jpg',
+        caption: 'Alone we can do so little, Together we can do so much'
       }
     ];
 	}
@@ -1402,7 +1439,6 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
       url: '/distributor/:username',
       templateUrl: 'modules/distributor/views/user.distributor.client.view.html'
     });
-
 }]);
 
 'use strict';

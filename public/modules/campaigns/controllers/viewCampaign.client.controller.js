@@ -12,8 +12,9 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         $scope.campaign = data;
         if($scope.campaign.status === 'funded') {
           $scope.buttonValue = 'FUNDED';
+          $scope.daysLeft = 'none';
         }
-        if($scope.daysLeft < 0 && !$scope.campaign.status === 'funded') {
+        else if($scope.campaign.status === 'expired') {
           $scope.buttonValue = 'EXPIRED';
         }
         $scope.dateFunded = $scope.campaign.dateFunded;
