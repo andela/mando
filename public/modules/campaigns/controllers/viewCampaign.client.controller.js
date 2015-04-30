@@ -13,6 +13,9 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         if($scope.campaign.status === 'funded') {
           $scope.buttonValue = 'FUNDED';
         }
+        if($scope.daysLeft < 0 && !$scope.campaign.status === 'funded') {
+          $scope.buttonValue = 'EXPIRED';
+        }
         $scope.dateFunded = $scope.campaign.dateFunded;
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
@@ -31,7 +34,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         }
         else if($scope.daysLeft < 0) {
           $scope.daysLeft = 'none';
-          $scope.buttonValue = 'EXPIRED';
         }
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
           $scope.ownCampaign = true;

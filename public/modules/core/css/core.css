@@ -1,5 +1,6 @@
 html, body {
   height: 100%;
+  background: #F9FAFB;
 }
 
 .content {
@@ -60,11 +61,7 @@ small {
 }
 
 .btn-success:hover, .btn-success:focus {
-  background-image: -webkit-linear-gradient(top, #007B6D 0%, #009587 100%);
-  background-image: -o-linear-gradient(top, #007B6D 0%, #009587 100%);
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#007B6D), to(#009587));
-  background-image: linear-gradient(to bottom, #007B6D 0%, #009587 100%);
-  background: #009587;
+  background: #1AC23E;
 }
 
 .progress {
@@ -93,14 +90,26 @@ small {
   border: 1px solid #eee;
   list-style-type: none;
   color: #222;
+  background: #FDFDFD;
 }
 
 .progress-bar-success, .btn-success {
-  background-image: -webkit-linear-gradient(top, #007B6D 0%, #009587 100%);
-  background-image: -o-linear-gradient(top, #007B6D 0%, #009587 100%);
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#007B6D), to(#009587));
-  background-image: linear-gradient(to bottom, #007B6D 0%, #009587 100%);
+  background-image: -webkit-linear-gradient(top, #119A2A 0%, #0DA43E 100%);
+  background-image: -o-linear-gradient(top, #119A2A 0%, #0DA43E 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#119A2A), to(#0DA43E));
+  background-image: linear-gradient(to bottom, #119A2A 0%, #0DA43E 100%);
 } 
+
+.expired {
+  background: #A10E2C!important;
+  border: none;
+}
+
+/*    Navbar styling starts here  */
+.navbar-brand {
+  color: #384C61!important;
+  text-shadow: none!important;
+}
 
 .home-campaigns p {
   font-size: .9em;
@@ -108,15 +117,42 @@ small {
   /*font-weight: normal;*/
 }
 
-.nav-bar{
-  background: -webkit-linear-gradient(top, #00796B , #009688 );
-  background: -moz-linear-gradient(top, #00796B , #009688);
-  background-size: cover;
+.navbar {
+  vertical-align: middle!important;
+  border-bottom: 1px solid #eee;
+  border-top: 1px solid #576779;
+  min-height: 65px;
+  box-shadow: 1px 1px 1px #ced2d4;
 }
 
-.nav a {
-  color: #fff !important;
+.nav-bar{
+  background: -webkit-linear-gradient(top, #fff , #fff );
+  background: -moz-linear-gradient(top, #fff , #fff);
+  background-size: cover;
+  font-weight: 500;
 }
+
+.navbar-inverse .navbar-nav > li > a:hover {
+  color: #757C8D !important;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: #333 !important;
+  text-shadow: none;
+  font-size: 15px;
+}
+
+.carousels {
+  margin: 0 2px;
+  background: #000;
+  opacity: .9;
+  box-shadow: 1px 2px 2px 1px #96989A;
+}
+
+.heartIcon {
+  color: #fff;
+}
+/* Navbar styling ends here */
 
 .margin-top {
   margin-top: 20px;
@@ -159,8 +195,8 @@ section {
 }
 
 .footer {
-  background: #EDEFF1;
-  color: #053530;
+  background: #576779;
+  color: #fff;
   height: 70px;
   padding: 20px 0; 
   position: relative;
@@ -205,11 +241,6 @@ iframe {
   font-weight: bold;
 }
 
-.btn-success.disabled{
-  background: #007C6E;
-  border: none;
-}
-
 .text-danger {
   color: #DA120D;
 }
@@ -219,7 +250,7 @@ iframe {
 }
 
 .text-success {
-  color: #008B7D;
+  color: #0DA43E;
 }
 /* MEDIA SCREEN TO ALLOW CAMPAIGNS FIT PROPERLY */
 /*@media screen and (min-width: 1000px) {
@@ -229,8 +260,6 @@ iframe {
 }*/
 
 .btn-success.disabled, .btn-success:disabled, .btn-success[disabled] {
-  background-color: #007D6F;
-  border-color: #007D6F;
+  background-color: #0EA138;
+  opacity: .7;
 }
-
-
