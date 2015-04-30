@@ -27,11 +27,6 @@ var campaignSchema = new Schema({
     required: 'Enter the required amount needed'
   },
 
-  raisedFunds: {
-    type: Number,
-    default: 0
-  },
-
   dateFunded: {
     type: Date
   },
