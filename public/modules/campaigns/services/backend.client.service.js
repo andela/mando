@@ -44,8 +44,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/user/campaigns/backed');
   };
 
-  var fundCampaign = function(campaignId, funds) {
-    return $http.put('/campaign/' + campaignId + '/fund', funds);
+  var fundCampaign = function(campaignId) {
+    return $http.put('/campaign/' + campaignId + '/fund');
   };
   return {
     addCampaign: addCampaign,

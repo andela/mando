@@ -229,24 +229,13 @@ exports.deleteCampaign = function (req, res) {
   });
 };
 
-exports.fundCampaign = function(req, res) {
-  Campaign.update({_id: req.params.campaignId}, {$inc: {raisedFunds: req.body.amount}}, function(err, res) {
+exports.updateFundedCampaign = function(req, res) {
+  Campaign.findByIdAndUpdate(req.params.campaignId, {status: 'funded', dateFunded: Date.now()}, function(err, response) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     }
-    else {
-      Campaign.find({status: 'active'}, function(err, campaigns) {
-        campaigns.forEach(function(campaign) {
-          if (campaign.raisedFunds === campaign.amount) {
-            campaign.status = 'funded';
-            campaign.dateFunded = Date.now();
-            campaign.save();
-            return;
-          }
-        });
-      });
-    }
+    return res.json(response);
   });
 };
