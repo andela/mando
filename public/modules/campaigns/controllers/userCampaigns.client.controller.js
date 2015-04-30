@@ -101,14 +101,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
       $scope.$digest();
     });
     // function to click the show more button on getMoreCampaigns page
-    $scope.limit = 4;
-    $scope.increment = function() {
-      var campaignLength = $scope.myCampaigns.length;
-      $scope.limit = campaignLength;
-    };
-
-    $scope.decrement = function() {
-      $scope.limit = 4;
-    };
+    $scope.limit = 3;
   }
 ]);

@@ -23,23 +23,32 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
         $scope.error = error;
       });
 
-      $scope.updateStatus = function() {
-        $rootScope.currentStatus = 'funded';
+      $scope.updateStatus = function(param) {
+        $rootScope.currentStatus = param;
       };
 
-    $scope.myInterval = 3000;
+    $scope.myInterval = 8000; 
     $scope.slides = [
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678401/carousel1a_jt77zm.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430297767/caros3_tmgpvr.jpg',
+        caption: 'All for one, One for all'
       },
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678660/carousel2a_ksihkg.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430311270/carousel5_adruh8.jpg',
+        caption: 'Donate and make a dream come true'
       },
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678664/carousel3a_n0gkdj.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430298374/caros4_jlfcl1.jpg',
+        caption: 'Collaboration is the key to success'
       },
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678401/carousel1a_jt77zm.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430297249/carousll_ijwwov.jpg',
+        caption: 'Collaboration is the key to success'
+      },
+      {
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430321432/carousel5_shgamo.jpg',
+        // image: 'http://res.cloudinary.com/andela/image/upload/v1430321967/caroue6_kx01ei.jpg',
+        caption: 'Alone we can do so little, Together we can do so much'
       }
     ];
 	}

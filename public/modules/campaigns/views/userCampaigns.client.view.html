@@ -5,7 +5,7 @@
         <div class="col-md-8">
           <div ng-show="isBanker">
             <p>
-              <a ng-href="/#!/bank" class="balances">SYSTEM BALANCE:   {{systemBalance.amount | currencyflt}}</a>
+              <a ng-href="/#!/bank" class="balances">SYSTEM BALANCE: {{systemBalance.amount | currencyflt}}</a>
             </p>
           </div>
           <p>
@@ -27,8 +27,11 @@
     <h2>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h2>
     <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
   </div>
-  <div class="table-responsive campaignTableMargins card" ng-show="myCampaigns">
+  <div class="table-responsive campaignTableMargins panel" ng-show="myCampaigns">
+  <div class="panel-heading">
     <h4>My Campaigns</h4>
+  </div>
+  <div class="panel-body">
     <table class="table table-bordered">
       <tt>
         <th>Title</th>
@@ -50,119 +53,138 @@
       </tr>
     </table>
     <div ng-hide="myCampaigns.length < 4">
-      <a href="#" ng-show="limit===4" ng-click="increment()" class="pull-right viewAllCTA">See all of My Campaigns</a>
-      <a href="#" ng-hide="limit===4" ng-click="decrement()" class="pull-right viewAllCTA">Back</a>
+      <a ui-sref="allMyCampaigns" class="pull-right viewAllCTA">See all of My Campaigns</a>
     </div>
   </div>
-  <div class="">
+  </div>
+
+  <div>
     <div class="jumbotron text-center" ng-hide="campaignsBacked">
       <h3>You have not backed any campaign</h3>
     </div>
-    <div ng-show="campaignsBacked" class="campaignTableMargins">
-      <h4>My Backed Campaigns</h4>
-      <table ng-table="tableParams" class="table table-responsive table-bordered">
-        <tr ng-repeat="campaignsbacked in $data | limitTo: 3">
-          <td data-title="'Title'" class="userCampaignTitle"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
-            {{campaignsbacked.campaignid.title}}</a>
-          </td>
-          <td data-title="'Status'" class="text-capitalize">
-            {{campaignsbacked.campaignid.status}}
-          </td>
-          <td data-title="'Amount Needed'">
-            {{campaignsbacked.campaignid.amount | currencyflt}}
-          </td>
-          <td data-title="'Amount Raised'">
-            {{campaignsbacked.campaignid.raised | currencyflt}}
-          </td>
-          <td data-title="'Created'">
-            {{campaignsbacked.campaignid.created | date}}
-          </td>
-          <td data-title="'Deadline'">
-            {{campaignsbacked.campaignid.dueDate | date}}
-          </td>
-          <td data-title="'Backers'">
-            {{campaignsbacked.backers}}
-          </td>
-        </tr>
-      </table>
+    <div ng-show="campaignsBacked" class="campaignTableMargins panel">
+      <div class="panel-heading">
+        <h4>My Backed Campaigns</h4>
+      </div>
+      <div class="panel-body">
+        <table ng-table="tableParams" class="table table-responsive table-bordered">
+          <tr ng-repeat="campaignsbacked in $data | limitTo: 3">
+            <td data-title="'Title'" class="userCampaignTitle"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
+              {{campaignsbacked.campaignid.title}}</a>
+            </td>
+            <td data-title="'Status'" class="text-capitalize">
+              {{campaignsbacked.campaignid.status}}
+            </td>
+            <td data-title="'Amount Needed'">
+              {{campaignsbacked.campaignid.amount | currencyflt}}
+            </td>
+            <td data-title="'Amount Raised'">
+              {{campaignsbacked.campaignid.raised | currencyflt}}
+            </td>
+            <td data-title="'Created'">
+              {{campaignsbacked.campaignid.created | date}}
+            </td>
+            <td data-title="'Deadline'">
+              {{campaignsbacked.campaignid.dueDate | date}}
+            </td>
+            <td data-title="'Backers'">
+              {{campaignsbacked.backers}}
+            </td>
+          </tr>
+        </table>
       <div ng-show="noOfCampaignsBacked > 4">
-        <p class="pull-right viewAllCTA"> <a href="/#!/campaignIBacked" class="viewAllCTA">See all campaigns I backed</a></p>
+        <a href="/#!/campaignIBacked" class="pull-right viewAllCTA">See all campaigns I backed</a>
       </div>
     </div>
+    </div>
   </div>
+
   <div ng-show="isBanker">
     <div ng-hide="query" class="jumbotron text-center">
       <h2>YOU DO NOT HAVE ANY TRANSACTION</h2>
     </div>
-    <div ng-show="query" class="campaignTableMargins">
-      <h4>My Bank Transactions</h4>
-      <table class="table table-bordered">
-        <tt>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Transaction Type</th>
-          <th>Amount</th>
-        </tt>
-        <tr data-ng-repeat="transaction in journal | filter: query | limitTo: 3">
-          <td>{{transaction.posted_at | date }}</td>
-          <td>{{transaction.description.description}}</td>
-          <td>{{transaction.value.type}}</td>
-          <td>{{transaction.value.amount | currencyflt}}</td>
-        </tr>
-      </table>
-      <a href="/#!/bank" class="pull-right viewAllCTA">See All Bank Transactions</a>
+    <div ng-show="query" class="campaignTableMargins panel">
+      <div class="panel-heading">
+        <h4>My Bank Transactions</h4>
+      </div>
+      <div class="panel-body">
+        <table class="table table-bordered">
+          <tt>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Transaction Type</th>
+            <th>Amount</th>
+          </tt>
+          <tr data-ng-repeat="transaction in journal | filter: query | limitTo: 3">
+            <td>{{transaction.posted_at | date }}</td>
+            <td>{{transaction.description.description}}</td>
+            <td>{{transaction.value.type}}</td>
+            <td>{{transaction.value.amount | currencyflt}}</td>
+          </tr>
+        </table>
+        <a href="/#!/bank" class="pull-right viewAllCTA">See All Bank Transactions</a>
+      </div>
     </div>
   </div>
+
   <div>
     <div ng-hide="myJournal" class="jumbotron text-center">
       <h2>YOU DO NOT HAVE ANY BANK HISTORY</h2>
     </div>
-    <div ng-show="myJournal" class="campaignTableMargins">
+    <div ng-show="myJournal" class="campaignTableMargins panel">
       <!-- <a name=""></a> myJournal-->
-      <h4>My Account History</h4>
+      <div class="panel-heading">
+        <h4>My Account History</h4>
+      </div>
+      <div class="panel-body">
         <table class="table table-bordered">
-        <tt>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Transaction Type</th>
-          <th>Amount</th>
-          <th>Balance</th>
-        </tt>
-        <tr data-ng-repeat="transaction in myJournal | limitTo: 3">
-          <td>{{transaction.posted_at | date }}</td>
-          <td>{{transaction.description.description}}</td>
-          <td>{{transaction.value.type}}</td>
-          <td>{{transaction.value.amount |currencyflt}}</td>
-          <td>{{transaction.balance.value.amount}}</td>
-        </tr>
-      </table>
-      <a href="/#!/myTransactions" class="pull-right viewAllCTA">See my full Account History</a>
+          <tt>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Transaction Type</th>
+            <th>Amount</th>
+            <th>Balance</th>
+          </tt>
+          <tr data-ng-repeat="transaction in myJournal | limitTo: 3">
+            <td>{{transaction.posted_at | date }}</td>
+            <td>{{transaction.description.description}}</td>
+            <td>{{transaction.value.type}}</td>
+            <td>{{transaction.value.amount |currencyflt}}</td>
+            <td>{{transaction.balance.value.amount}}</td>
+          </tr>
+        </table>
+        <a href="/#!/myTransactions" class="pull-right viewAllCTA">See my full Account History</a>
+      </div>
     </div>
   </div>
+
   <div ng-show="isDistributor">
     <div ng-hide="journal" class="jumbotron text-center">
       <h2>YOU DO NOT HAVE ANY DISTRIBUTIONS</h2>
     </div>
-    <div ng-show="journal">
-      <h4>My Distributions</h4>
-      <table class="table table-bordered">
-        <tt>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Transaction Type</th>
-          <th>Amount</th>
-          <th>Bank Balance</th>
-        </tt>
-        <tr data-ng-repeat="distribution in journal | filter: query | limitTo: 3">
-          <td>{{distribution.posted_at | date }}</td>
-          <td>{{distribution.description.description}}</td>
-          <td>{{distribution.value.type}}</td>
-          <td>{{distribution.value.amount | currencyflt
-}}</td>
-          <td>{{distribution.balance.value.amount}}</td>
-        </tr>
-      </table>
-      <a ui-sref="myDistribution" class="pull-right viewAllCTA">See all of My Distributions</a>
+    <div ng-show="journal" class="campaignTableMargins panel">
+      <div class="panel-heading">
+        <h4>My Distributions</h4>
+      </div>
+      <div class="panel-body">
+        <table class="table table-bordered">
+          <tt>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Transaction Type</th>
+            <th>Amount</th>
+            <th>Bank Balance</th>
+          </tt>
+          <tr data-ng-repeat="distribution in journal | filter: query | limitTo: 3">
+            <td>{{distribution.posted_at | date }}</td>
+            <td>{{distribution.description.description}}</td>
+            <td>{{distribution.value.type}}</td>
+            <td>{{distribution.value.amount | currencyflt}}</td>
+            <td>{{distribution.balance.value.amount}}</td>
+          </tr>
+        </table>
+        <a ui-sref="myDistribution" class="pull-right viewAllCTA">See all of My Distributions</a>
+      </div>
     </div>
   </div>
   </div>
