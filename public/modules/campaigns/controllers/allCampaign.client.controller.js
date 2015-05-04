@@ -6,7 +6,7 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
   $scope.currentPage = 1;
   $scope.itemsPerPage = 21;
   $scope.totalItems = 1;
-  $scope.current = $rootScope.currentStatus;
+  $scope.activeStatus = $rootScope.currentStatus;
 
   $scope.init = function(campaignStatus) {
     backendService.getCampaigns()
@@ -44,12 +44,13 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
   };
 
   $scope.showSelected = function(state) {
-    $scope.current = state;
+    $scope.activeStatus = state;
     $rootScope.currentStatus = state; 
     $scope.selectedCampaigns = [];
-    $scope.init($scope.current);
+    $scope.init($scope.activeStatus);
   };
-  $scope.init($rootScope.currentStatus);
+  $scope.showSelected($rootScope.currentStatus || 'active' );
+  $scope.init($rootScope.currentStatus || 'active');
 }])
 .factory('currentStatus', [function () {
   return {};
