@@ -1,6 +1,9 @@
 'use strict';
-angular.module('campaign').controller('allMyCampaignCtrl', ['$scope', 'backendService', function($scope, backendService) {
+angular.module('campaign').controller('allMyCampaignCtrl', ['$scope', 'backendService', 'Authentication', '$state',  function($scope, backendService, Authentication, $state) {
   $scope.myCampaigns = [];
+  $scope.authentication = Authentication;
+  Authentication.requireLogin($state);
+  var userid = $scope.authentication.user._id;
   backendService.getUserCampaigns(userid)
     .success(function(data) {
       $scope.myCampaigns = data;

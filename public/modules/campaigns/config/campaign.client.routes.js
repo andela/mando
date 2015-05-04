@@ -65,8 +65,8 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       }
     },
     url: '/allMyCampaigns',
-    templateUrl: '/modules/campaigns/views/allMyCampaigns.client.view.html'//,
-    // controller: 'allMyCampaignCtrl'
+    templateUrl: '/modules/campaigns/views/allMyCampaigns.client.view.html',
+    controller: 'allMyCampaignCtrl'
   });
 
   //Add YouTube to resource whitelist so that we can embed YouTube videos
