@@ -724,7 +724,7 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
   $scope.currentPage = 1;
   $scope.itemsPerPage = 21;
   $scope.totalItems = 1;
-  $scope.current = $rootScope.currentStatus;
+  $scope.activeStatus = $rootScope.currentStatus;
 
   $scope.init = function(campaignStatus) {
     backendService.getCampaigns()
@@ -762,12 +762,13 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
   };
 
   $scope.showSelected = function(state) {
-    $scope.current = state;
+    $scope.activeStatus = state;
     $rootScope.currentStatus = state; 
     $scope.selectedCampaigns = [];
-    $scope.init($scope.current);
+    $scope.init($scope.activeStatus);
   };
-  $scope.init($rootScope.currentStatus);
+  $scope.showSelected($rootScope.currentStatus || 'active' );
+  $scope.init($rootScope.currentStatus || 'active');
 }])
 .factory('currentStatus', [function () {
   return {};
@@ -1334,20 +1335,26 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 ]);
 'use strict';
 
-angular.module('core').controller('HeaderController', ['$scope', 'Authentication',
-  function($scope, Authentication) {
+angular.module('core').controller('HeaderController', ['$scope', 'Authentication', '$rootScope',
+  function($scope, Authentication, $rootScope) {
     $scope.authentication = Authentication;
     $scope.isCollapsed = false;
-    $scope.toggleCollapsibleMenu = function() {
-            $scope.isCollapsed = !$scope.isCollapsed;
-        };
 
-        // Collapsing the menu after navigation
-        $scope.$on('$stateChangeSuccess', function() {
-            $scope.isCollapsed = false;
-        });
-    }
+    $scope.toggleCollapsibleMenu = function() {
+      $scope.isCollapsed = !$scope.isCollapsed;
+    };
+
+    // Collapsing the menu after navigation
+    $scope.$on('$stateChangeSuccess', function() {
+      $scope.isCollapsed = false;
+    });
+
+    $scope.showActiveCampaigns = function (param) {
+        $rootScope.currentStatus = param;
+    };
+  }
 ]);
+
 'use strict';
 
 angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Authentication', 'backendService',
@@ -1367,7 +1374,7 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
           else if(item.status === 'funded') {
             $scope.fundedCampaigns.push(item);
           }
-        })
+        });
       })
       .error(function(error, status, header, config) {
         $scope.error = error;
