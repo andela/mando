@@ -51,7 +51,7 @@ module.exports = function(db) {
  	};
 
  	//checks if the env is production then converts url to https
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
       app.use(forceSsl);
   }
 	// Passing the request url to environment locals
