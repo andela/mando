@@ -643,8 +643,8 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
       }]
     },
     url: '/allMyCampaigns',
-    templateUrl: '/modules/campaigns/views/allMyCampaigns.client.view.html'//,
-    // controller: 'allMyCampaignCtrl'
+    templateUrl: '/modules/campaigns/views/allMyCampaigns.client.view.html',
+    controller: 'allMyCampaignCtrl'
   });
 
   //Add YouTube to resource whitelist so that we can embed YouTube videos
@@ -774,8 +774,11 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
 }]);
 
 'use strict';
-angular.module('campaign').controller('allMyCampaignCtrl', ['$scope', 'backendService', function($scope, backendService) {
+angular.module('campaign').controller('allMyCampaignCtrl', ['$scope', 'backendService', 'Authentication', '$state',  function($scope, backendService, Authentication, $state) {
   $scope.myCampaigns = [];
+  $scope.authentication = Authentication;
+  Authentication.requireLogin($state);
+  var userid = $scope.authentication.user._id;
   backendService.getUserCampaigns(userid)
     .success(function(data) {
       $scope.myCampaigns = data;
@@ -940,11 +943,19 @@ angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaig
       amount: $scope.amount,
       reason: 'Support campaign'
     };
-    subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function() {
-     backendService.fundCampaign(campaign.id, transaction).success(function(res) {
-     }).error(function(err) {
-     });
-      $modalInstance.close(true);
+    subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function(response) {
+      console.log(1,$scope.amount, $scope.campaignBalance);
+      console.log(3, $scope.amountNeeded);
+      if (($scope.amount + $scope.campaignBalance) >= $scope.amountNeeded) {
+        console.log('funded');
+        backendService.fundCampaign(campaign.id).success(function (response) {
+          $modalInstance.close(true);
+        }).error(function(err) {
+          console.log("error", err);
+        });
+      } else {
+        $modalInstance.close(true);
+      }
     });
   };
 
@@ -1288,8 +1299,8 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     return $http.get('/user/campaigns/backed');
   };
 
-  var fundCampaign = function(campaignId, funds) {
-    return $http.put('/campaign/' + campaignId + '/fund', funds);
+  var fundCampaign = function(campaignId) {
+    return $http.put('/campaign/' + campaignId + '/fund');
   };
   return {
     addCampaign: addCampaign,

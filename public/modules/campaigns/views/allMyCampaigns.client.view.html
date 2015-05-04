@@ -2,7 +2,7 @@
   <div>
     <h3 class="title_margin">ALL OF MY CAMPAIGNS</h3>
     <div ng-show="myCampaigns">
-      <table class="table table-bordered">
+      <table class="table table-bordered table-striped">
       <tt>
         <th>Title</th>
         <th>Status</th>
@@ -12,7 +12,7 @@
         <th>Deadline</th>
         <th>Backers</th>
       </tt>
-      <tr data-ng-repeat="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
+      <tr data-ng-repeat="campaign in myCampaigns | orderBy: 'created'.descending">
         <td class="userCampaignTitle"><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a></td>
         <td class="text-capitalize">{{campaign.status}}</td>
         <td>{{campaign.amount | currencyflt}}</td>
