@@ -17,7 +17,7 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
           else if(item.status === 'funded') {
             $scope.fundedCampaigns.push(item);
           }
-        })
+        });
       })
       .error(function(error, status, header, config) {
         $scope.error = error;
