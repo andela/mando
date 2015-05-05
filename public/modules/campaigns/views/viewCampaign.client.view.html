@@ -4,8 +4,8 @@
     <div class="col-md-12">
       <!-- <div class="<col-md-5>"> -->
         <div class="col-md-6">
-          <p class="title" data-ng-bind="campaign.title"></p>
-          <p class="CreatedAndDeadline titles ">Created By: <span class="values">{{campaign.createdBy.displayName}} </span> <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign.slug}}/edit" id="editBtn" class="pull-right">EDIT CAMPAIGN </a></span></p>
+          <p class="title text-capitalize" data-ng-bind="campaign.title"></p>
+          <p class="CreatedAndDeadline titles">Created By: <span class="values">{{campaign.createdBy.displayName}} </span> <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign.slug}}/edit" id="editBtn" class="pull-right">EDIT CAMPAIGN </a></span></p>
           <p class="CreatedAndDeadline titles">Deadline: <span class="values">{{campaign.dueDate | date}}</span> </p>
           <pre class="values campaignDesc">{{campaign.description}}</pre>
         <!-- </div> -->
@@ -37,7 +37,7 @@
     <h2>Backers</h2>
     <div ng-hide="campaignBackers" class="page-header"><h3 class="">This campaign does not have any backers</h3></div>
     <div ng-show="campaignBackers">
-      <table ng-table="tableParams" class="table">
+      <table ng-table="tableParams" class="table table-bordered table-striped">
         <tr ng-repeat="backer in $data">
           <td data-title="'Name'" sortable="'userid.displayName'">
             {{backer.userid.displayName}}

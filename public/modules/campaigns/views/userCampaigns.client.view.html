@@ -24,7 +24,7 @@
     </div>
     <hr>
   <div ng-hide="myCampaigns" class="jumbotron text-center">
-    <h2>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h2>
+    <h3>YOU DO NOT HAVE ANY CAMPAIGN CREATED</h3>
     <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
   </div>
   <div class="table-responsive campaignTableMargins panel" ng-show="myCampaigns">
@@ -60,7 +60,7 @@
 
   <div>
     <div class="jumbotron text-center" ng-hide="campaignsBacked">
-      <h3>You have not backed any campaign</h3>
+      <h3>YOU HAVE NOT BACKED ANY CAMPAIGN</h3>
     </div>
     <div ng-show="campaignsBacked" class="campaignTableMargins panel">
       <div class="panel-heading">
@@ -101,7 +101,7 @@
 
   <div ng-show="isBanker">
     <div ng-hide="query" class="jumbotron text-center">
-      <h2>YOU DO NOT HAVE ANY TRANSACTION</h2>
+      <h3>YOU DO NOT HAVE ANY TRANSACTION</h3>
     </div>
     <div ng-show="query" class="campaignTableMargins panel">
       <div class="panel-heading">
@@ -129,7 +129,7 @@
 
   <div>
     <div ng-hide="myJournal" class="jumbotron text-center">
-      <h2>YOU DO NOT HAVE ANY BANK HISTORY</h2>
+      <h3>YOU DO NOT HAVE ANY BANK HISTORY</h3>
     </div>
     <div ng-show="myJournal" class="campaignTableMargins panel">
       <!-- <a name=""></a> myJournal-->
@@ -160,7 +160,7 @@
 
   <div ng-show="isDistributor">
     <div ng-hide="journal" class="jumbotron text-center">
-      <h2>YOU DO NOT HAVE ANY DISTRIBUTIONS</h2>
+      <h3>YOU DO NOT HAVE ANY DISTRIBUTIONS</h3>
     </div>
     <div ng-show="journal" class="campaignTableMargins panel">
       <div class="panel-heading">
