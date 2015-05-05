@@ -674,13 +674,11 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', '
         .success(function(data, status, header, config) {
           toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
           $location.path('/campaign/' + data.slug);
-          console.log($scope.campaign.youtubeUrl, 'immediately after clicking');
         })
         .error(function(error, status, header, config) {
           //no $scope.error on the view, need to work on the error
           $scope.error = error;
         });
-    console.log($scope.campaign.youtubeUrl, 'some value sha ');
     };
 
     $scope.validateYoutubeUrl = function(url, isValid) {
@@ -783,10 +781,6 @@ angular.module('campaign').controller('allMyCampaignCtrl', ['$scope', 'backendSe
   backendService.getUserCampaigns(userid)
     .success(function(data) {
       $scope.myCampaigns = data;
-      // for (var i = 0; i < $scope.myCampaigns.length; i++) {
-      //   var accountNo = data[i].account_id;
-      //   $scope.getCampaignBalance(accountNo, $scope.myCampaigns[i]);
-      // }
     })
     .error(function(error, status, header, config) {
       //not cool to redirect the user if any error occured, should be improved by

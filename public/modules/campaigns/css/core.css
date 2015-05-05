@@ -182,3 +182,7 @@ iframe {
   border: none;
   border-radius: 0;
 }
+
+.distributor_modal {
+  height: 150px;
+}
