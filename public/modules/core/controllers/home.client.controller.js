@@ -11,6 +11,9 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
         angular.forEach($scope.campaigns, function(item) {
+          var currentDate = new Date(Date.now());
+          var campaignDeadline = new Date(item.dueDate);
+          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
           if(item.status === 'active') {
             $scope.activeCampaigns.push(item);
           }

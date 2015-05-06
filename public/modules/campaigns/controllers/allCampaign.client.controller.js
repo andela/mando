@@ -14,6 +14,9 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
         $scope.campaigns = data;
         $scope.selectedCampaigns = [];
         angular.forEach(data, function(item) {
+          var currentDate = new Date(Date.now());
+          var campaignDeadline = new Date(item.dueDate);
+          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
           if(item.status === campaignStatus) {
             $scope.selectedCampaigns.push(item);
           }

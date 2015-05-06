@@ -730,6 +730,9 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
         $scope.campaigns = data;
         $scope.selectedCampaigns = [];
         angular.forEach(data, function(item) {
+          var currentDate = new Date(Date.now());
+          var campaignDeadline = new Date(item.dueDate);
+          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
           if(item.status === campaignStatus) {
             $scope.selectedCampaigns.push(item);
           }
@@ -1123,7 +1126,7 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         var currentDate = new Date(Date.now());
         var campaignDeadline = new Date($scope.campaign.dueDate);
         $scope.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
-        if($scope.daysLeft > 10) {
+        if($scope.daysLeft >= 10) {
           $scope.deadlineStyle = 'success';
         }
         else if($scope.daysLeft > 5 && $scope.daysLeft < 10) {
@@ -1362,6 +1365,9 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
         angular.forEach($scope.campaigns, function(item) {
+          var currentDate = new Date(Date.now());
+          var campaignDeadline = new Date(item.dueDate);
+          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
           if(item.status === 'active') {
             $scope.activeCampaigns.push(item);
           }

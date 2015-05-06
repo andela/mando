@@ -23,11 +23,11 @@
             <div class="home-campaigns">
               <h4><a href="/#!/campaign/{{ activeCampaign.slug}}" class="class-title"> {{activeCampaign.title }}</a></h4><br>
               <p><youtube-video video-id="activeCampaign.youtubeUrl"></youtube-video></p>
-              <p><span class="titles"> Amount Needed:</span> <span class="values">{{activeCampaign.amount | currency}}</span></p>
-              <p><span class="titles">Deadline:</span> <span class="values">{{activeCampaign.dueDate | date}}</span></p>
-              <p class="titles">{{activeCampaign.balance}}</p>
-              <p span class="titles">Description</p>
-              <p class="values">{{activeCampaign.description |limitTo: 136}} ...</p>
+              <div>
+                <h3 class="inlineDisplay">{{activeCampaign.amount | currency}}</h3>
+                <h4 class="inlineDisplay text-right text-muted">{{activeCampaign.daysLeft}} days left</h4>
+              </div>
+              <p class="values">{{activeCampaign.description |limitTo: 100}} ...</p>
             </div>
           </div>
         <div> 
@@ -50,11 +50,12 @@
             <div class="home-campaigns">
               <h4><a href="/#!/campaign/{{ fundedCampaign.slug}}" class="class-title"> {{fundedCampaign.title }}</a></h4><br>
               <p><youtube-video video-id="fundedCampaign.youtubeUrl"></youtube-video></p>
-              <p><span class="titles"> Amount Needed:</span> <span class="values">{{fundedCampaign.amount | currency}}</span></p>
-              <p><span class="titles">Deadline:</span> <span class="values">{{fundedCampaign.dueDate | date}}</span></p>
-              <p class="titles">{{fundedCampaign.balance}}</p>
-              <p span class="titles">Description</p>
-              <p class="values">{{fundedCampaign.description |limitTo: 136}} ...</p>
+              <div>
+                <h3 class="inlineDisplay">{{fundedCampaign.amount | currency}}</h3>
+                <p class="inlineDisplay text-right" ng-show="campaign.status == 'active'">{{fundedCampaign.daysLeft}} days left</p>
+                <h5 class="text-muted" ng-show="fundedCampaign.status == 'funded'"> Fully Funded on {{fundedCampaign.dateFunded | date}}</h5>
+              </div>
+              <p class="values">{{fundedCampaign.description |limitTo: 100}} ...</p><br>
             </div>
           </div>
           <div> 

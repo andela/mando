@@ -27,11 +27,13 @@
         <div class="home-campaigns">
           <h4><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a></h4>
           <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
-          <p class="title"> Amount Needed: <span class="values">{{campaign.amount | currency}}</span></p>
-          <p class="title"> Deadline: <span class="values">{{campaign.dueDate | date}}</span></p>
-          <p> {{campaign.balance}}</p>
-          <p class="title">Description</p>
-          <p class="values">{{campaign.description |limitTo: 136}} ...</p>
+          <div>
+            <h3 class="inlineDisplay">{{campaign.amount | currency}}</h3>
+            <h4 class="inlineDisplay text-right text-muted" ng-show="campaign.status == 'active'">{{campaign.daysLeft}} days left</h4>
+            <h5 class="text-muted" ng-show="campaign.status == 'funded'"> Fully Funded on {{campaign.dateFunded | date}}</h5>
+            <h5 class="text-muted" ng-show="campaign.status == 'expired'"> Expired on {{campaign.dueDate | date}}</h5>
+          </div>
+          <p class="values">{{campaign.description |limitTo: 136}} ...</p><br>
         </div>
       </div>
     </div>
