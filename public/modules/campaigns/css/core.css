@@ -51,6 +51,7 @@
 
 .CreatedAndDeadline {
   font-weight: bold;
+  padding: 0;
 }
 
 .cash {
@@ -77,6 +78,10 @@
 iframe {
   width: 100%;
   border-radius: 10px;
+}
+
+.campaignPage iframe {
+  height: 350px;
 }
 
 .values {
@@ -108,11 +113,6 @@ iframe {
 
 .supportMyCampaign {
   color: red;
-}
-
-.supportFootnote {
-  font-size: 13px;
-  font-style: italic;
 }
 
 .myAndonationWrapper {
@@ -185,4 +185,26 @@ iframe {
 
 .distributor_modal {
   height: 150px;
+}
+
+.inlineDisplay {
+  display: inline-block;
+  width: 49%;
+}
+
+.campaignAmount {
+  font-size: 18px!important;
+}
+
+.campaignBalance {
+  border: 1px solid #eee;
+  padding: 20px;
+  margin-top:55px;
+  background: #F9FAFB;
+  box-shadow: 1px 1px 2px #DED2DE;
+}
+
+.sub_row {
+  position: relative;
+  bottom: 0;
 }

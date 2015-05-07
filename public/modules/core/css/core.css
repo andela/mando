@@ -69,13 +69,15 @@ small {
   border-color: #78FA89;
 }
 
-.btn-success:hover, .btn-success:focus {
+.btn-success:hover, .btn-success:focus, .btn-success:active {
   background: #1AC23E;
+  border: 1px solid #0C802A;
+  outline: none;
 }
 
 .progress {
   height: 15px;
-  margin-bottom: 20px;
+  margin: 15px auto;
   overflow: hidden;;
   background-color: #f5f5f5;
   border-radius: 8px;
@@ -100,6 +102,7 @@ small {
   list-style-type: none;
   color: #222;
   background: #FDFDFD;
+  word-wrap: break-word;
 }
 
 .progress-bar-success, .btn-success {
@@ -156,7 +159,7 @@ small {
 .carousels {
   background: #fff;
   opacity: .9;
-  box-shadow: 1px 2px 2px 1px #96989A;
+  box-shadow: 1px 1px 2px 1px #96989A;
 }
 
 .heartIcon {
@@ -196,7 +199,7 @@ small {
 .see-more-campaigns a{
   color: #222;
   font-weight: bolder;
-  font-size: 1.6em;
+  font-size: 1.0em;
   text-shadow: 1px 1px 1px #fff;
 }
 
@@ -280,6 +283,10 @@ iframe {
 
 .carousel-control span:hover {
   color: #FFF1F5;
+}
+
+.carousel-control.left, .carousel-control.right {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .0001) 100%)!important;
 }
 
 .homePageContentsHolder {
