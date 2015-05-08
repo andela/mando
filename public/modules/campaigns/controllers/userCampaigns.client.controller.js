@@ -93,6 +93,11 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.getJournals(cred.bank_id, function(response) {
       $scope.journal = response;
       $scope.$digest();
+      for(var i = 0; i < $scope.journal.length; i++) {
+        if($scope.query === $scope.journal[i].description.name) {
+          $scope.hasDistributions = true;
+        }
+      }
     });
 
     //This is the method that loads the Transaction journal for the Authenticated User.

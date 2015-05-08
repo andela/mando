@@ -100,10 +100,10 @@
   </div>
 
   <div ng-show="isBanker">
-    <div ng-hide="query" class="jumbotron text-center">
+    <div ng-hide="query && hasDistributions" class="jumbotron text-center">
       <h3>YOU DO NOT HAVE ANY TRANSACTION</h3>
     </div>
-    <div ng-show="query" class="campaignTableMargins panel">
+    <div ng-show="query && hasDistributions" class="campaignTableMargins panel">
       <div class="panel-heading">
         <h4>My Bank Transactions</h4>
       </div>
@@ -159,10 +159,10 @@
   </div>
 
   <div ng-show="isDistributor">
-    <div ng-hide="journal" class="jumbotron text-center">
+    <div ng-hide="journal && hasDistributions" class="jumbotron text-center">
       <h3>YOU DO NOT HAVE ANY DISTRIBUTIONS</h3>
     </div>
-    <div ng-show="journal" class="campaignTableMargins panel">
+    <div ng-show="journal && hasDistributions" class="campaignTableMargins panel">
       <div class="panel-heading">
         <h4>My Distributions</h4>
       </div>
