@@ -30,6 +30,7 @@ angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfig
 angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider',
 	function($locationProvider) {
 		$locationProvider.hashPrefix('!');
+    // $locationProvider.HTML5Mode({enabled:true});
 	}
 ]);
 
@@ -942,10 +943,7 @@ angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaig
       reason: 'Support campaign'
     };
     subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function(response) {
-      console.log(1,$scope.amount, $scope.campaignBalance);
-      console.log(3, $scope.amountNeeded);
       if (($scope.amount + $scope.campaignBalance) >= $scope.amountNeeded) {
-        console.log('funded');
         backendService.fundCampaign(campaign.id).success(function (response) {
           $modalInstance.close(true);
         }).error(function(err) {
@@ -1057,6 +1055,11 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.getJournals(cred.bank_id, function(response) {
       $scope.journal = response;
       $scope.$digest();
+      for(var i = 0; i < $scope.journal.length; i++) {
+        if($scope.query === $scope.journal[i].description.name) {
+          $scope.hasDistributions = true;
+        }
+      }
     });
 
     //This is the method that loads the Transaction journal for the Authenticated User.
@@ -1317,9 +1320,10 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
 'use strict';
 
 // Setting up route
-angular.module('core').config(['$stateProvider', '$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
+angular.module('core').config(['$stateProvider', '$locationProvider', '$urlRouterProvider',
+	function($stateProvider, $locationProvider, $urlRouterProvider) {
 		// Redirect to home view when route not found
+		 // $locationProvider.html5Mode(true);
 		$urlRouterProvider.otherwise('/');
 
 		// Home state routing

@@ -28,10 +28,7 @@ angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaig
       reason: 'Support campaign'
     };
     subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function(response) {
-      console.log(1,$scope.amount, $scope.campaignBalance);
-      console.log(3, $scope.amountNeeded);
       if (($scope.amount + $scope.campaignBalance) >= $scope.amountNeeded) {
-        console.log('funded');
         backendService.fundCampaign(campaign.id).success(function (response) {
           $modalInstance.close(true);
         }).error(function(err) {
