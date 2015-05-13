@@ -16,7 +16,6 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', '
     Authentication.requireLogin($state);
 
     $scope.addCampaign = function() {
-      console.log($scope.campaign.validYoutubeUrl);
       $scope.campaign.validYoutubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.validYoutubeUrl);
       backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
