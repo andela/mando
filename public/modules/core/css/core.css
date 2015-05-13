@@ -225,6 +225,7 @@ section {
   display: inline-block;
   vertical-align: middle;
   float: none;
+  margin-right: 15px;
   padding: 30px 0 20px 20px;
 }
 
@@ -233,7 +234,7 @@ section {
   margin-left: 25px;
 }
 
-.campaign_cards {
+.campaign_cards, .home-campaigns {
   margin-bottom: 30px;
 }
 

@@ -28,8 +28,7 @@
             </div>            
           </div>
           <p class="cash titles text-center" ng-hide="daysLeft === 'none' || campaign.status == 'funded'">Days left: <span ng-class="{values: false, 'text-success': deadlineStyle == 'success','text-warning': deadlineStyle == 'warning', 'text-danger': deadlineStyle == 'danger'}">{{daysLeft}}</span></p>
-          <h4 class="text-success text-center" ng-show="campaign.amount == campaignBalance">Campaign fully funded.</h4>
-          <h4 class="text-danger" ng-show="daysLeft === 'none' && campaign.amount < campaignBalance">Campaign Expired.</h4>
+          <h4 class="text-success text-center" ng-if="campaign.amount == campaignBalance">Campaign fully funded.</h4>
           <hr>
         
           <div class="text-center">
