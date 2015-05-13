@@ -34,7 +34,7 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
       'message': 'Missing Credentials'
     });
     scope.campaign = {
-      youtubeUrl: 'https://www.youtube.com/watch?v=9xFsYfYrQHQ'
+      validYoutubeUrl: 'https://www.youtube.com/watch?v=9xFsYfYrQHQ'
     };
     scope.addCampaign();
 
@@ -53,7 +53,7 @@ beforeEach(module(ApplicationConfiguration.applicationModuleName));
       dueDate:'25-02-2015',
       amount: 1000,
       title: 'A new Test',
-      youtubeUrl: 'https://www.youtube.com/watch?v=9xFsYfYrQHQ'
+      validYoutubeUrl: 'https://www.youtube.com/watch?v=9xFsYfYrQHQ'
     };
     scope.addCampaign();
 
