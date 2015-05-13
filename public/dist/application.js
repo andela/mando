@@ -30,6 +30,7 @@ angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfig
 angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider',
 	function($locationProvider) {
 		$locationProvider.hashPrefix('!');
+    // $locationProvider.HTML5Mode({enabled:true});
 	}
 ]);
 
@@ -635,6 +636,16 @@ angular.module('campaign').config(['$stateProvider', 'datepickerConfig', '$sceDe
     url: '/campaignIBacked',
     templateUrl: '/modules/campaigns/views/campaignsIBacked.client.view.html',
     controller: 'campaignsIBackedCtrl'
+  }).
+  state('allMyCampaigns', {
+    resolve: {
+      credentials: ["$http", function($http) {
+        return $http.get('/bank/credentials');
+      }]
+    },
+    url: '/allMyCampaigns',
+    templateUrl: '/modules/campaigns/views/allMyCampaigns.client.view.html',
+    controller: 'allMyCampaignCtrl'
   });
 
   //Add YouTube to resource whitelist so that we can embed YouTube videos
@@ -659,7 +670,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', '
     Authentication.requireLogin($state);
 
     $scope.addCampaign = function() {
-      $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.youtubeUrl);
+      $scope.campaign.youtubeUrl = youtubeEmbedUtils.getIdFromURL($scope.campaign.validYoutubeUrl);
       backendService.addCampaign($scope.campaign)
         .success(function(data, status, header, config) {
           toaster.pop('success', $scope.campaign.title, 'Campaign created successfully');
@@ -706,17 +717,28 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', '
 
 'use strict';
 
-angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location', 'backendService', function($scope, $location, backendService) {
-  $scope.Campaigns = [];
+angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope', '$location', 'backendService', 'currentStatus',  function($scope, $rootScope, $location, backendService, currentStatus) {
+  $scope.selectedCampaigns = [];
   $scope.criteria = 'created';
   $scope.currentPage = 1;
   $scope.itemsPerPage = 21;
   $scope.totalItems = 1;
+  $scope.activeStatus = $rootScope.currentStatus;
 
-  $scope.init = function() {
+  $scope.init = function(campaignStatus) {
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
+        $scope.selectedCampaigns = [];
+        angular.forEach(data, function(item) {
+          var currentDate = new Date(Date.now());
+          var campaignDeadline = new Date(item.dueDate);
+          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
+          if(item.status === campaignStatus) {
+            $scope.selectedCampaigns.push(item);
+          }
+        });
+        currentStatus.state = $rootScope.currentStatus;
         $scope.totalItems = data.length;
         $scope.filterCampaigns();
       })
@@ -740,8 +762,38 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location',
   $scope.pageChanged = function() {
     $scope.filterCampaigns();
   };
-  $scope.init();
+
+  $scope.showSelected = function(state) {
+    $scope.activeStatus = state;
+    $rootScope.currentStatus = state; 
+    $scope.selectedCampaigns = [];
+    $scope.init($scope.activeStatus);
+  };
+  $scope.showSelected($rootScope.currentStatus || 'active' );
+  $scope.init($rootScope.currentStatus || 'active');
+}])
+.factory('currentStatus', [function () {
+  return {};
 }]);
+
+'use strict';
+angular.module('campaign').controller('allMyCampaignCtrl', ['$scope', 'backendService', 'Authentication', '$state',  function($scope, backendService, Authentication, $state) {
+  $scope.myCampaigns = [];
+  $scope.authentication = Authentication;
+  Authentication.requireLogin($state);
+  var userid = $scope.authentication.user._id;
+  backendService.getUserCampaigns(userid)
+    .success(function(data) {
+      $scope.myCampaigns = data;
+    })
+    .error(function(error, status, header, config) {
+      //not cool to redirect the user if any error occured, should be improved by
+      //checking for the exact error act base on the error
+      $location.path('/');
+    });
+}]);
+
+
 
 'use strict';
 
@@ -890,8 +942,16 @@ angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaig
       amount: $scope.amount,
       reason: 'Support campaign'
     };
-    subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function() {
-      $modalInstance.close(true);
+    subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function(response) {
+      if (($scope.amount + $scope.campaignBalance) >= $scope.amountNeeded) {
+        backendService.fundCampaign(campaign.id).success(function (response) {
+          $modalInstance.close(true);
+        }).error(function(err) {
+          console.log("error", err);
+        });
+      } else {
+        $modalInstance.close(true);
+      }
     });
   };
 
@@ -995,6 +1055,11 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.getJournals(cred.bank_id, function(response) {
       $scope.journal = response;
       $scope.$digest();
+      for(var i = 0; i < $scope.journal.length; i++) {
+        if($scope.query === $scope.journal[i].description.name) {
+          $scope.hasDistributions = true;
+        }
+      }
     });
 
     //This is the method that loads the Transaction journal for the Authenticated User.
@@ -1003,15 +1068,7 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
       $scope.$digest();
     });
     // function to click the show more button on getMoreCampaigns page
-    $scope.limit = 4;
-    $scope.increment = function() {
-      var campaignLength = $scope.myCampaigns.length;
-      $scope.limit = campaignLength;
-    };
-
-    $scope.decrement = function() {
-      $scope.limit = 4;
-    };
+    $scope.limit = 3;
   }
 ]);
 
@@ -1050,16 +1107,40 @@ angular.module('campaign').controller('userTransactionCtrl', ['$scope', '$http',
 angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter', '$timeout',
   function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout) {
     var campaignBalance, userAccountBalance;
+    $scope.buttonValue = 'SUPPORT';
     $scope.authentication = Authentication;
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
-
-    backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
+    var getCampaigns = function() {
+      backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
+        if($scope.campaign.status === 'funded') {
+          $scope.buttonValue = 'FUNDED';
+          $scope.daysLeft = 'none';
+        }
+        else if($scope.campaign.status === 'expired') {
+          $scope.buttonValue = 'EXPIRED';
+        }
+        $scope.dateFunded = $scope.campaign.dateFunded;
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
+        var currentDate = new Date(Date.now());
+        var campaignDeadline = new Date($scope.campaign.dueDate);
+        $scope.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
+        if($scope.daysLeft >= 10) {
+          $scope.deadlineStyle = 'success';
+        }
+        else if($scope.daysLeft > 5 && $scope.daysLeft < 10) {
+          $scope.deadlineStyle = 'warning';
+        }
+        else if($scope.daysLeft <= 5 && $scope.daysLeft >= 0) {
+          $scope.deadlineStyle = 'danger';
+        }
+        else if($scope.daysLeft < 0) {
+          $scope.daysLeft = 'none';
+        }
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
           $scope.ownCampaign = true;
         }
@@ -1067,7 +1148,8 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       .error(function (error, status, header, config) {
         $location.path('/');
       });
-
+    };
+    getCampaigns();
     var getCampaignBackersHistory = function (campaignid) {
       backendService.getCampaignBackers(campaignid).success(function (data) {
         $scope.campaignBackers = data;
@@ -1094,10 +1176,28 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         userAccountBalance = response;
       });
     };
+    var updateProgressbar = function () {
+      // Progress bar calculations
+      var fundsRatio = $scope.campaignBalance/$scope.campaign.amount;
+      var campaignFundPercentage = Math.floor(fundsRatio * 96);
+      if(campaignFundPercentage === 0) {
+        $scope.fundsRaised = 4;
+        $scope.campaignFundPercentage = 0;
+      }
+      else {
+        $scope.fundsRaised = campaignFundPercentage + Math.ceil(4*fundsRatio);
+        $scope.campaignFundPercentage = $scope.fundsRaised;
+        if($scope.campaignFundPercentage < 4) {
+          $scope.fundsRaised = 4;
+        }
+      }
+    };
     var getCampaignBalance = function (campaignAccountid) {
       subledgerServices.getBalance(campaignAccountid, function (response) {
         $timeout(function() {
           $scope.campaignBalance = response;
+            updateProgressbar();
+            getCampaigns();
         });
       });
     };
@@ -1137,8 +1237,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     };
   }
 ]);
-
-
 'use strict';
 angular.module('campaign').filter('currencyflt', function() {
   return function cur(num) {
@@ -1201,6 +1299,10 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   var campaignsIBacked = function() {
     return $http.get('/user/campaigns/backed');
   };
+
+  var fundCampaign = function(campaignId) {
+    return $http.put('/campaign/' + campaignId + '/fund');
+  };
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
@@ -1211,15 +1313,17 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getCampaigns: getCampaigns,
     createCampaignBacker: createCampaignBacker,
     getCampaignBackers: getCampaignBackers,
-    campaignsIBacked: campaignsIBacked
+    campaignsIBacked: campaignsIBacked,
+    fundCampaign: fundCampaign
   };
 }]);
 'use strict';
 
 // Setting up route
-angular.module('core').config(['$stateProvider', '$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
+angular.module('core').config(['$stateProvider', '$locationProvider', '$urlRouterProvider',
+	function($stateProvider, $locationProvider, $urlRouterProvider) {
 		// Redirect to home view when route not found
+		 // $locationProvider.html5Mode(true);
 		$urlRouterProvider.otherwise('/');
 
 		// Home state routing
@@ -1232,49 +1336,80 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 ]);
 'use strict';
 
-angular.module('core').controller('HeaderController', ['$scope', 'Authentication',
-  function($scope, Authentication) {
+angular.module('core').controller('HeaderController', ['$scope', 'Authentication', '$rootScope',
+  function($scope, Authentication, $rootScope) {
     $scope.authentication = Authentication;
     $scope.isCollapsed = false;
-    $scope.toggleCollapsibleMenu = function() {
-            $scope.isCollapsed = !$scope.isCollapsed;
-        };
 
-        // Collapsing the menu after navigation
-        $scope.$on('$stateChangeSuccess', function() {
-            $scope.isCollapsed = false;
-        });
-    }
+    $scope.toggleCollapsibleMenu = function() {
+      $scope.isCollapsed = !$scope.isCollapsed;
+    };
+
+    // Collapsing the menu after navigation
+    $scope.$on('$stateChangeSuccess', function() {
+      $scope.isCollapsed = false;
+    });
+
+    $scope.showActiveCampaigns = function (param) {
+        $rootScope.currentStatus = param;
+    };
+  }
 ]);
+
 'use strict';
 
-angular.module('core').controller('HomeController', ['$scope', 'Authentication', 'backendService',
-	function($scope, Authentication, backendService) {
+angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Authentication', 'backendService',
+	function($scope, $rootScope, Authentication, backendService) {
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
     $scope.campaigns = [];
-
+    $scope.activeCampaigns = [];
+    $scope.fundedCampaigns = [];
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
+        angular.forEach($scope.campaigns, function(item) {
+          var currentDate = new Date(Date.now());
+          var campaignDeadline = new Date(item.dueDate);
+          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
+          if(item.status === 'active') {
+            $scope.activeCampaigns.push(item);
+          }
+          else if(item.status === 'funded') {
+            $scope.fundedCampaigns.push(item);
+          }
+        });
       })
       .error(function(error, status, header, config) {
         $scope.error = error;
       });
 
-    $scope.myInterval = 3000;
+      $scope.updateStatus = function(param) {
+        $rootScope.currentStatus = param;
+      };
+
+    $scope.myInterval = 8000; 
     $scope.slides = [
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678401/carousel1a_jt77zm.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430297767/caros3_tmgpvr.jpg',
+        caption: 'All for one, One for all'
       },
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678660/carousel2a_ksihkg.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430311270/carousel5_adruh8.jpg',
+        caption: 'Donate and make a dream come true'
       },
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678664/carousel3a_n0gkdj.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430298374/caros4_jlfcl1.jpg',
+        caption: 'Collaboration is the key to success'
       },
       {
-        image: 'http://res.cloudinary.com/andela/image/upload/v1428678401/carousel1a_jt77zm.jpg'
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430297249/carousll_ijwwov.jpg',
+        caption: 'Collaboration is the key to success'
+      },
+      {
+        image: 'http://res.cloudinary.com/andela/image/upload/v1430321432/carousel5_shgamo.jpg',
+        // image: 'http://res.cloudinary.com/andela/image/upload/v1430321967/caroue6_kx01ei.jpg',
+        caption: 'Alone we can do so little, Together we can do so much'
       }
     ];
 	}
@@ -1326,7 +1461,6 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
       url: '/distributor/:username',
       templateUrl: 'modules/distributor/views/user.distributor.client.view.html'
     });
-
 }]);
 
 'use strict';
