@@ -39,6 +39,7 @@ var campaignSchema = new Schema({
   dueDate: {
     type: Date
   },
+
   slug: {
     type: String,
   },
@@ -68,6 +69,7 @@ var campaignSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
+  
   account_id: {
     type: String
   }

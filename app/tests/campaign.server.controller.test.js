@@ -13,16 +13,16 @@
   statusSpy,
   sendSpy;
 
-  describe('Campaign Server Controller', function (){
-    this.timeout(100000);
-    beforeEach( function(done){
+describe('Campaign Server Controller', function (){
+  this.timeout(100000);
+  beforeEach( function(done){
 
-     res = {status: function(){return this;},
-     send: function(){return this;},
-     json: function(){return this;}
-   };
-   statusSpy = sinon.spy(res, 'status');
-   sendSpy = sinon.spy(res, 'send');
+    res = {status: function(){return this;},
+      send: function(){return this;},
+      json: function(){return this;}
+    };
+    statusSpy = sinon.spy(res, 'status');
+    sendSpy = sinon.spy(res, 'send');
     //valid user
     user1 = new User({ 
       firstName: 'Bayo',
@@ -49,15 +49,20 @@
       description: 'This is a description campaign',
       youtubeUrl: 'https://www.youtube.com/watch?v=kC0JYp79tdo',
       amount: '1223232',
-      dueDate: new Date()
+      dueDate: new Date(),
+      account_id: 'yeet',
+      dateFunded: Date.now(),
+
     });
-      
-    campaign1.save(function(err, campaign){
+    
+    user1.save(function(err, user){
       if(err){
         done(err);
       } 
-      else {    
-        user1.save(function(err, user){
+      else {  
+        campaign1.createdBy = user._id;
+        campaign1.lastModifiedBy = user._id;  
+        campaign1.save(function(err, campaign){
           if(err){
             done(err);
           }
@@ -69,7 +74,7 @@
     });
   });
 
- it('should edit A campaign with A valid credential', function(done){
+  it('should edit A campaign with A valid credential', function(done){
     var req,
     param ={
       campaignId: campaign1._id
@@ -77,12 +82,15 @@
     campaign1.title = 'A new Campaign Title';
     req = {user:user1, body:campaign1, params:param};
     controller.updateCampaign(req, res);
-    Campaign.findById(campaign1._id).exec(function(err, campaign) {
-      console.log('campaign found in test');
-      campaign.title.should.equal('A new Campaign Title');
-      done();
-    });
- });
+    setTimeout(function() {
+      Campaign.findById(campaign1._id).exec(function(err, campaign) {
+        console.log('after campaign edited');
+        campaign.title.should.equal('A new Campaign Title');
+        done();
+      });  
+    }, 5000);
+  });
+
   afterEach(function(done){
     User.remove().exec();
     done();
