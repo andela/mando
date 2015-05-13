@@ -32,8 +32,8 @@
       provider:'google'
     });
 
-      //invalid user
-      user2 = new User({
+    //invalid user
+    user2 = new User({
       firstName: 'User2',
       lastname: 'Mando2',
       displayName:'Manod2User2',
@@ -42,8 +42,8 @@
       provider: 'google'
     });
 
-      //MOCK CAMPAIGNS
-      campaign1 = new Campaign({
+    //MOCK CAMPAIGNS
+    campaign1 = new Campaign({
       title: 'A mock Campaign',
       description: 'This is a description campaign',
       youtubeUrl: 'https://www.youtube.com/watch?v=kC0JYp79tdo',
@@ -51,25 +51,24 @@
       dueDate: new Date()
     });
       
-      campaign1.save(function(err, campaign){
-        if(err){
-          done(err);
-        } 
-        else {    
-          user1.save(function(err, user){
-            if(err){
-              done(err);
-            }
-            else{
-              done();
-            }
-          });
-        }
-      });
+    campaign1.save(function(err, campaign){
+      if(err){
+        done(err);
+      } 
+      else {    
+        user1.save(function(err, user){
+          if(err){
+            done(err);
+          }
+          else{
+            done();
+          }
+        });
+      }
     });
+  });
 
  it('should edit A campaign with A valid credential', function(done){
-    this.timeout(5000);
     var req,
     param ={
       campaignId: campaign1._id
@@ -77,12 +76,11 @@
     campaign1.title = 'A new Campaign Title';
     req = {user:user1, body:campaign1, params:param};
     controller.updateCampaign(req, res);
-    setTimeout(function() {
-      Campaign.findById(campaign1._id).exec(function(err, campaign){
-        campaign.title.should.equal('A new Campaign Title');
-        done();
-      });
-    }, 2000);
+    Campaign.findById(campaign1._id).exec(function(err, campaign) {
+      console.log('campaign found in test');
+      campaign.title.should.equal('A new Campaign Title');
+      done();
+    });
  });
   afterEach(function(done){
     User.remove().exec();

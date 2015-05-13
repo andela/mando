@@ -173,6 +173,9 @@ exports.updateCampaign = function (req, res) {
         message: 'Invalid campaign id'
       });
     }
+    else {
+      console.log('Edited Campaign Title: ', editedCampaign.title);
+    }
     Campaign.populate(editedCampaign, { path: 'createdBy lastModifiedBy' }, function (err, campaign) {
       res.json(campaign);
     });
