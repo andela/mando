@@ -155,6 +155,7 @@ exports.getCampaigns = function (req, res) {
     });
   });
 };
+
 exports.updateCampaign = function (req, res) {
   var campaign = req.body;
   campaign.lastModifiedBy = req.user._id;
@@ -162,26 +163,22 @@ exports.updateCampaign = function (req, res) {
   if (!campaign.dueDate) {
     campaign.dueDate = moment().add(30, 'days');
   }
-  Campaign
-    .findByIdAndUpdate(req.params.campaignId, {
-      $set: campaign
-    }, {}, function (err, editedCampaign) {
-      if (err) {
-        res.status(400).json(err);
-      }
-      //if the user has no campaign created
-      if (!editedCampaign) {
-        return res.status(400).send({
-          message: 'Invalid campaign id'
-        });
-      }
-      Campaign.populate(editedCampaign, {
-        path: 'createdBy lastModifiedBy'
-      }, function (err, campaign) {
-        res.json(campaign);
+  Campaign.findByIdAndUpdate(req.params.campaignId, { $set: campaign }, {}, function (err, editedCampaign) {
+    if (err) {
+      res.status(400).json(err);
+    }
+    //if the user has no campaign created
+    if (!editedCampaign) {
+      return res.status(400).send({
+        message: 'Invalid campaign id'
       });
+    }
+    Campaign.populate(editedCampaign, { path: 'createdBy lastModifiedBy' }, function (err, campaign) {
+      res.json(campaign);
     });
+  });
 };
+
 exports.archiveCampaignAccount = function(campaignAccountId, cb) {
   subledger.archiveCampaignAccount(campaignAccountId, function(error, response) {
   cb(error, response);

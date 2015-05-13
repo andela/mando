@@ -69,6 +69,7 @@
     });
 
  it('should edit A campaign with A valid credential', function(done){
+    this.timeout(5000);
     var req,
     param ={
       campaignId: campaign1._id
@@ -76,10 +77,12 @@
     campaign1.title = 'A new Campaign Title';
     req = {user:user1, body:campaign1, params:param};
     controller.updateCampaign(req, res);
-    Campaign.findById(campaign1._id).exec(function(err, campaign){
-      campaign.title.should.equal('A new Campaign Title');
-      done();
-    });
+    setTimeout(function() {
+      Campaign.findById(campaign1._id).exec(function(err, campaign){
+        campaign.title.should.equal('A new Campaign Title');
+        done();
+      });
+    }, 2000);
  });
   afterEach(function(done){
     User.remove().exec();
