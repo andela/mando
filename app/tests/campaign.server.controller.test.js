@@ -14,6 +14,7 @@
   sendSpy;
 
   describe('Campaign Server Controller', function (){
+    this.timeout(100000);
     beforeEach( function(done){
 
      res = {status: function(){return this;},
