@@ -1,6 +1,7 @@
 /*campaign controller */
 'use strict';
 var mongoose = require('mongoose'),
+  _ = require('lodash'),
   async = require('async'),
   errorHandler = require('./errors.server.controller'),
   moment = require('moment'),
@@ -155,6 +156,7 @@ exports.getCampaigns = function (req, res) {
     });
   });
 };
+
 exports.updateCampaign = function (req, res) {
   var campaign = req.body;
   campaign.lastModifiedBy = req.user._id;
@@ -162,10 +164,20 @@ exports.updateCampaign = function (req, res) {
   if (!campaign.dueDate) {
     campaign.dueDate = moment().add(30, 'days');
   }
-  Campaign
-    .findByIdAndUpdate(req.params.campaignId, {
-      $set: campaign
-    }, {}, function (err, editedCampaign) {
+
+  Campaign.findById(req.params.campaignId, function(err, fetchedCampaign) {
+    if(err) {
+      return res.status(400).send({
+        message: 'Campaign to Update not found'
+      });
+    }
+    _.forEach(_.keys(campaign), function(key) {
+      if(key !== '_id') {
+        fetchedCampaign[key] = campaign[key];
+      }
+    });
+
+    fetchedCampaign.save(function(err, editedCampaign) {
       if (err) {
         res.status(400).json(err);
       }
@@ -175,13 +187,13 @@ exports.updateCampaign = function (req, res) {
           message: 'Invalid campaign id'
         });
       }
-      Campaign.populate(editedCampaign, {
-        path: 'createdBy lastModifiedBy'
-      }, function (err, campaign) {
+      Campaign.populate(editedCampaign, { path: 'createdBy lastModifiedBy' }, function (err, campaign) {
         res.json(campaign);
-      });
+      });  
     });
+  });
 };
+
 exports.archiveCampaignAccount = function(campaignAccountId, cb) {
   subledger.archiveCampaignAccount(campaignAccountId, function(error, response) {
   cb(error, response);
