@@ -18,9 +18,30 @@
 .main-container {
   margin-top: 30px;
 }
+
+.userHomePage .btn-default {
+  margin-right: 5px;
+  background-image: linear-gradient(to bottom, #009183 0%, #007D6F 100%);
+  text-shadow: none;
+  color: #fff;
+}
+
+.userHomePage .btn-default:hover {
+  background-color: #007D6F;
+  color: #eee;
+}
+
+.userCampaignTitle a {
+  color: #2A5DB0;
+}
+
 /*hides pagination div*/
 .ng-table-pagination {
   display: none;
+}
+
+.campaignModal {
+  
 }
 
 .title {
@@ -30,6 +51,7 @@
 
 .CreatedAndDeadline {
   font-weight: bold;
+  padding: 0;
 }
 
 .cash {
@@ -53,13 +75,13 @@
   border: transparent;
 }
 
-.btn-default:hover {
-  font-size: 1.2em;
-}
-
 iframe {
   width: 100%;
   border-radius: 10px;
+}
+
+.campaignPage iframe {
+  height: 350px;
 }
 
 .values {
@@ -72,15 +94,15 @@ iframe {
 
 .viewCampaignWrapper {
   text-align: justify;
-  margin-top: 30px;
+  margin-top: 50px;
 }
 
 .campaignTableMargins {
-  margin-bottom: 75px;
+  margin-bottom: 40px;
 }
 
 .balances {
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
   margin-top: 30px;
 }
@@ -93,15 +115,96 @@ iframe {
   color: red;
 }
 
-.supportFootnote {
-  font-size: 13px;
-  font-style: italic;
-}
-
 .myAndonationWrapper {
   margin-top: 45px;
 }
 
-.andonationSubheadings {
-  font-size: 23px;
+.categories: hover {
+  background-color: green;
+}
+
+/*   Distribution page styling   */
+.title_margin {
+  margin: 40px 0 20px;
+}
+
+.usernameLinks a, .userPageCTA a, .viewAllCTA {
+  color: #2A5DB0;
+}
+
+.margin-btm-md {
+  margin-bottom: 50px;
+}
+
+.cancel-margin-right {
+  margin-right: 0;
+}
+
+.clear_padding, .clear_padding h3 {
+  padding: 0;
+  margin: 0;
+}
+
+.campaign-navs>li.active>a, .campaign-navs>li.active>a:focus, .campaign-navs>li.active>a:hover {
+  background-color: #0EA138;
+  color: #fff!important;
+}
+
+.campaign-navs li a {
+  color: #333!important;
+  padding: 5px 20px;
+  margin-right: 5px;
+  cursor: default;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1px 1px #eee;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #fff;
+}
+
+.table-striped > tbody > tr:nth-of-type(even) {
+  background-color: #FBFBFB;;
+}
+
+.campaignDesc {
+  display: block;
+  padding: 0;
+  text-align: justify;
+  font-family:  "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #F9FAFB;
+  border: none;
+  border-radius: 0;
+}
+
+.distributor_modal {
+  height: 150px;
+}
+
+.inlineDisplay {
+  display: inline-block;
+  width: 49%;
+}
+
+.campaignAmount {
+  font-size: 18px!important;
+}
+
+.campaignBalance {
+  border: 1px solid #eee;
+  padding: 20px;
+  margin-top:55px;
+  background: #F9FAFB;
+  box-shadow: 1px 1px 2px #DED2DE;
+}
+
+.sub_row {
+  position: relative;
+  bottom: 0;
 }

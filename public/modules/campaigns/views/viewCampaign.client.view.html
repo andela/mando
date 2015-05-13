@@ -4,31 +4,50 @@
     <div class="col-md-12">
       <!-- <div class="<col-md-5>"> -->
         <div class="col-md-6">
-          <p class="title" data-ng-bind="campaign.title"></p>
-          <p class="CreatedAndDeadline titles ">Created By: <span class="values">{{campaign.createdBy.displayName}} </span> <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign.slug}}/edit" id="editBtn" class="pull-right">EDIT CAMPAIGN </a></span></p>
-          <p class="CreatedAndDeadline titles">Deadline: <span class="values">{{campaign.dueDate | date}}</span> </p>
-          <p class="values">{{campaign.description}}</p>
+          <h2 class=" text-capitalize" data-ng-bind="campaign.title"></h2>
+          <p class="CreatedAndDeadline titles col-md-6">Created By: <span class="values">{{campaign.createdBy.displayName}} </span> 
+          <p class="CreatedAndDeadline titles col-md-6 text-right">Deadline: <span class="values">{{campaign.dueDate | date}}</span> </p><br><br>
+          <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign.slug}}/edit" id="editBtn">EDIT CAMPAIGN </a></span></p>
+          <hr>
+          <div class="campaignPage">
+            <youtube-video video-id="campaign.youtubeUrl"></youtube-video>
+            <hr>
+          </div>
+          <pre class="values campaignDesc">{{campaign.description}}</pre>
         <!-- </div> -->
       </div>
-      <div class="col-md-5 col-md-offset-1">
-        <div>
-        <!--Disabled the support button for unauthenticated user -->
-          <button class="btn btn-success btn-lg supportbtn" ng-class="{'disabled': ownCampaign}"  data-ng-disabled="!authentication.user" ng-click="openModal()">SUPPORT</button>
-          <p class="supportFootnote" ng-show="ownCampaign">You can't support your own campaign</p>
-        </div><br>
-          <p class="cash titles">Needs: <span class="values">{{campaign.amount | currencyflt}}</span> </p>
-          <p class="cash titles">Raised: <span class="values">{{campaignBalance | currencyflt}}</span> </p>
-        <div>
-          <youtube-video video-id="campaign.youtubeUrl"></youtube-video>
-        </div>
+      <div class="col-md-4 col-md-offset-2 campaignBalance">
+          <p class=" titles text-center">Amount Needed </p><h2 class="text-center">{{campaign.amount | currencyflt}}</h2><br>
+          <p class=" titles text-center">Amount Raised </p><h2 class="text-center">{{campaignBalance | currencyflt}}</h2>
+          <hr>
+          <h4 class="text-center">{{campaignFundPercentage}}% funded <span ng-show="dateFunded"> on {{dateFunded | date}}</span></h4>
+          <div>
+            <div class="progress">
+              <div class="progress-bar progress-bar-success" role="progressbar"  ng-style="{'width': fundsRaised +'%'}">
+              </div>
+            </div>            
+          </div>
+          <p class="cash titles text-center" ng-hide="daysLeft === 'none' || campaign.status == 'funded'">Days left: <span ng-class="{values: false, 'text-success': deadlineStyle == 'success','text-warning': deadlineStyle == 'warning', 'text-danger': deadlineStyle == 'danger'}">{{daysLeft}}</span></p>
+          <h4 class="text-success text-center" ng-show="campaign.amount == campaignBalance">Campaign fully funded.</h4>
+          <h4 class="text-danger" ng-show="daysLeft === 'none' && campaign.amount < campaignBalance">Campaign Expired.</h4>
+          <hr>
+        
+          <div class="text-center">
+          <!--Disabled the support button for unauthenticated user -->
+            <button class="btn btn-success btn-lg supportbtn" ng-class="{'disabled': ownCampaign || campaign.amount == campaignBalance || daysLeft === 'none' || campaign.status === 'funded', 'expired': campaign.status === 'expired'}"  data-ng-disabled="!authentication.user" ng-click="openModal()" ng-bind="buttonValue"></button><br>
+            <small class="text-center text-muted" ng-show="ownCampaign">You can't support your own campaign</small>
+          </div>
       </div>
     </div>
   </div>
-  <div class="container-fluid">
-    <h2>Backers</h2>
-    <div ng-hide="campaignBackers" class="page-header"><h3 class="">This campaign does not have any backers</h3></div>
+  <div class="container">
+  <br><hr>
+    <h4>Backers</h4>
+    <div>
+      <div ng-hide="campaignBackers" class="alert alert-info"><p>This campaign does not have any backers</p></div>
+    </div>
     <div ng-show="campaignBackers">
-      <table ng-table="tableParams" class="table">
+      <table ng-table="tableParams" class="table table-bordered table-striped">
         <tr ng-repeat="backer in $data">
           <td data-title="'Name'" sortable="'userid.displayName'">
             {{backer.userid.displayName}}

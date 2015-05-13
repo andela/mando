@@ -1,17 +1,27 @@
-<section data-ng-show="isBanker">
-  <div>
-    <p> System Balance: {{balance.amount | currencyflt}}</p>
+<section data-ng-show="isBanker" class="container margin-btm-md">
+  <div class="row title_margin">
+    <div class="">
+      <div class="col-md-5 clear_padding">
+        <h3>SYSTEM BALANCE: {{balance.amount | currencyflt}}</h3>
+      </div>
+      <div class="col-md-7">
+        <span class="navbar-right">
+          <button class="btn btn-warning withdraw" ng-click="openModalWithdraw('sm')">Withdraw</button>
+          <button class="btn btn-success" ng-click="openModalDeposit('sm')">Deposit</button>
+        </span>
+      </div>  
+    </div>
   </div>
+
   <div>
-    <p>ALL TRANSACTION DETAILS</p>
-    <table class="table table-bordered"> 
-    <div class="pull-right"><button class="btn btn-warning withdraw" ng-click="openModalWithdraw('sm')">Withdraw</button><button class="btn btn-success" ng-click="openModalDeposit('sm')">Deposit</button></div>
+    <h4>ALL TRANSACTION DETAILS</h4><br>
+    <table class="table table-bordered table-striped"> 
       <tt>
         <th>Date</th>
         <th>Description</th>
         <th>Transaction Type</th>
         <th>Amount</th>
-        <th>by</th>
+        <th>By</th>
       </tt>
       <tr data-ng-repeat ="transaction in journal">
         <td>{{transaction.posted_at | date }}</td>
@@ -20,7 +30,6 @@
         <td>{{transaction.value.amount}}</td>
         <td>{{transaction.description.name}}</td>
       </tr>
-      
     </table>
   </div>
 </section>
