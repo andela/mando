@@ -34,7 +34,7 @@
                     <input type="number" min="0" class="form-control" ng-model="campaign.amount" name="amount" id="amount" placeholder="Enter the amount needed for this campaign" required>
                     <div class="input-group-addon">.00</div>
                   </div>
-                  <small>* Enter campaign needs in Dollars.</small>
+                  <small>* Enter campaign needs in the nearest Dollar.</small>
                     <span class="help-block has-error addcampaign.amount.$dirty">
                       <span id="isInvalidErr" ng-show="addcampaign.amount.$error.number">Please enter a valid number</span>
                       <span id="isEmptyErr" ng-show="addcampaign.amount.$error.required &amp;&amp; !addcampaign.amount.$error.number &amp;&amp; addcampaign.amount.$dirty">This field can not be empty, please enter an amount</span>
