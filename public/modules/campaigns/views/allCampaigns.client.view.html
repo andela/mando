@@ -33,6 +33,7 @@
             <h3 class="inlineDisplay">{{campaign.amount | currency}}</h3>
             <h4 class="inlineDisplay text-right text-muted" ng-if="campaign.status == 'active' && campaign.daysLeft > 0">{{campaign.daysLeft | daysflt}} left</h4>
             <h5 class="text-muted" ng-if="campaign.status == 'funded'"> Fully Funded on {{campaign.dateFunded | date}}</h5>
+            <h5 class="text-muted" ng-if="campaign.status == 'expired'"> Campaign expired on {{campaign.dueDate | date}}</h5>
           </div>
           <p class="values">{{campaign.description |limitTo: 136}} ...</p><br>
         </div>
