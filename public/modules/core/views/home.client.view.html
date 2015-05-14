@@ -25,7 +25,7 @@
               <p><youtube-video video-id="activeCampaign.youtubeUrl"></youtube-video></p>
               <div>
                 <h3 class="inlineDisplay">{{activeCampaign.amount | currency}}</h3>
-                <h4 class="inlineDisplay text-right text-muted">{{activeCampaign.daysLeft}} days left</h4>
+                <h4 class="inlineDisplay text-right text-muted">{{activeCampaign.daysLeft | daysflt}} left</h4>
               </div>
               <p class="values">{{activeCampaign.description |limitTo: 100}} ...</p>
             </div>
