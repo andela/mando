@@ -27,8 +27,16 @@ angular.module('campaign').controller('supportCampaignCtrl', ['$scope', 'campaig
       amount: $scope.amount,
       reason: 'Support campaign'
     };
-    subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function() {
-      $modalInstance.close(true);
+    subledgerServices.bankerAction('credit', transaction, Authentication.user.account_id, campaign.accountid, Authentication.user, function(response) {
+      if (($scope.amount + $scope.campaignBalance) >= $scope.amountNeeded) {
+        backendService.fundCampaign(campaign.id).success(function (response) {
+          $modalInstance.close(true);
+        }).error(function(err) {
+          console.log("error", err);
+        });
+      } else {
+        $modalInstance.close(true);
+      }
     });
   };
 

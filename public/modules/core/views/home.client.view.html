@@ -1,39 +1,69 @@
 <section data-ng-controller="HomeController">
   <div class="slides_control">
-    <div>
+    <div class="carousels">
       <carousel interval="myInterval" disable-animation="true">
         <slide ng-repeat="slide in slides" active="slide.active">
           <img ng-src="{{slide.image}}"class="caros-img" width="1400" height="100%" style="margin:auto;">
           <div class="carousel-caption">
-            <h3>Donate and make a dream come true</h3>
+            <h3 ng-bind="slide.caption"></h3>
           </div>
         </slide>
       </carousel>
     </div>
   </div>
+
    
-    <div class="custom_side_margin"> 
-      <div class="container-fluid second-div margin-btm">
+    <div class="custom_side_margin grey homePageContentsHolder"> 
+      <div class="container-fluid second-div margin-btm" ng-show="activeCampaigns.length > 0">
         <h3>Most recent campaigns</h3>
       </div>
 
       <div class="third-div">
-          <div class="col-lg-4" ng-repeat="campaign in campaigns | orderBy: 'created'.descending | limitTo:3">
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" ng-repeat="activeCampaign in activeCampaigns | orderBy: 'created'.descending | limitTo:3">
             <div class="home-campaigns">
-              <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
-              <h6><a href="/#!/campaign/{{ campaign.slug}}" class="class-title"> {{campaign.title }}</a></h6>
-              <p><span class="titles"> Amount Needed:</span> <span class="values">{{campaign.amount | currency}}</span></p>
-              <p><span class="titles">Deadline:</span> <span class="values">{{campaign.dueDate | date}}</span></p>
-              <p class="titles">{{campaign.balance}}</p>
-              <p span class="titles">Description</p>
-              <p class="values">{{campaign.description |limitTo: 136}} ...</p>
+              <h4><a href="/#!/campaign/{{ activeCampaign.slug}}" class="class-title"> {{activeCampaign.title }}</a></h4><br>
+              <p><youtube-video video-id="activeCampaign.youtubeUrl"></youtube-video></p>
+              <div>
+                <h3 class="inlineDisplay">{{activeCampaign.amount | currency}}</h3>
+                <h4 class="inlineDisplay text-right text-muted">{{activeCampaign.daysLeft}} days left</h4>
+              </div>
+              <p class="values">{{activeCampaign.description |limitTo: 100}} ...</p>
             </div>
           </div>
         <div> 
-          <div class="container-fluid pull-right see-more-campaigns margin-btm margin-top" ng-hide="campaigns.length <= 3">
-            <a href="/#!/campaigns" id="all-campaigns">See All {{campaigns.length}} Campaigns</a>
+          <div class="container-fluid pull-right see-more-campaigns margin-btm margin-top" ng-hide="activeCampaigns.length <= 3">
+            <a href="/#!/campaigns" id="all-campaigns" ng-click="updateStatus('active')">See All {{activeCampaigns.length}} Active Campaigns</a>
           </div>
         </div>
-      </div>      
+      </div>
+
+      <div class="clearfix"></div>
+      <!-- Funded campaigns -->
+
+      <div ng-show="fundedCampaigns.length > 0" class="section">
+       <hr class="custom_side_margin">
+        <div class="container-fluid second-div margin-btm">
+          <h3>Funded Campaigns</h3>
+        </div>
+        <div class="third-div">
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" ng-repeat="fundedCampaign in fundedCampaigns | orderBy: 'created'.descending | limitTo:3">
+            <div class="home-campaigns">
+              <h4><a href="/#!/campaign/{{ fundedCampaign.slug}}" class="class-title"> {{fundedCampaign.title }}</a></h4><br>
+              <p><youtube-video video-id="fundedCampaign.youtubeUrl"></youtube-video></p>
+              <div>
+                <h3 class="inlineDisplay">{{fundedCampaign.amount | currency}}</h3>
+                <p class="inlineDisplay text-right" ng-if="campaign.status == 'active' && fundedCampaign.daysLeft > 0">{{fundedCampaign.daysLeft}} days left</p>
+                <h5 class="text-muted" ng-if="fundedCampaign.status == 'funded'"> Fully Funded on {{fundedCampaign.dateFunded | date}}</h5>
+              </div>
+              <p class="values">{{fundedCampaign.description |limitTo: 100}} ...</p><br>
+            </div>
+          </div>
+          <div> 
+            <div class="container-fluid pull-right see-more-campaigns margin-btm margin-top" ng-hide="fundedCampaigns.length <= 3">
+              <a href="/#!/campaigns" id="all-campaigns" ng-click="updateStatus('funded')">See All {{fundedCampaigns.length}} Funded Campaigns</a>
+            </div>
+          </div>
+        </div>
+      </div>     
     </div>
 </section>

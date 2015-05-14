@@ -2,16 +2,40 @@
 angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter', '$timeout',
   function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout) {
     var campaignBalance, userAccountBalance;
+    $scope.buttonValue = 'SUPPORT';
     $scope.authentication = Authentication;
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
-
-    backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
+    var getCampaigns = function() {
+      backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
+        if($scope.campaign.status === 'funded') {
+          $scope.buttonValue = 'FUNDED';
+          $scope.daysLeft = 'none';
+        }
+        else if($scope.campaign.status === 'expired') {
+          $scope.buttonValue = 'EXPIRED';
+        }
+        $scope.dateFunded = $scope.campaign.dateFunded;
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
+        var currentDate = new Date(Date.now());
+        var campaignDeadline = new Date($scope.campaign.dueDate);
+        $scope.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
+        if($scope.daysLeft >= 10) {
+          $scope.deadlineStyle = 'success';
+        }
+        else if($scope.daysLeft > 5 && $scope.daysLeft < 10) {
+          $scope.deadlineStyle = 'warning';
+        }
+        else if($scope.daysLeft <= 5 && $scope.daysLeft >= 0) {
+          $scope.deadlineStyle = 'danger';
+        }
+        else if($scope.daysLeft < 0) {
+          $scope.daysLeft = 'none';
+        }
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
           $scope.ownCampaign = true;
         }
@@ -19,7 +43,8 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       .error(function (error, status, header, config) {
         $location.path('/');
       });
-
+    };
+    getCampaigns();
     var getCampaignBackersHistory = function (campaignid) {
       backendService.getCampaignBackers(campaignid).success(function (data) {
         $scope.campaignBackers = data;
@@ -46,10 +71,28 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         userAccountBalance = response;
       });
     };
+    var updateProgressbar = function () {
+      // Progress bar calculations
+      var fundsRatio = $scope.campaignBalance/$scope.campaign.amount;
+      var campaignFundPercentage = Math.floor(fundsRatio * 96);
+      if(campaignFundPercentage === 0) {
+        $scope.fundsRaised = 4;
+        $scope.campaignFundPercentage = 0;
+      }
+      else {
+        $scope.fundsRaised = campaignFundPercentage + Math.ceil(4*fundsRatio);
+        $scope.campaignFundPercentage = $scope.fundsRaised;
+        if($scope.campaignFundPercentage < 4) {
+          $scope.fundsRaised = 4;
+        }
+      }
+    };
     var getCampaignBalance = function (campaignAccountid) {
       subledgerServices.getBalance(campaignAccountid, function (response) {
         $timeout(function() {
           $scope.campaignBalance = response;
+            updateProgressbar();
+            getCampaigns();
         });
       });
     };
@@ -89,4 +132,3 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     };
   }
 ]);
-
