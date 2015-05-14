@@ -1,6 +1,6 @@
 'use strict';
-angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter', '$timeout',
-  function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout) {
+angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter', '$timeout', 'progressBarService',
+  function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout, progressBarService) {
     var campaignBalance, userAccountBalance;
     $scope.buttonValue = 'SUPPORT';
     $scope.authentication = Authentication;
@@ -71,21 +71,11 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         userAccountBalance = response;
       });
     };
-    var updateProgressbar = function () {
-      // Progress bar calculations
-      var fundsRatio = $scope.campaignBalance/$scope.campaign.amount;
-      var campaignFundPercentage = Math.floor(fundsRatio * 96);
-      if(campaignFundPercentage === 0) {
-        $scope.fundsRaised = 4;
-        $scope.campaignFundPercentage = 0;
-      }
-      else {
-        $scope.fundsRaised = campaignFundPercentage + Math.ceil(4*fundsRatio);
-        $scope.campaignFundPercentage = $scope.fundsRaised;
-        if($scope.campaignFundPercentage < 4) {
-          $scope.fundsRaised = 4;
-        }
-      }
+    var updateProgressbar = function () { 
+      progressBarService.updateProgressBar($scope.campaignBalance, $scope.campaign.amount, function(fundRaised, campaignFundPercentage) {
+        $scope.fundsRaised = fundRaised;
+        $scope.campaignFundPercentage = campaignFundPercentage;
+      });  
     };
     var getCampaignBalance = function (campaignAccountid) {
       subledgerServices.getBalance(campaignAccountid, function (response) {
