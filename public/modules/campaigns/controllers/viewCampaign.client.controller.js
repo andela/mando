@@ -1,6 +1,6 @@
 'use strict';
-angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter', '$timeout', 'progressBarService',
-  function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout, progressBarService) {
+angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scope', 'toaster', 'backendService', '$location', 'Authentication', '$stateParams', '$modal', 'subledgerServices', 'ngTableParams', '$filter', '$timeout', 'progressBarService', 'daysLeftService',
+  function (credentials, $scope, toaster, backendService, $location, Authentication, $stateParams, $modal, subledgerServices, ngTableParams, $filter, $timeout, progressBarService, daysLeftService) {
     var campaignBalance, userAccountBalance;
     $scope.buttonValue = 'SUPPORT';
     $scope.authentication = Authentication;
@@ -21,21 +21,15 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
-        var currentDate = new Date(Date.now());
-        var campaignDeadline = new Date($scope.campaign.dueDate);
-        $scope.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
-        if($scope.daysLeft >= 10) {
-          $scope.deadlineStyle = 'success';
-        }
-        else if($scope.daysLeft > 5 && $scope.daysLeft < 10) {
-          $scope.deadlineStyle = 'warning';
-        }
-        else if($scope.daysLeft <= 5 && $scope.daysLeft >= 0) {
-          $scope.deadlineStyle = 'danger';
-        }
-        else if($scope.daysLeft < 0) {
-          $scope.daysLeft = 'none';
-        }
+
+        daysLeftService.getDaysLeft($scope.campaign.dueDate, function (daysLeft, deadlineStyle) {
+          $scope.daysLeft = daysLeft;
+          $scope.deadlineStyle = deadlineStyle;
+        });
+        
+
+
+
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
           $scope.ownCampaign = true;
         }
