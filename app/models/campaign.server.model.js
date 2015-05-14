@@ -27,10 +27,6 @@ var campaignSchema = new Schema({
     required: 'Enter the required amount needed'
   },
 
-  dateFunded: {
-    type: Date
-  },
-
   youtubeUrl: {
     type: String,
     required: 'Enter your youtube campaign video url'
@@ -39,7 +35,6 @@ var campaignSchema = new Schema({
   dueDate: {
     type: Date
   },
-
   slug: {
     type: String,
   },
@@ -69,7 +64,6 @@ var campaignSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  
   account_id: {
     type: String
   }

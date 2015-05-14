@@ -32,9 +32,6 @@ module.exports = function(db) {
 		require(path.resolve(modelPath));
 	});
 
-	//checks for expired campaigns
-	require('./../scheduler')();
-	
 	// Setting application local variables
 	app.locals.title = config.app.title;
 	app.locals.description = config.app.description;
@@ -51,7 +48,7 @@ module.exports = function(db) {
  	};
 
  	//checks if the env is production then converts url to https
-  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+  if (process.env.NODE_ENV === 'production') {
       app.use(forceSsl);
   }
 	// Passing the request url to environment locals

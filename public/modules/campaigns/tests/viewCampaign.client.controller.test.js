@@ -5,10 +5,7 @@ describe('view campaign controller', function() {
   campaign = {
     account_id: 'abcdef123456',
     amount: '2000',
-    _id: '1234567890',
-    createdBy: {
-      _id: '12233333'
-    }
+    _id: '1234567890'
   };
 
   backers = [{

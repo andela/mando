@@ -1,27 +1,16 @@
 'use strict';
 
-angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope', '$location', 'backendService', 'currentStatus',  function($scope, $rootScope, $location, backendService, currentStatus) {
-  $scope.selectedCampaigns = [];
+angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$location', 'backendService', function($scope, $location, backendService) {
+  $scope.Campaigns = [];
   $scope.criteria = 'created';
   $scope.currentPage = 1;
   $scope.itemsPerPage = 21;
   $scope.totalItems = 1;
-  $scope.activeStatus = $rootScope.currentStatus;
 
-  $scope.init = function(campaignStatus) {
+  $scope.init = function() {
     backendService.getCampaigns()
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
-        $scope.selectedCampaigns = [];
-        angular.forEach(data, function(item) {
-          var currentDate = new Date(Date.now());
-          var campaignDeadline = new Date(item.dueDate);
-          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
-          if(item.status === campaignStatus) {
-            $scope.selectedCampaigns.push(item);
-          }
-        });
-        currentStatus.state = $rootScope.currentStatus;
         $scope.totalItems = data.length;
         $scope.filterCampaigns();
       })
@@ -45,16 +34,5 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
   $scope.pageChanged = function() {
     $scope.filterCampaigns();
   };
-
-  $scope.showSelected = function(state) {
-    $scope.activeStatus = state;
-    $rootScope.currentStatus = state; 
-    $scope.selectedCampaigns = [];
-    $scope.init($scope.activeStatus);
-  };
-  $scope.showSelected($rootScope.currentStatus || 'active' );
-  $scope.init($rootScope.currentStatus || 'active');
-}])
-.factory('currentStatus', [function () {
-  return {};
+  $scope.init();
 }]);

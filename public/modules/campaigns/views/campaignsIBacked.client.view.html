@@ -1,8 +1,8 @@
 <section class="container">
   <div>
-    <h3 class="title_margin">CAMPAIGNS I BACKED</h3>
+    <h2>Campaigns I Backed</h2>
     <div ng-show="campaignsBacked">
-      <table ng-table="tableParams" class="table table-responsive table-bordered table-striped">
+      <table ng-table="tableParams" class="table table-responsive">
         <tr ng-repeat="campaignsbacked in $data">
           <td data-title="'Title'" sortable="'campaignid.title'"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
             {{campaignsbacked.campaignid.title}}</a>

@@ -34,4 +34,5 @@ angular.module('distributor').config(['$stateProvider',function($stateProvider) 
       url: '/distributor/:username',
       templateUrl: 'modules/distributor/views/user.distributor.client.view.html'
     });
+
 }]);

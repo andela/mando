@@ -43,10 +43,6 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
   var campaignsIBacked = function() {
     return $http.get('/user/campaigns/backed');
   };
-
-  var fundCampaign = function(campaignId) {
-    return $http.put('/campaign/' + campaignId + '/fund');
-  };
   return {
     addCampaign: addCampaign,
     getCampaign: getCampaign,
@@ -57,7 +53,6 @@ angular.module('campaign').factory('backendService', ['$http', function($http) {
     getCampaigns: getCampaigns,
     createCampaignBacker: createCampaignBacker,
     getCampaignBackers: getCampaignBackers,
-    campaignsIBacked: campaignsIBacked,
-    fundCampaign: fundCampaign
+    campaignsIBacked: campaignsIBacked
   };
 }]);

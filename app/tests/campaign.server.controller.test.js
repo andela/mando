@@ -13,16 +13,15 @@
   statusSpy,
   sendSpy;
 
-describe('Campaign Server Controller', function (){
-  this.timeout(100000);
-  beforeEach( function(done){
+  describe('Campaign Server Controller', function (){
+    beforeEach( function(done){
 
-    res = {status: function(){return this;},
-      send: function(){return this;},
-      json: function(){return this;}
-    };
-    statusSpy = sinon.spy(res, 'status');
-    sendSpy = sinon.spy(res, 'send');
+     res = {status: function(){return this;},
+     send: function(){return this;},
+     json: function(){return this;}
+   };
+   statusSpy = sinon.spy(res, 'status');
+   sendSpy = sinon.spy(res, 'send');
     //valid user
     user1 = new User({ 
       firstName: 'Bayo',
@@ -33,8 +32,8 @@ describe('Campaign Server Controller', function (){
       provider:'google'
     });
 
-    //invalid user
-    user2 = new User({
+      //invalid user
+      user2 = new User({
       firstName: 'User2',
       lastname: 'Mando2',
       displayName:'Manod2User2',
@@ -43,38 +42,33 @@ describe('Campaign Server Controller', function (){
       provider: 'google'
     });
 
-    //MOCK CAMPAIGNS
-    campaign1 = new Campaign({
+      //MOCK CAMPAIGNS
+      campaign1 = new Campaign({
       title: 'A mock Campaign',
       description: 'This is a description campaign',
       youtubeUrl: 'https://www.youtube.com/watch?v=kC0JYp79tdo',
       amount: '1223232',
-      dueDate: new Date(),
-      account_id: 'yeet',
-      dateFunded: Date.now(),
-
+      dueDate: new Date()
     });
-    
-    user1.save(function(err, user){
-      if(err){
-        done(err);
-      } 
-      else {  
-        campaign1.createdBy = user._id;
-        campaign1.lastModifiedBy = user._id;  
-        campaign1.save(function(err, campaign){
-          if(err){
-            done(err);
-          }
-          else{
-            done();
-          }
-        });
-      }
+      
+      campaign1.save(function(err, campaign){
+        if(err){
+          done(err);
+        } 
+        else {    
+          user1.save(function(err, user){
+            if(err){
+              done(err);
+            }
+            else{
+              done();
+            }
+          });
+        }
+      });
     });
-  });
 
-  it('should edit A campaign with A valid credential', function(done){
+ it('should edit A campaign with A valid credential', function(done){
     var req,
     param ={
       campaignId: campaign1._id
@@ -82,15 +76,11 @@ describe('Campaign Server Controller', function (){
     campaign1.title = 'A new Campaign Title';
     req = {user:user1, body:campaign1, params:param};
     controller.updateCampaign(req, res);
-    setTimeout(function() {
-      Campaign.findById(campaign1._id).exec(function(err, campaign) {
-        console.log('after campaign edited');
-        campaign.title.should.equal('A new Campaign Title');
-        done();
-      });  
-    }, 5000);
-  });
-
+    Campaign.findById(campaign1._id).exec(function(err, campaign){
+      campaign.title.should.equal('A new Campaign Title');
+      done();
+    });
+ });
   afterEach(function(done){
     User.remove().exec();
     done();

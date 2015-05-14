@@ -63,10 +63,10 @@ exports.archiveCampaignAccount = function (account_id, cb) {
   });
 };
 
-exports.creditUserAccount = function (action, amount, initiatorAccount, recipientAccount, title, desc, cb) {
+exports.creditUserAccount = function (action, amount, initiatorAccount, recipientAccount, title, cb) {
   var otherAction = action === 'debit' ? 'credit' : 'debit';
 
-  var description = desc;
+  var description = 'Cash refund from deleted campaign';
   var initiatorToString = JSON.stringify({
     title: title,
     description: description

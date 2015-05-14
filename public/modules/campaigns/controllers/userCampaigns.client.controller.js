@@ -93,11 +93,6 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
     $scope.getJournals(cred.bank_id, function(response) {
       $scope.journal = response;
       $scope.$digest();
-      for(var i = 0; i < $scope.journal.length; i++) {
-        if($scope.query === $scope.journal[i].description.name) {
-          $scope.hasDistributions = true;
-        }
-      }
     });
 
     //This is the method that loads the Transaction journal for the Authenticated User.
@@ -106,6 +101,14 @@ angular.module('campaign').controller('userCampaignsCtrl', ['$scope', 'backendSe
       $scope.$digest();
     });
     // function to click the show more button on getMoreCampaigns page
-    $scope.limit = 3;
+    $scope.limit = 4;
+    $scope.increment = function() {
+      var campaignLength = $scope.myCampaigns.length;
+      $scope.limit = campaignLength;
+    };
+
+    $scope.decrement = function() {
+      $scope.limit = 4;
+    };
   }
 ]);
