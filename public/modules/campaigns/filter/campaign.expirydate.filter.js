@@ -5,10 +5,9 @@ angular.module('campaign').filter('daysflt', function() {
     if (value === 1) {
       filteredDay = '1 day';
     }
-    else if (value > 1) {
+    else if (value > 1 || value === 0) {
       filteredDay = value + ' days';
     }
-
     else {
       filteredDay = 'This campaign is likely expired, no days ';
     }
