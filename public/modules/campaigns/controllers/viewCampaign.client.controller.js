@@ -6,8 +6,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     $scope.authentication = Authentication;
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
-    
-
     var getCampaigns = function() {
       backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
@@ -37,8 +35,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         $location.path('/');
       });
     };
-
-
     getCampaigns();
     var getCampaignBackersHistory = function (campaignid) {
       backendService.getCampaignBackers(campaignid).success(function (data) {

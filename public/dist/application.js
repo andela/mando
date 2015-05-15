@@ -717,7 +717,7 @@ angular.module('campaign').controller('addCampaignCtrl', ['$scope', 'toaster', '
 
 'use strict';
 
-angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope', '$location', 'backendService', 'currentStatus',  function($scope, $rootScope, $location, backendService, currentStatus) {
+angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope', '$location', 'backendService', 'currentStatus', 'daysLeftService',  function($scope, $rootScope, $location, backendService, currentStatus, daysLeftService) {
   $scope.selectedCampaigns = [];
   $scope.criteria = 'created';
   $scope.currentPage = 1;
@@ -731,9 +731,9 @@ angular.module('campaign').controller('allCampaignCtrl', ['$scope', '$rootScope'
         $scope.campaigns = data;
         $scope.selectedCampaigns = [];
         angular.forEach(data, function(item) {
-          var currentDate = new Date(Date.now());
-          var campaignDeadline = new Date(item.dueDate);
-          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
+          daysLeftService.getDaysLeft(item.dueDate, function (daysLeft, deadlineStyle) {
+            item.daysLeft = daysLeft;
+          });
           if(item.status === campaignStatus) {
             $scope.selectedCampaigns.push(item);
           }
@@ -1115,6 +1115,10 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
+        daysLeftService.getDaysLeft($scope.campaign.dueDate, function (daysLeft, deadlineStyle) {
+          $scope.daysLeft = daysLeft;
+          $scope.deadlineStyle = deadlineStyle;
+        });
         if($scope.campaign.status === 'funded') {
           $scope.buttonValue = 'FUNDED';
           $scope.daysLeft = 'none';
@@ -1126,13 +1130,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
-
-        daysLeftService.getDaysLeft($scope.campaign.dueDate, function (daysLeft, deadlineStyle) {
-          $scope.daysLeft = daysLeft;
-          $scope.deadlineStyle = deadlineStyle;
-        });
-        
-
 
 
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
@@ -1225,7 +1222,14 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
 angular.module('campaign').filter('daysflt', function() {
   return function days(value) {
     var filteredDay;
-    if (value === 1) {
+    console.log(value);
+    if(value.hoursLeft) {
+      if(value.hoursLeft <= 1){
+        value.hoursLeft = 1;
+      }
+      filteredDay = value.hoursLeft + ' Hours';
+    }
+    else if (value === 1) {
       filteredDay = '1 day';
     }
     else if (value > 1 || value === 0) {
@@ -1324,10 +1328,18 @@ angular.module('campaign').factory('daysLeftService', function() {
   var getDaysLeft = function(dueDate, cb) {
     var currentDate = new Date(Date.now());
     var campaignDeadline = new Date(dueDate);
-    var daysLeft, deadlineStyle;
+    var daysLeft, hoursLeft, deadlineStyle;
     daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
         if(daysLeft >= 10) {
           deadlineStyle = 'success';
+        }
+        if( daysLeft === 0 ) {
+          hoursLeft = 24 - Math.floor(Math.abs(((campaignDeadline - currentDate)/(1000 * 3600 * 24)) * 24));
+          if ( hoursLeft <= 0 ) {
+            hoursLeft = 0;
+          }
+          daysLeft = { hoursLeft: hoursLeft };
+          deadlineStyle = 'danger';
         }
         else if(daysLeft > 5 && daysLeft < 10) {
           deadlineStyle = 'warning';
@@ -1351,7 +1363,7 @@ angular.module('campaign').factory('progressBarService', function() {
   var updateProgressBar = function(campaignBalance, campaignAmount, cb) {
     var fundsRatio = campaignBalance/campaignAmount;
     var fundRaised, campaignFundPercentage;
-    var campaignFundPercentage = Math.floor(fundsRatio * 96);
+    campaignFundPercentage = Math.floor(fundsRatio * 96);
       if(campaignFundPercentage === 0) {
         fundRaised = 4;
         campaignFundPercentage = 0;
@@ -1410,8 +1422,8 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
 
 'use strict';
 
-angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Authentication', 'backendService',
-	function($scope, $rootScope, Authentication, backendService) {
+angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Authentication', 'backendService', 'daysLeftService',
+	function($scope, $rootScope, Authentication, backendService, daysLeftService) {
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
     $scope.campaigns = [];
@@ -1421,9 +1433,9 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
         angular.forEach($scope.campaigns, function(item) {
-          var currentDate = new Date(Date.now());
-          var campaignDeadline = new Date(item.dueDate);
-          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
+          daysLeftService.getDaysLeft(item.dueDate, function (daysLeft, deadlineStyle) {
+            item.daysLeft = daysLeft;
+          });
           if(item.status === 'active') {
             $scope.activeCampaigns.push(item);
           }
