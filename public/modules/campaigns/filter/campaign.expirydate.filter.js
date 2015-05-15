@@ -2,7 +2,14 @@
 angular.module('campaign').filter('daysflt', function() {
   return function days(value) {
     var filteredDay;
-    if (value === 1) {
+    console.log(value);
+    if(value.hoursLeft) {
+      if(value.hoursLeft <= 1){
+        value.hoursLeft = 1;
+      }
+      filteredDay = value.hoursLeft + ' Hours';
+    }
+    else if (value === 1) {
       filteredDay = '1 day';
     }
     else if (value > 1 || value === 0) {

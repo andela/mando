@@ -4,7 +4,7 @@ angular.module('campaign').factory('progressBarService', function() {
   var updateProgressBar = function(campaignBalance, campaignAmount, cb) {
     var fundsRatio = campaignBalance/campaignAmount;
     var fundRaised, campaignFundPercentage;
-    var campaignFundPercentage = Math.floor(fundsRatio * 96);
+    campaignFundPercentage = Math.floor(fundsRatio * 96);
       if(campaignFundPercentage === 0) {
         fundRaised = 4;
         campaignFundPercentage = 0;

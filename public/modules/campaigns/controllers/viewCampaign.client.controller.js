@@ -10,6 +10,10 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
       backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
+        daysLeftService.getDaysLeft($scope.campaign.dueDate, function (daysLeft, deadlineStyle) {
+          $scope.daysLeft = daysLeft;
+          $scope.deadlineStyle = deadlineStyle;
+        });
         if($scope.campaign.status === 'funded') {
           $scope.buttonValue = 'FUNDED';
           $scope.daysLeft = 'none';
@@ -21,13 +25,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         getCampaignBalance($scope.campaign.account_id);
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
-
-        daysLeftService.getDaysLeft($scope.campaign.dueDate, function (daysLeft, deadlineStyle) {
-          $scope.daysLeft = daysLeft;
-          $scope.deadlineStyle = deadlineStyle;
-        });
-        
-
 
 
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {

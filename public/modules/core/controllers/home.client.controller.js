@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Authentication', 'backendService',
-	function($scope, $rootScope, Authentication, backendService) {
+angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Authentication', 'backendService', 'daysLeftService',
+	function($scope, $rootScope, Authentication, backendService, daysLeftService) {
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
     $scope.campaigns = [];
@@ -11,9 +11,9 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
       .success(function(data, status, header, config) {
         $scope.campaigns = data;
         angular.forEach($scope.campaigns, function(item) {
-          var currentDate = new Date(Date.now());
-          var campaignDeadline = new Date(item.dueDate);
-          item.daysLeft = Math.ceil((campaignDeadline - currentDate)/(1000 * 3600 * 24));
+          daysLeftService.getDaysLeft(item.dueDate, function (daysLeft, deadlineStyle) {
+            item.daysLeft = daysLeft;
+          });
           if(item.status === 'active') {
             $scope.activeCampaigns.push(item);
           }

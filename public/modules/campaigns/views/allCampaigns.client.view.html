@@ -1,7 +1,7 @@
 <section data-ng-controller="allCampaignCtrl">
   <div class="container">
       <div class="row">
-        <div class="col-lg-6 col-md-6 margin-btm all_campaign_heading">
+        <div class="col-lg-6 col-md-6 col-sm-6 margin-btm all_campaign_heading">
           <h2 class="text-capitalize"> {{activeStatus}} Campaigns</h2><br>
           <ul class="nav nav-pills campaign-navs">
             <li role="presentation" ng-class="{active: activeStatus === 'active' }" ng-click="showSelected('active')"><a>Active</a></li>
@@ -10,7 +10,7 @@
           </ul><br>
         </div>
         
-        <div class="col-lg-6 col-md-6">
+        <div class="col-lg-6 col-md-6 col-sm-6">
           <div class="pull-right vcenter">
             Sort By:
             <select ng-model="criteria">
@@ -27,11 +27,11 @@
     <div>
       <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 campaign_cards" data-ng-repeat="campaign in selectedCampaigns | orderBy: criteria">
         <div class="home-campaigns">
-          <h4><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a></h4>
+          <h4 class="text-capitalize"><a href="/#!/campaign/{{campaign.slug}}" class="class-title">{{campaign.title}}</a></h4>
           <p><youtube-video video-id="campaign.youtubeUrl"></youtube-video></p>
           <div>
             <h3 class="inlineDisplay">{{campaign.amount | currency}}</h3>
-            <h4 class="inlineDisplay text-right text-muted" ng-if="campaign.status == 'active' && campaign.daysLeft > 0">{{campaign.daysLeft | daysflt}} left</h4>
+            <h4 class="inlineDisplay text-right text-muted" ng-if="campaign.status == 'active' && campaign.daysLeft">{{campaign.daysLeft | daysflt}} left</h4>
             <h5 class="text-muted" ng-if="campaign.status == 'funded'"> Fully Funded on {{campaign.dateFunded | date}}</h5>
             <h5 class="text-muted" ng-if="campaign.status == 'expired'"> Campaign expired on {{campaign.dueDate | date}}</h5>
           </div>
