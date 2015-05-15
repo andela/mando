@@ -6,10 +6,16 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
     $scope.authentication = Authentication;
     var cred = credentials.data;
     subledgerServices.setCredentials(cred);
+    
+
     var getCampaigns = function() {
       backendService.getCampaign($stateParams.campaignTimeStamp + '/' + $stateParams.campaignslug)
       .success(function (data, status, header, config) {
         $scope.campaign = data;
+        daysLeftService.getDaysLeft($scope.campaign.dueDate, function (daysLeft, deadlineStyle) {
+          $scope.daysLeft = daysLeft;
+          $scope.deadlineStyle = deadlineStyle;
+        });
         if($scope.campaign.status === 'funded') {
           $scope.buttonValue = 'FUNDED';
           $scope.daysLeft = 'none';
@@ -22,13 +28,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         getUserAccountBalance(Authentication.user.account_id);
         getCampaignBackersHistory(data._id);
 
-        daysLeftService.getDaysLeft($scope.campaign.dueDate, function (daysLeft, deadlineStyle) {
-          $scope.daysLeft = daysLeft;
-          $scope.deadlineStyle = deadlineStyle;
-        });
-        
-
-
 
         if($scope.authentication.user._id === $scope.campaign.createdBy._id) {
           $scope.ownCampaign = true;
@@ -38,6 +37,8 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
         $location.path('/');
       });
     };
+
+
     getCampaigns();
     var getCampaignBackersHistory = function (campaignid) {
       backendService.getCampaignBackers(campaignid).success(function (data) {
