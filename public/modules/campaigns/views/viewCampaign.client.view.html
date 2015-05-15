@@ -4,7 +4,7 @@
     <div class="col-md-12">
       <!-- <div class="<col-md-5>"> -->
         <div class="col-md-6">
-          <h2 class=" text-capitalize" data-ng-bind="campaign.title"></h2>
+          <h3 class=" text-capitalize" data-ng-bind="campaign.title"></h3>
           <p class="CreatedAndDeadline titles col-md-6">Created By: <span class="values">{{campaign.createdBy.displayName}} </span> 
           <p class="CreatedAndDeadline titles col-md-6 text-right">Deadline: <span class="values">{{campaign.dueDate | date}}</span> </p><br><br>
           <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign.slug}}/edit" id="editBtn">EDIT CAMPAIGN </a></span></p>
