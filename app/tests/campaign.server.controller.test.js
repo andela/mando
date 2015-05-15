@@ -84,10 +84,21 @@ describe('Campaign Server Controller', function (){
     controller.updateCampaign(req, res);
     setTimeout(function() {
       Campaign.findById(campaign1._id).exec(function(err, campaign) {
-        console.log('after campaign edited');
         campaign.title.should.equal('A new Campaign Title');
         done();
       });  
+    }, 5000);
+  });
+
+  it('should update the status of funded campaigns', function (done) {
+    var param = {campaignId: campaign1._id};
+    var req = {params: param, body:campaign1};
+    controller.updateFundedCampaign(req, res);
+    setTimeout(function () {
+      Campaign.findById(campaign1._id).exec(function(err, campaign) {
+        campaign.status.should.equal('funded');
+        done();
+      });
     }, 5000);
   });
 
