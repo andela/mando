@@ -3,15 +3,18 @@
 var mongoose = require('mongoose');
 var Campaign = mongoose.model('Campaign');
 var should = require('should');
-console.log('ok');
-var mockCampaign = {
-  title: 'A new Campaign',
-  description: 'creating a new campaign for test',
-  amount: 200,
-  youtubeUrl: 'youtubeUrl',
-};
+var moment = require('moment');
+var mockCampaign = {};
 describe('Campaigns', function () {
   beforeEach(function (done) {
+    mockCampaign = {
+      title: 'A new Campaign',
+      description: 'creating a new campaign for test',
+      amount: 200,
+      youtubeUrl: 'youtubeUrl',
+      created: new Date()
+    };
+
     Campaign.remove({}, function () {
       done();
     });
@@ -34,6 +37,16 @@ describe('Campaigns', function () {
     Campaign.create(mockCampaign, function(err, campaign) {
       should.exist(err);
       should.not.exist(campaign, 'Campaign was not created because title is less than 5 characters');
+      done();
+    });
+  });
+
+  it('should not create a campaign with expriy date of more then 30 days', function (done) {
+    var dueDate = moment(mockCampaign.created).add(38, 'days');
+    mockCampaign.dueDate = dueDate;
+    Campaign.create(mockCampaign, function(err, campaign) {
+      should.exist(err);
+      should.not.exist(campaign);
       done();
     });
   });
