@@ -4,6 +4,9 @@ angular.module('campaign').filter('daysflt', function() {
     var filteredDay;
     console.log(value);
     if(value.hoursLeft) {
+      if(value.hoursLeft <= 1){
+        value.hoursLeft = 1;
+      }
       filteredDay = value.hoursLeft + ' Hours';
     }
     else if (value === 1) {
