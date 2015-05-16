@@ -106,6 +106,16 @@ describe('Campaign route unit tests:', function() {
       });
     });
 
+    it('should create a campaign', function (done) {
+      agent.post('/campaign/add').expect('Content-Type', /json/).end(function (err, res) {
+        if (err) {
+          return done(err);
+        }
+        res.body.title.should.equal(campaign.title);
+        done();
+      });
+    });
+    
     it('should update a campaign', function(done){
       campaign.title = 'After Editing';
       agent

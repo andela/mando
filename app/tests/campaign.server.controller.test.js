@@ -52,7 +52,6 @@ describe('Campaign Server Controller', function (){
       dueDate: new Date(),
       account_id: 'yeet',
       dateFunded: Date.now(),
-
     });
     
     user1.save(function(err, user){
@@ -76,9 +75,7 @@ describe('Campaign Server Controller', function (){
 
   it('should edit A campaign with A valid credential', function(done){
     var req,
-    param ={
-      campaignId: campaign1._id
-    };
+    param ={campaignId: campaign1._id};
     campaign1.title = 'A new Campaign Title';
     req = {user:user1, body:campaign1, params:param};
     controller.updateCampaign(req, res);
@@ -101,6 +98,18 @@ describe('Campaign Server Controller', function (){
       });
     }, 5000);
   });
+
+  // it('should set campaign status to deleted when campaign is deleted', function (done) {
+  //   var param = {campaignId: campaign1._id};
+  //   var req = {params: param, body:campaign1};
+  //   controller.deleteCampaign(req, res);
+  //   setTimeout(function () {
+  //     Campaign.findById(campaign1._id, function(err, campaign) {
+  //       campaign.status.should.equal('deleted');
+  //       done();
+  //     });
+  //   }, 5000);
+  // });
 
   afterEach(function(done){
     User.remove().exec();
