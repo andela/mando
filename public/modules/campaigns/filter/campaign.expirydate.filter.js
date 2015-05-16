@@ -18,7 +18,7 @@ angular.module('campaign').filter('daysflt', function() {
       filteredDay = value + ' days';
     }
     else {
-      filteredDay = 'This campaign is likely expired, no days ';
+      filteredDay = '';
     }
       return filteredDay;
     };
