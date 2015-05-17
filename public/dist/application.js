@@ -1222,7 +1222,6 @@ angular.module('campaign').controller('viewCampaignCtrl', ['credentials', '$scop
 angular.module('campaign').filter('daysflt', function() {
   return function days(value) {
     var filteredDay;
-    console.log(value);
     if(value.hoursLeft) {
       if(value.hoursLeft <= 1){
         filteredDay = 1 + ' Hour';
@@ -1234,11 +1233,11 @@ angular.module('campaign').filter('daysflt', function() {
     else if (value === 1) {
       filteredDay = '1 day';
     }
-    else if (value > 1 || value === 0) {
+    else if (value > 1) {
       filteredDay = value + ' days';
     }
     else {
-      filteredDay = 'This campaign is likely expired, no days ';
+      filteredDay = '0 days';
     }
       return filteredDay;
     };
@@ -1386,10 +1385,9 @@ angular.module('campaign').factory('progressBarService', function() {
 'use strict';
 
 // Setting up route
-angular.module('core').config(['$stateProvider', '$locationProvider', '$urlRouterProvider',
-	function($stateProvider, $locationProvider, $urlRouterProvider) {
+angular.module('core').config(['$stateProvider', '$urlRouterProvider',
+	function($stateProvider, $urlRouterProvider) {
 		// Redirect to home view when route not found
-		 // $locationProvider.html5Mode(true);
 		$urlRouterProvider.otherwise('/');
 
 		// Home state routing
