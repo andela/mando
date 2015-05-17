@@ -13,11 +13,11 @@ angular.module('campaign').filter('daysflt', function() {
     else if (value === 1) {
       filteredDay = '1 day';
     }
-    else if (value > 1 || value === 0) {
+    else if (value > 1) {
       filteredDay = value + ' days';
     }
     else {
-      filteredDay = '';
+      filteredDay = '0 days';
     }
       return filteredDay;
     };
