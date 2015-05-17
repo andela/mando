@@ -21,6 +21,7 @@ var fs = require('fs'),
 	flash = require('connect-flash'),
 	config = require('./config'),
 	consolidate = require('consolidate'),
+	request = require('request'),
 	path = require('path');
 
 module.exports = function(db) {
@@ -67,6 +68,14 @@ module.exports = function(db) {
 		},
 		level: 9
 	}));
+
+	//keep app awake on heroku
+	if (process.env.NODE_ENV === 'staging') {
+		setInterval(function () {
+			request('http://andonation-mando.herokuapp.com/#!/', function(err, res, body) {
+			});
+		}, 5000);
+	}
 
 	// Showing stack errors
 	app.set('showStackError', true);
