@@ -25,11 +25,9 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
       .error(function(error, status, header, config) {
         $scope.error = error;
       });
-
       $scope.updateStatus = function(param) {
         $rootScope.currentStatus = param;
       };
-
     $scope.myInterval = 8000; 
     $scope.slides = [
       {
@@ -50,13 +48,11 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
       },
       {
         image: 'http://res.cloudinary.com/andela/image/upload/v1430321432/carousel5_shgamo.jpg',
-        // image: 'http://res.cloudinary.com/andela/image/upload/v1430321967/caroue6_kx01ei.jpg',
         caption: 'Alone we can do so little, Together we can do so much'
       }
     ];
 	}
 ]);
-
 angular.module('core').directive('disableAnimation', function($animate){
     return {
       restrict: 'A',
