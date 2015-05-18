@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('core').controller('HeaderController', ['$scope', 'Authentication', '$rootScope',
-  function($scope, Authentication, $rootScope) {
+angular.module('core').controller('HeaderController', ['$scope', 'Authentication', '$rootScope', '$http', '$log',
+  function($scope, Authentication, $rootScope, $http,  $log) {
     $scope.authentication = Authentication;
-    $scope.isCollapsed = false;
+    $scope.isCollapsed = false;http://localhost:3000/
 
     $scope.toggleCollapsibleMenu = function() {
       $scope.isCollapsed = !$scope.isCollapsed;
@@ -16,6 +16,14 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
 
     $scope.showActiveCampaigns = function (param) {
         $rootScope.currentStatus = param;
+    };
+
+
+    $scope.signOut = function () {
+      $log.log('siginOut');
+      $http.get('/auth/signout').success(function(res){
+        $scope.authentication = res;
+      });
     };
   }
 ]);
