@@ -99,18 +99,6 @@ describe('Campaign Server Controller', function (){
     }, 5000);
   });
 
-  // it('should set campaign status to deleted when campaign is deleted', function (done) {
-  //   var param = {campaignId: campaign1._id};
-  //   var req = {params: param, body:campaign1};
-  //   controller.deleteCampaign(req, res);
-  //   setTimeout(function () {
-  //     Campaign.findById(campaign1._id, function(err, campaign) {
-  //       campaign.status.should.equal('deleted');
-  //       done();
-  //     });
-  //   }, 5000);
-  // });
-
   afterEach(function(done){
     User.remove().exec();
     done();
