@@ -1,37 +1,38 @@
-<div class="container" data-ng-controller="HeaderController">
-  <nav class=" nav nav-bar navbar-inverse collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
-  <div class="navbar-header">
+<div class="navbar navbar-default navbar-static-top" data-ng-controller="HeaderController">
+  <div class="container padding_top_sm">
     <button class="navbar-toggle" type="button" data-ng-click="toggleCollapsibleMenu()">
       <span class="sr-only">Toggle navigation</span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a href="/#!/"><img class="img navbar-brand logo-image" src="modules/core/img/app-images/andelalogo.png"></img></a>
+    <a href="/#!/"><img class="img navbar-brand logo-image" src="modules/core/img/app-images/andelalogo.png"/></a>
     <a href="/#!/" class="navbar-brand">Andonation</a>
+    <nav class="collapse navbar-collapse navbar-right" collapse="!isCollapsed" role="navigation">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="/#!/campaigns" ng-click="showActiveCampaigns('active')">Campaigns</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav" data-ng-hide="authentication.user">
+        <li>
+          <a href="/auth/google" id='signIn'>Sign In</a>
+          <!-- <a href="" ng-click="signIn()" id='signIn'>Sign In</a> -->
+        </li>
+      </ul>
+      <ul class="nav navbar-nav" data-ng-show="authentication.user">
+        <li>
+          <a href="/#!/campaign/add" id="myCampaign">Add Campaign</a>
+        </li>
+        <li>
+          <a href="/#!/campaigns/myAndonation" id="myAndonation">My Andonation</a>
+        </li>
+         <li><a href="/auth/signout" id="signout">Sign out</a></li>
+           <!-- <li><a href="" ng-click="signOut()" id="signout">Signout</a></li> -->
+          <li>
+           <img class="img auth-img" data-ng-src="{{authentication.user.providerData.picture}}">
+         </li>
+      </ul>
+    </nav>
   </div>
-    <ul class="nav navbar-nav navbar-right" data-ng-hide="authentication.user">
-      <li>
-        <a href="/auth/google" id='signIn'>Sign In</a>
-        <!-- <a href="" ng-click="signIn()" id='signIn'>Sign In</a> -->
-      </li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right" data-ng-show="authentication.user">
-      <li>
-        <a href="/#!/campaign/add" id="myCampaign">Add Campaign</a>
-      </li>
-      <li>
-        <a href="/#!/campaigns/myAndonation" id="myAndonation">My Andonation</a>
-      </li>
-       <li><a href="/auth/signout" id="signout">Sign out</a></li>
-       <!-- <li><a href="" ng-click="signOut()" id="signout">Signout</a></li> -->
-       <li><img class="img auth-img" data-ng-src="{{authentication.user.providerData.picture}}"> </img>
-      </li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li>
-        <a href="/#!/campaigns" ng-click="showActiveCampaigns('active')">Campaigns</a>
-      </li>
-    </ul>
-  </nav>
 </div>
