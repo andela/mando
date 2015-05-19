@@ -70,7 +70,7 @@ small {
 }
 
 .btn-success:hover, .btn-success:focus, .btn-success:active {
-  background: #1AC23E;
+  background: #2A782A;
   border: 1px solid #0C802A;
   outline: none;
 }
@@ -132,11 +132,10 @@ small {
 
 .navbar {
   vertical-align: middle!important;
-  padding-top: 10px;
+  margin-bottom: 0;
   border-bottom: 1px solid #eee;
   border-top: 1px solid #576779;
-  min-height: 65px;
-  box-shadow: 1px 1px 1px #ced2d4;
+  min-height: 70px;
 }
 
 .nav-bar{
@@ -166,6 +165,10 @@ small {
   color: #fff;
 }
 /* Navbar styling ends here */
+
+.padding_top_sm {
+  padding-top: 10px;
+}
 
 .margin-top {
   margin-top: 20px;
@@ -292,4 +295,31 @@ iframe {
 
 .homePageContentsHolder {
   margin-top: 30px;
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 512px) {
+    .navbar-default .navbar-collapse, .navbar-default .navbar-form {
+      position: relative;
+      height: auto;
+      min-width: 200px;
+      border: none;
+      right: 15%;
+      top: 0;
+    }
+
+    .carousel, .carousel-inner > .item > img, .carousel-inner > .item > a > img {
+      height: 180px;
+    }
+}
+
+@media only screen and (min-width: 512px) and (max-width: 768px) {
+    .navbar-default .navbar-collapse, .navbar-default .navbar-form {
+      position: relative;
+      height: auto;
+      min-width: 200px;
+      border: none;
+      right: 30%;
+      top: 40px;
+    }
 }
