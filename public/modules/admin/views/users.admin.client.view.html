@@ -1,11 +1,11 @@
-<section ng-controller="adminUserCtrl" class="container margin-btm-md">
+  <section ng-controller="adminUserCtrl" class="container margin-btm-md">
     <div class="title_margin">
       <h3>USERS</h3>
       <div tooltip="{{noChecked ? 'Select a user to update role.' : ''}}" tooltip-placement="left">
         <button ng-disabled="noChecked" class="btn btn-success" ng-click="openModal()">Update User Roles</button>
       </div>
     </div>
-    <div>
+    <div class="table-responsive">
       <table class="table table-bordered table-striped">
         <tt>
           <th><input type="checkbox" ng-model="allChecked" ng-click="checkAll(allChecked)"></th>

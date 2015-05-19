@@ -48,7 +48,7 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
       },
       {
         image: 'http://res.cloudinary.com/andela/image/upload/v1430321432/carousel5_shgamo.jpg',
-        caption: 'Alone we can do so little, Together we can do so much'
+        caption: 'Together we can do so much'
       }
     ];
 	}

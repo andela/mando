@@ -28,46 +28,46 @@
     <button class="btn"><a href="/#!/campaign/add">CREATE A NEW CAMPAIGN</a></button>
   </div>
   <div class="table-responsive campaignTableMargins panel" ng-show="myCampaigns">
-  <div class="panel-heading">
-    <h4>My Campaigns</h4>
-  </div>
-  <div class="panel-body">
-    <table class="table table-bordered">
-      <tt>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Amount Needed</th>
-        <th>Amount Raised</th>
-        <th>Created</th>
-        <th>Deadline</th>
-        <th>Backers</th>
-      </tt>
-      <tr data-ng-repeat="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
-        <td class="userCampaignTitle"><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a></td>
-        <td class="text-capitalize">{{campaign.status}}</td>
-        <td>{{campaign.amount | currencyflt}}</td>
-        <td>{{campaign.raised | currencyflt}}</td>
-        <td>{{campaign.created | date}}</td>
-        <td>{{campaign.dueDate | date}}</td>
-        <td>{{campaign.backers}}</td>
-      </tr>
-    </table>
-    <div ng-hide="myCampaigns.length < 4">
-      <a ui-sref="allMyCampaigns" class="pull-right viewAllCTA">See all of My Campaigns</a>
+    <div class="panel-heading">
+      <h4>My Campaigns</h4>
     </div>
-  </div>
+    <div class="panel-body">
+      <table class="table table-bordered">
+        <tt>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Amount Needed</th>
+          <th>Amount Raised</th>
+          <th>Created</th>
+          <th>Deadline</th>
+          <th>Backers</th>
+        </tt>
+        <tr data-ng-repeat="campaign in myCampaigns | limitTo : -limit | orderBy: 'created'.descending">
+          <td class="userCampaignTitle"><a href="/#!/campaign/{{campaign.slug}}">{{campaign.title}}</a></td>
+          <td class="text-capitalize">{{campaign.status}}</td>
+          <td>{{campaign.amount | currencyflt}}</td>
+          <td>{{campaign.raised | currencyflt}}</td>
+          <td>{{campaign.created | date}}</td>
+          <td>{{campaign.dueDate | date}}</td>
+          <td>{{campaign.backers}}</td>
+        </tr>
+      </table>
+      <div ng-hide="myCampaigns.length < 4">
+        <a ui-sref="allMyCampaigns" class="pull-right viewAllCTA">See all of My Campaigns</a>
+      </div>
+    </div>
   </div>
 
   <div>
     <div class="jumbotron text-center" ng-hide="campaignsBacked">
       <h3>YOU HAVE NOT BACKED ANY CAMPAIGN</h3>
     </div>
-    <div ng-show="campaignsBacked" class="campaignTableMargins panel">
+    <div ng-show="campaignsBacked" class="table-responsive campaignTableMargins panel">
       <div class="panel-heading">
         <h4>My Backed Campaigns</h4>
       </div>
       <div class="panel-body">
-        <table ng-table="tableParams" class="table table-responsive table-bordered">
+        <table ng-table="tableParams" class="table table-bordered">
           <tr ng-repeat="campaignsbacked in $data | limitTo: 3">
             <td data-title="'Title'" class="userCampaignTitle"><a href="/#!/campaign/{{campaignsbacked.campaignid.slug}}">
               {{campaignsbacked.campaignid.title}}</a>
@@ -103,7 +103,7 @@
     <div ng-hide="query && hasDistributions" class="jumbotron text-center">
       <h3>YOU DO NOT HAVE ANY TRANSACTION</h3>
     </div>
-    <div ng-show="query && hasDistributions" class="campaignTableMargins panel">
+    <div ng-show="query && hasDistributions" class="table-responsive campaignTableMargins panel">
       <div class="panel-heading">
         <h4>My Bank Transactions</h4>
       </div>
@@ -131,7 +131,7 @@
     <div ng-hide="myJournal" class="jumbotron text-center">
       <h3>YOU DO NOT HAVE ANY BANK HISTORY</h3>
     </div>
-    <div ng-show="myJournal" class="campaignTableMargins panel">
+    <div ng-show="myJournal" class="table-responsive campaignTableMargins panel">
       <!-- <a name=""></a> myJournal-->
       <div class="panel-heading">
         <h4>My Account History</h4>
@@ -162,7 +162,7 @@
     <div ng-hide="journal && hasDistributions" class="jumbotron text-center">
       <h3>YOU DO NOT HAVE ANY DISTRIBUTIONS</h3>
     </div>
-    <div ng-show="journal && hasDistributions" class="campaignTableMargins panel">
+    <div ng-show="journal && hasDistributions" class="table-responsive campaignTableMargins panel">
       <div class="panel-heading">
         <h4>My Distributions</h4>
       </div>
