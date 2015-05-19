@@ -304,8 +304,12 @@ iframe {
       height: auto;
       min-width: 200px;
       border: none;
-      right: 15%;
+      right: 10%;
       top: 0;
+    }
+
+    a.navbar-brand {
+      padding-left: 0;
     }
 
     .carousel, .carousel-inner > .item > img, .carousel-inner > .item > a > img {
@@ -319,7 +323,7 @@ iframe {
       height: auto;
       min-width: 200px;
       border: none;
-      right: 30%;
+      right: 20%;
       top: 40px;
     }
 }

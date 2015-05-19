@@ -3,10 +3,10 @@
   <div class="row viewCampaignWrapper">
     <div class="col-md-12">
       <!-- <div class="<col-md-5>"> -->
-        <div class="col-md-6">
+        <div class="col-md-6 col-sm-12 col-xs-small">
           <h3 class=" text-capitalize" data-ng-bind="campaign.title"></h3>
-          <p class="CreatedAndDeadline titles col-md-6">Created By: <span class="values">{{campaign.createdBy.displayName}} </span> 
-          <p class="CreatedAndDeadline titles col-md-6 text-right">Deadline: <span class="values">{{campaign.dueDate | date}}</span> </p><br><br>
+          <p class="CreatedAndDeadline titles col-md-6 col-sm-12 col-xs-small">Created By: <span class="values">{{campaign.createdBy.displayName}} </span> </p>
+          <p class="CreatedAndDeadline titles col-md-6 col-sm-12 col-xs-small">Deadline: <span class="values">{{campaign.dueDate | date}}</span> </p><br><br>
           <span data-ng-show="authentication.user._id === campaign.createdBy._id"><a href="/#!/campaign/{{campaign.slug}}/edit" id="editBtn">EDIT CAMPAIGN </a></span></p>
           <hr>
           <div class="campaignPage">
@@ -45,7 +45,7 @@
     <div>
       <div ng-hide="campaignBackers" class="alert alert-info"><p>This campaign does not have any backers</p></div>
     </div>
-    <div ng-show="campaignBackers">
+    <div ng-show="campaignBackers" class="table-responsive">
       <table ng-table="tableParams" class="table table-bordered table-striped">
         <tr ng-repeat="backer in $data">
           <td data-title="'Name'" sortable="'userid.displayName'">
