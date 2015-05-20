@@ -51,8 +51,8 @@ module.exports = function(db) {
     return next();
  	};
 
- 	//checks if the env is production then converts url to https
-  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+ 	//checks if the env is production or staging then converts url to https.. **I removed forceSSL for production- Google redirect URI error**
+  if (process.env.NODE_ENV === 'staging') {
       app.use(forceSsl);
   }
 	// Passing the request url to environment locals
