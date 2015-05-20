@@ -3,22 +3,24 @@
     <div>
       <h3 class="title_margin">MY ACCOUNT HISTORY</h3>
       <h4 ng-show="balance.amount">USER BALANCE: {{balance.amount | currencyflt}} </h4><br>
-      <table class="table table-striped table-bordered tb-head">
-        <tt>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Transaction Type</th>
-          <th>Amount</th>
-          <th>Balance</th>
-        </tt>
-        <tr data-ng-repeat="transaction in journal" >
-          <td>{{transaction.posted_at | date }}</td>
-          <td>{{transaction.description.description}}</td>
-          <td>{{transaction.value.type}}</td>
-          <td>{{transaction.value.amount}}</td>
-          <td>{{transaction.balance.value.amount}}</td>
-        </tr>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered tb-head">
+          <tt>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Transaction Type</th>
+            <th>Amount</th>
+            <th>Balance</th>
+          </tt>
+          <tr data-ng-repeat="transaction in journal" >
+            <td>{{transaction.posted_at | date }}</td>
+            <td>{{transaction.description.description}}</td>
+            <td>{{transaction.value.type}}</td>
+            <td>{{transaction.value.amount}}</td>
+            <td>{{transaction.balance.value.amount}}</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </section>

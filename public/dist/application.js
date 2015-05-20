@@ -30,14 +30,19 @@ angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfig
 angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider',
 	function($locationProvider) {
 		$locationProvider.hashPrefix('!');
-    // $locationProvider.HTML5Mode({enabled:true});
+    // debugger
+    // $locationProvider.html5Mode({enabled:true});
 	}
 ]);
 
 //Then define the init function for starting up the application
 angular.element(document).ready(function() {
 	//Fixing facebook bug with redirect
-	if (window.location.hash === '#_=_') window.location.hash = '#!';
+	// if (window.location.hash === '#_=_') window.location.hash = '#!';
+
+  if (window.location.href[window.location.href.length - 1] === '#' && (window.location.href.length - window.location.origin.length) === 2) {
+      window.location.href = window.location.origin + '/#!';
+  }
 
 	//Then init the app
 	angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
@@ -1400,8 +1405,8 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 ]);
 'use strict';
 
-angular.module('core').controller('HeaderController', ['$scope', 'Authentication', '$rootScope',
-  function($scope, Authentication, $rootScope) {
+angular.module('core').controller('HeaderController', ['$scope', 'Authentication', '$rootScope', '$http', '$log',
+  function($scope, Authentication, $rootScope, $http,  $log) {
     $scope.authentication = Authentication;
     $scope.isCollapsed = false;
 
@@ -1415,7 +1420,14 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
     });
 
     $scope.showActiveCampaigns = function (param) {
-        $rootScope.currentStatus = param;
+      $rootScope.currentStatus = param;
+    };
+
+    $scope.signOut = function () {
+      $log.log('siginOut');
+      $http.get('/auth/signout').success(function(res){
+        $scope.authentication = res;
+      });
     };
   }
 ]);
@@ -1447,11 +1459,9 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
       .error(function(error, status, header, config) {
         $scope.error = error;
       });
-
       $scope.updateStatus = function(param) {
         $rootScope.currentStatus = param;
       };
-
     $scope.myInterval = 8000; 
     $scope.slides = [
       {
@@ -1472,13 +1482,11 @@ angular.module('core').controller('HomeController', ['$scope', '$rootScope', 'Au
       },
       {
         image: 'http://res.cloudinary.com/andela/image/upload/v1430321432/carousel5_shgamo.jpg',
-        // image: 'http://res.cloudinary.com/andela/image/upload/v1430321967/caroue6_kx01ei.jpg',
-        caption: 'Alone we can do so little, Together we can do so much'
+        caption: 'Together we can do so much'
       }
     ];
 	}
 ]);
-
 angular.module('core').directive('disableAnimation', ["$animate", function($animate){
     return {
       restrict: 'A',

@@ -1,23 +1,25 @@
 <section ng-show="isDistributor" class="container">
   <div>
     <h3 class="title_margin">MY DISTRIBUTION DETAILS</h3>
-    <table class="table table-striped table-bordered tb-head ">
-      <tt>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Transaction Type</th>
-        <th>Amount</th>
-        <th>Authorized by</th>
-        <th>Balance</th>
-      </tt>
-      <tr ng-repeat="transaction in distribution |filter: query">
-        <td>{{transaction.effective_at | date}}</td>
-        <td>{{transaction.description.description}}</td>
-        <td>{{transaction.value.type}}</td>
-        <td>{{transaction.value.amount |currencyflt}}</td>
-        <td>{{transaction.description.name}}</td>
-        <td>{{transaction.balance.value.amount}}</td>
-      </tr>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered tb-head ">
+        <tt>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Transaction Type</th>
+          <th>Amount</th>
+          <th>Authorized by</th>
+          <th>Balance</th>
+        </tt>
+        <tr ng-repeat="transaction in distribution |filter: query">
+          <td>{{transaction.effective_at | date}}</td>
+          <td>{{transaction.description.description}}</td>
+          <td>{{transaction.value.type}}</td>
+          <td>{{transaction.value.amount |currencyflt}}</td>
+          <td>{{transaction.description.name}}</td>
+          <td>{{transaction.balance.value.amount}}</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </section>
