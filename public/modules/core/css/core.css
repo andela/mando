@@ -31,6 +31,10 @@ legend {
   padding: 10px 0;
 }
 
+.datepkr:hover .input-group-addon, .datepkr:focus .input-group-addon, .datepkr:active .input-group-addon{
+  color: #009183;
+}
+
 .panel {
   box-shadow: 1px 1px 3px 2px #E9EBEE;
 }
