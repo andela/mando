@@ -2,6 +2,12 @@
 .description {
   height: 300px !important;
 }
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+  background: rgba(255, 255, 255, 0)
+}
+
+
 /*adds top margin to form*/
 .top-form {
   margin-top: 30px;
@@ -9,10 +15,6 @@
 
 .calendar {
   padding-left: 0
-}
-
-.dueDate {
-  padding-right: 0
 }
 
 .main-container {

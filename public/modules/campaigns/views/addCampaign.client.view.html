@@ -6,7 +6,7 @@
         <div>
           <form name="addcampaign" class="form-horizontal top-form" novalidate>
             <div class="form-group" ng-class="{'has-error': addcampaign.title.$invalid &amp;&amp; addcampaign.title.$dirty}">
-              <label for="title" class="col-sm-2 pull-left">Title</label>
+              <label for="title" class="col-sm-2 pull-left">Title:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" name="title" data-ng-model="campaign.title" id="title" placeholder="Enter a Title for your campaign"  ng-minlength="5" maxlength="30" required/>
                 <small>* Title should be greater than 5 and less than 30 characters.</small>
@@ -17,18 +17,18 @@
             </div>
             <div class="form-group">
               <div ng-class="{'has-error': addcampaign.dueDate.$invalid &amp;&amp; addcampaign.dueDate.$dirty}">
-                <label for="dueDate" class="col-sm-2 pull-left">Deadline</label>
-                <div class="col-sm-3 dueDate">
-                  <input type="text" name="dueDate" id="dueDate" class="form-control" datepicker-popup="MMMM/dd/yyyy" ng-model="campaign.dueDate" is-open="opened" min-date="minDate" max-date="maxDate" ng-required="true" close-text="Close" placeholder="Click the calendar to pick a deadline" ng-disabled="true"/>
+                <label for="dueDate" class="col-sm-2 pull-left">Deadline:</label>
+                <div class="col-sm-4 dueDate datepkr">
+                  <div class="input-group input-append date" id="datePicker" ng-click="open($event)">
+                    <input type="text" name="dueDate" id="dueDate" class="form-control" datepicker-popup="MMMM/dd/yyyy" ng-model="campaign.dueDate" is-open="opened" min-date="minDate" max-date="maxDate" ng-required="true" close-text="Close" placeholder="Click the calendar to pick a deadline" readonly/>
+                    <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
+                  </div>
                 </div>
-                <span class="col-sm-1 calendar">
-                  <button type="button" class="btn btn-default dateBtn" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                </span>
+
               </div>
               <div ng-class="{'has-error': addcampaign.amount.$invalid &amp;&amp; addcampaign.amount.$dirty}">
                 <label for="amount" class="col-sm-2 control-label">Amount:</label>
                 <div class="col-sm-4">
-
                   <div class="input-group">
                     <div class="input-group-addon">$</div>
                     <input type="number" min="0" class="form-control" ng-model="campaign.amount" name="amount" id="amount" placeholder="Enter the amount needed for this campaign" required>
@@ -44,7 +44,7 @@
                 </div>
               </div>
             <div class="form-group" ng-class="{'has-error': addcampaign.description.$invalid &amp;&amp; addcampaign.description.$dirty}">
-              <label for="description" class="col-sm-2 pull-left">Description</label>
+              <label for="description" class="col-sm-2 pull-left">Description:</label>
               <div class="col-sm-10">
                 <textarea class="form-control description" ng-model="campaign.description" id="description" name="description" placeholder="Type in the description for this campaign" ng-minlength="150" required></textarea>
                 <small>* Give a detailed description of what the campaign is about. Description should be more than 150 characters.</small>
