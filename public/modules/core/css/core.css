@@ -43,10 +43,6 @@ legend {
   margin-top: 20px;
 }
 
-.dateBtn {
-  margin-left: 5px;
-}
-
 .btn-default:hover, .btn-default:active, .btn-default:focus {
   color: #009183;
 }
