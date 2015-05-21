@@ -18,7 +18,7 @@
             <div class="form-group">
               <div ng-class="{'has-error': addcampaign.dueDate.$invalid &amp;&amp; addcampaign.dueDate.$dirty}">
                 <label for="dueDate" class="col-sm-2 pull-left">Deadline:</label>
-                <div class="col-sm-4 dueDate">
+                <div class="col-sm-4 dueDate datepkr">
                   <div class="input-group input-append date" id="datePicker" ng-click="open($event)">
                     <input type="text" name="dueDate" id="dueDate" class="form-control" datepicker-popup="MMMM/dd/yyyy" ng-model="campaign.dueDate" is-open="opened" min-date="minDate" max-date="maxDate" ng-required="true" close-text="Close" placeholder="Click the calendar to pick a deadline" readonly/>
                     <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
