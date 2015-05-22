@@ -9,7 +9,6 @@ module.exports = function() {
     campaigns.find({status: 'active'}, function(err, campaigns) {
         campaigns.forEach(function(campaign) {
           var campaignDuedate = campaign.dueDate.getTime() + (5 * 60000);
-          console.log('type: ', typeof campaignDuedate, ' it contains: ', campaignDuedate);
           if (new Date().getTime() > new Date(campaignDuedate).getTime()) {
             campaign_controller.refundBackers(campaign, 'Cash refund from expired campaign', function(err, res) {
               campaign_controller.archiveCampaignAccount(campaign._id, function(error, result) {
