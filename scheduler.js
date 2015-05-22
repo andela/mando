@@ -8,9 +8,8 @@ module.exports = function() {
   scheduler.scheduleJob({hour: 0, minute: 0}, function() {
     campaigns.find({status: 'active'}, function(err, campaigns) {
         campaigns.forEach(function(campaign) {
-          //adding 5mins to campaign Duedate to cater for time lag
-          var campaignDuedate = campaign.dueDate.getTime + (5 * 60000);
-          if (new Date() > campaignDuedate) {
+          var campaignDuedate = campaign.dueDate.getTime() + (5 * 60000);
+          if (new Date().getTime() > new Date(campaignDuedate).getTime()) {
             campaign_controller.refundBackers(campaign, 'Cash refund from expired campaign', function(err, res) {
               campaign_controller.archiveCampaignAccount(campaign._id, function(error, result) {
                 campaign.status = 'expired';
