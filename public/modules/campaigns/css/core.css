@@ -209,3 +209,12 @@ iframe {
   position: relative;
   bottom: 0;
 }
+
+.allCampaigns {
+  margin-top: 80px;
+}
+
+.noCampaigns {
+  margin-top: 5%;
+  line-height: 50px;
+}
