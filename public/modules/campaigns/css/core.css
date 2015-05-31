@@ -218,3 +218,32 @@ iframe {
   margin-top: 5%;
   line-height: 50px;
 }
+
+.addnewCampaign {
+  border-radius: 2px;
+  background: #66788C;
+  background-image: none;
+  transition: all linear .2s;
+  padding-right: 0;
+  padding-left: 0;
+  box-shadow: 2px 2px 4px #4B4747;
+}
+
+.addnewCampaign a {
+  color: #eee; 
+  text-shadow: none;
+  font-size: 16px;
+  padding: 6px 25px 3px;
+}
+
+.addnewCampaign a:hover{
+  outline: none;
+  text-decoration: none;
+}
+
+.addnewCampaign:hover, .addnewCampaign:active {
+  outline: none;
+  background: #576779;
+  background-image: none;
+  transition: all linear .4s;
+}
