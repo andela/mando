@@ -14,8 +14,15 @@
 
    
     <div class="custom_side_margin grey homePageContentsHolder"> 
-      <div class="container-fluid second-div margin-btm" ng-show="activeCampaigns.length > 0">
+      <div class="container-fluid second-div margin-btm" ng-if="activeCampaigns.length >= 1">
         <h3>Most recent campaigns</h3>
+      </div>
+      <div ng-if="activeCampaigns.length < 1">
+        <br><br>
+        <div class="jumbotron text-center container">
+          <h3 class="text-uppercase"> There are currently no active campaigns</h3><br>
+          <button class="addnewCampaign btn btn-default"><a href="/#!/campaign/add">Create a campaign</a></button>
+        </div>
       </div>
 
       <div class="third-div">
