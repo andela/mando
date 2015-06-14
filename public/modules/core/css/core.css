@@ -187,8 +187,8 @@ small {
 
 .logo-image {
   margin-top: -7px;
-  height: 65px;
-  width: 70px;
+  height: 70px;
+  width: auto;
 }
 
 .margin_left {
@@ -299,31 +299,11 @@ iframe {
 
 
 @media only screen and (min-width: 320px) and (max-width: 512px) {
-    .navbar-default .navbar-collapse, .navbar-default .navbar-form {
-      position: relative;
-      height: auto;
-      min-width: 200px;
-      border: none;
-      right: 0;
-      top: 0;
-    }
+  a.navbar-brand {
+    padding-left: 0;
+  }
 
-    a.navbar-brand {
-      padding-left: 0;
-    }
-
-    .carousel, .carousel-inner > .item > img, .carousel-inner > .item > a > img {
-      height: 180px;
-    }
-}
-
-@media only screen and (min-width: 512px) and (max-width: 768px) {
-    .navbar-default .navbar-collapse, .navbar-default .navbar-form {
-      position: relative;
-      height: auto;
-      min-width: 200px;
-      border: none;
-      right: 0;
-      top: 0;
-    }
+  .carousel, .carousel-inner > .item > img, .carousel-inner > .item > a > img {
+    height: 180px;
+  }
 }
