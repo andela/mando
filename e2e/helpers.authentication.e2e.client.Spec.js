@@ -14,7 +14,7 @@ var helpers = {
   },
   //login to the app
   login: function(email, password) {
-    email = email || 'adebayo.maborukoje@andela.co';
+    email = email || 'adebayo.maborukoje@andela.com';
     password = password || 'maborukoje2012'; //find a way to hide user credentials
 
     elements.signInButton.click();

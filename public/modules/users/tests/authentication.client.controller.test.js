@@ -116,7 +116,7 @@
 		// });
 
 		//  //Test andela domain name
-  //   it('$scope.signin() should fail to log in users without andela.co domain name', function() {
+  //   it('$scope.signin() should fail to log in users without andela.com domain name', function() {
   //    $httpBackend.when('POST', '/auth/signin').respond(400, {
   //      'message': 'Not an andela fellow'
   //    });

@@ -8,7 +8,7 @@ describe('Andonation Authentication', function() {
   });
   var signInButton = element(by.id('signIn'));
   // var googleSignIn = element(by.id('googleSignIn'));
-  it('should accept only emails with andela.co domain name', function() {
+  it('should accept only emails with andela.com domain name', function() {
     browser.driver.manage().deleteAllCookies();
     helper.logoutifLoggedIn();
     //log in

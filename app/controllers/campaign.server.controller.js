@@ -20,7 +20,7 @@ exports.createCampaign = function (req, res) {
   // create subledger account for a campaign
   subledger.createAccount({
     'description': campaign.title + campaign._id,
-    'reference': 'http://andela.co',
+    'reference': 'http://andela.com',
     'normal_balance': 'credit'
   }, function (err, account) {
     if (err) {
