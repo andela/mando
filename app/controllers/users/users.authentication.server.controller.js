@@ -78,10 +78,10 @@ exports.campaignsUserBacks = function(req, res) {
  * Helper function to save or update a OAuth user profile
  */
 exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
-  if (!providerUserProfile.email.match(/andela.co$/)) {
+  if (!providerUserProfile.email.match(/andela.com$/)) {
     // res.redirect('/');
     var newUser = req.user;
-    return done(new Error('User is not from Andela.co'), newUser);
+    return done(new Error('User is not from Andela.com'), newUser);
   }
 
   if (!req.user) {
@@ -120,7 +120,7 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
               provider: providerUserProfile.provider,
               providerData: providerUserProfile.providerData
             };
-            //updates the user object or create in not existing,
+            //updates the user object or create if not existing,
             //doing this because of the Admin user that would be manually created
             User.findOneAndUpdate({
               email: user.email
@@ -130,7 +130,7 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
               adminRoles.addRolesToUser(user._id, user._id, 'member', function(err, user) {
                 subledger.createAccount({
                   'description': user.email,
-                  'reference': 'http://andela.co',
+                  'reference': 'http://andela.com',
                   'normal_balance': 'credit'
                 }, function(err, account) {
                   if (err) {
