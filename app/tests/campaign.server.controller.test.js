@@ -28,7 +28,7 @@ describe('Campaign Server Controller', function (){
       firstName: 'Bayo',
       lastname: 'Mando',
       displayName: 'BayoMando',
-      email: 'test@andela.co',
+      email: 'test@andela.com',
       username:'username',
       provider:'google'
     });
@@ -38,7 +38,7 @@ describe('Campaign Server Controller', function (){
       firstName: 'User2',
       lastname: 'Mando2',
       displayName:'Manod2User2',
-      email: 'adebayo@andela.co',
+      email: 'adebayo@andela.com',
       username:'username2',
       provider: 'google'
     });
